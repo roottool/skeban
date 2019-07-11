@@ -4,11 +4,7 @@ import Path from "path";
 const rules: Webpack.Rule[] = [
     {
         test: /\.[ts|tsx]$/,
-        use: [
-            {
-                loader: "ts-loader"
-            }
-        ]
+        use: "ts-loader"
     }
 ]
 
