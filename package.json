@@ -5,5 +5,17 @@
   "main": "index.js",
   "repository": "https://github.com/roottool/skeban.git",
   "author": "roottool",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.4.4",
+    "@types/webpack": "^4.4.34",
+    "babel-loader": "^8.0.6",
+    "ts-loader": "^6.0.4",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5"
+  }
 }
