@@ -2,26 +2,42 @@
   "name": "skeban",
   "version": "0.0.1",
   "description": "Sketches your brain in kanban",
-  "main": "index.js",
+  "main": "build/index.js",
   "repository": "https://github.com/roottool/skeban.git",
   "author": "roottool",
   "license": "MIT",
+  "scripts": {
+    "build:main": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config webpack.config.main.ts",
+    "build:renderer": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config webpack.config.renderer.ts",
+    "build": "yarn run build:main && yarn run build:renderer",
+    "prestart": "yarn run build",
+    "start": "electron ./"
+  },
   "devDependencies": {
     "@babel/core": "^7.5.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.4.4",
+    "@types/html-webpack-plugin": "^3.2.0",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.4",
+    "@types/styled-components": "^4.1.18",
     "@types/webpack": "^4.4.34",
     "babel-loader": "^8.0.6",
-    "ts-loader": "^6.0.4",
+    "cross-env": "^5.2.0",
+    "electron": "^5.0.6",
+    "html-webpack-plugin": "^3.2.0",
     "ts-node": "^8.3.0",
+    "tsconfig-paths": "^3.8.0",
     "typescript": "^3.5.3",
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.5"
   },
   "dependencies": {
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.3.2"
   }
 }
