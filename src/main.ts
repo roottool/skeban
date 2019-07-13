@@ -1,9 +1,17 @@
 import { BrowserWindow, app } from "electron";
+import Path from "path"
 import Process from "process"
+import Url from "url";
 import ElectronStore from "electron-store";
 
 const config = new ElectronStore();
 let mainWindow: BrowserWindow | null = null;
+const htmlUrlPathName = Path.join(__dirname, "/index.html");
+const htmlUrl: string = Url.format({
+  pathname: htmlUrlPathName,
+  protocol: 'file:',
+  slashes: true
+})
 const windowBounds = 'windowBounds'
 
 const createMainWindow = () => {
@@ -17,7 +25,7 @@ const createMainWindow = () => {
 
   mainWindow = new BrowserWindow(chooseOptions())
 
-  mainWindow.loadFile('index.html');
+  mainWindow.loadURL(htmlUrl);
 
   mainWindow.on('close', () => {
     if (mainWindow) {
