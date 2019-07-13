@@ -47,6 +47,7 @@ const CardListTitleArea: React.FC = () => {
 const StyledCardListTitleArea = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 4px;
 `;
 
 const StyledCardTitleForm = styled.form`
