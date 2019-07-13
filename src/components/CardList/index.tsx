@@ -20,6 +20,8 @@ const CardList: React.FC = () => {
 
 const StyledPaper = styled(Paper)`
   width: 360px;
+  margin-left: 4px;
+  margin-right: 4px;
 `;
 
 const StyledAddButtonArea = styled.div`
