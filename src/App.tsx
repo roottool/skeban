@@ -1,5 +1,5 @@
-import React from 'react';
-import { createGlobalStyle } from 'styled-components';
+import React from "react";
+import { createGlobalStyle } from "styled-components";
 
 const App: React.FC = () => {
   return (
@@ -7,7 +7,9 @@ const App: React.FC = () => {
       <GlobalStyles />
       <header className="App-header">
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Edit
+          <code>src/App.tsx</code>
+          and save to reload.
         </p>
         <a
           className="App-link"
@@ -20,7 +22,7 @@ const App: React.FC = () => {
       </header>
     </div>
   );
-}
+};
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -36,6 +38,6 @@ const GlobalStyles = createGlobalStyle`
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
       monospace;
   }
-`
+`;
 
 export default App;
