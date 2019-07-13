@@ -24,6 +24,15 @@ const rendererRules: Webpack.Rule[] = [
         loader: "eslint-loader"
       }
     ]
+  },
+  {
+    test: /\.css$/i,
+    include: [appNodeModules],
+    use: ["style-loader", "css-loader"]
+  },
+  {
+    test: /\.(woff|woff2|eot|ttf|svg)$/,
+    loader: "file-loader"
   }
 ];
 
