@@ -26,6 +26,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.4.4",
     "@types/html-webpack-plugin": "^3.2.0",
+    "@types/prismjs": "^1.16.0",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.4",
     "@types/styled-components": "^4.1.18",
@@ -61,8 +62,10 @@
   "dependencies": {
     "@material-ui/core": "^4.2.0",
     "@material-ui/icons": "^4.2.1",
+    "prismjs": "^1.16.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-simple-code-editor": "^0.9.13",
     "styled-components": "^4.3.2",
     "typeface-roboto": "^0.0.54"
   }

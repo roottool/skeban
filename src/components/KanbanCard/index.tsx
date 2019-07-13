@@ -1,19 +1,57 @@
-import React from "react";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import React, { useState } from "react";
+import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
+import CardEditor from "react-simple-code-editor";
+import { highlight, languages } from "prismjs";
+import "prismjs/components/prism-markdown";
+import { Typography } from "@material-ui/core";
 
 const KanbanCard: React.FC = () => {
+  const [isInputArea, setIsInputArea] = useState(false);
+  const [text, setText] = useState("");
+
+  const handleisInputAreaChange = () => {
+    setIsInputArea(!isInputArea);
+  };
+
   return (
-    <StlyedCard>
-      <CardContent>test</CardContent>
-    </StlyedCard>
+    <StyledPaper>
+      {isInputArea ? (
+        <StyledCodeEditor
+          value={text}
+          onValueChange={code => setText(code)}
+          highlight={code => highlight(code, languages.markdown, "md")}
+          padding={10}
+          autoFocus
+          onBlur={handleisInputAreaChange}
+        />
+      ) : (
+        <StyledCardContentDiv onClick={handleisInputAreaChange}>
+          <Typography variant="h6" gutterBottom>
+            {text}
+          </Typography>
+        </StyledCardContentDiv>
+      )}
+    </StyledPaper>
   );
 };
 
-const StlyedCard = styled(Card)`
+const StyledPaper = styled(Paper)`
+  padding: 0px;
   margin: 8px;
   cursor: pointer;
+`;
+
+const StyledCodeEditor = styled(CardEditor)`
+  font-family: '"Fira code", "Fira Mono", monospace';
+  font-size: 12;
+  min-height: 72px;
+`;
+
+const StyledCardContentDiv = styled.div`
+  width: 100%;
+  min-height: 72px;
+  white-space: pre-line;
 `;
 
 export default KanbanCard;
