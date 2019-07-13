@@ -32,6 +32,7 @@ const createMainWindow = () => {
       config.set(windowBounds, mainWindow.getBounds())
     }
   });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
