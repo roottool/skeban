@@ -11,7 +11,7 @@
     "build:renderer": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.config.renderer.ts",
     "build": "rimraf build && yarn run build:main && yarn run build:renderer",
     "prestart": "yarn run build",
-    "start": "electron ./"
+    "start": "electron ."
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
