@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
-import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography } from "@material-ui/core";
 
 const CardListTitleArea: React.FC = () => {
-  const [isInputTextArea, setIsInputTextArea] = useState(false);
+  const [isInputArea, setIsInputArea] = useState(false);
   const [cardTitle, setCardTitle] = useState("test");
 
   const handleCardTitleChanged = (
@@ -14,31 +14,40 @@ const CardListTitleArea: React.FC = () => {
     setCardTitle(event.target.value);
   };
 
-  const handleButtonClicked = () => {
-    setIsInputTextArea(!isInputTextArea);
+  const handleisInputAreaChange = () => {
+    setIsInputArea(!isInputArea);
+  };
+
+  const handleKeyPressed = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter") {
+      handleisInputAreaChange();
+    }
   };
 
   return (
     <StyledCardListTitleArea>
-      {isInputTextArea ? (
+      {isInputArea ? (
         <StyledCardTitleForm>
           <StyledCardTitleTextField
             id="card-list-name"
             label="Card Title"
             value={cardTitle}
-            onChange={handleCardTitleChanged}
             margin="normal"
+            autoFocus
+            onChange={handleCardTitleChanged}
+            onKeyPress={handleKeyPressed}
+            onBlur={handleisInputAreaChange}
           />
         </StyledCardTitleForm>
       ) : (
-        <StyledCardTitleDiv>
+        <StyledCardTitleDiv onClick={handleisInputAreaChange}>
           <Typography variant="h6" gutterBottom>
             {cardTitle}
           </Typography>
         </StyledCardTitleDiv>
       )}
       <StyledEditIconArea>
-        <EditIcon fontSize="large" onClick={handleButtonClicked} />
+        <DeleteIcon fontSize="large" />
       </StyledEditIconArea>
     </StyledCardListTitleArea>
   );
@@ -66,6 +75,7 @@ const StyledCardTitleDiv = styled.div`
   display: flex;
   align-items: center;
   word-break: break-word;
+  cursor: pointer;
 `;
 
 const StyledEditIconArea = styled.div`
