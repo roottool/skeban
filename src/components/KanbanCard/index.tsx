@@ -4,7 +4,7 @@ import styled from "styled-components";
 import CardEditor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
 import "prismjs/components/prism-markdown";
-import { Typography } from "@material-ui/core";
+import Markdown from "markdown-to-jsx";
 
 const KanbanCard: React.FC = () => {
   const [isInputArea, setIsInputArea] = useState(false);
@@ -27,9 +27,7 @@ const KanbanCard: React.FC = () => {
         />
       ) : (
         <StyledCardContentDiv onClick={handleisInputAreaChange}>
-          <Typography variant="h6" gutterBottom>
-            {text}
-          </Typography>
+          <Markdown>{text}</Markdown>
         </StyledCardContentDiv>
       )}
     </StyledPaper>
