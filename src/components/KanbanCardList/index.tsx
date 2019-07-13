@@ -3,12 +3,14 @@ import styled from "styled-components";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-import CardListTitleArea from "../CardListTitleArea";
+import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
+import KanbanCard from "../KanbanCard";
 
-const CardList: React.FC = () => {
+const KanbanCardList: React.FC = () => {
   return (
     <StyledPaper>
-      <CardListTitleArea />
+      <KanbanCardListTitleArea />
+      <KanbanCard />
       <StyledAddButtonArea>
         <Fab color="secondary" aria-label="Add">
           <AddIcon />
@@ -20,14 +22,11 @@ const CardList: React.FC = () => {
 
 const StyledPaper = styled(Paper)`
   width: 360px;
-  margin-left: 4px;
-  margin-right: 4px;
 `;
 
 const StyledAddButtonArea = styled.div`
   text-align: center;
-  margin-top: 4px;
   margin-bottom: 8px;
 `;
 
-export default CardList;
+export default KanbanCardList;

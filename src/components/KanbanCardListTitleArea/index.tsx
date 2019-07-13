@@ -4,7 +4,7 @@ import styled from "styled-components";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography } from "@material-ui/core";
 
-const CardListTitleArea: React.FC = () => {
+const KanbanCardListTitleArea: React.FC = () => {
   const [isInputArea, setIsInputArea] = useState(false);
   const [cardTitle, setCardTitle] = useState("test");
 
@@ -56,7 +56,7 @@ const CardListTitleArea: React.FC = () => {
 const StyledCardListTitleArea = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 4px;
+  margin-top: 8px;
 `;
 
 const StyledCardTitleForm = styled.form`
@@ -83,4 +83,4 @@ const StyledEditIconArea = styled.div`
   text-align: center;
 `;
 
-export default CardListTitleArea;
+export default KanbanCardListTitleArea;
