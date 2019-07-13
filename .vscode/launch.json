@@ -6,7 +6,7 @@
       "request": "launch",
       "name": "Launch skeban",
       "program": "${workspaceFolder}\\build\\index.js",
-      "preLaunchTask": "npm: build",
+      "preLaunchTask": "npm: build:dev",
       "stopOnEntry": false,
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",

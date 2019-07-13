@@ -7,10 +7,13 @@
   "author": "roottool",
   "license": "MIT",
   "scripts": {
-    "build:main": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.config.main.ts",
-    "build:renderer": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.config.renderer.ts",
-    "build": "rimraf build && yarn run build:main && yarn run build:renderer",
-    "prestart": "yarn run build",
+    "build:dev:main": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.dev.config.main.ts",
+    "build:dev:renderer": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.dev.config.renderer.ts",
+    "build:prod:main": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.prod.config.main.ts",
+    "build:prod:renderer": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.prod.config.renderer.ts",
+    "build": "rimraf build && concurrently \"yarn run build:prod:main\" \"yarn run build:prod:renderer\"",
+    "build:dev": "rimraf build && concurrently \"yarn run build:dev:main\" \"yarn run build:dev:renderer\"",
+    "prestart": "yarn run build:dev",
     "start": "electron .",
     "fix": "eslint --fix \"config/**\" && eslint --fix \"src/**\"",
     "lint": "eslint \"config/**\" && eslint \"src/**\""
