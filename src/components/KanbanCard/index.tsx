@@ -13,6 +13,7 @@ const KanbanCard: React.FC = () => {
 
 const StlyedCard = styled(Card)`
   margin: 8px;
+  cursor: pointer;
 `;
 
 export default KanbanCard;
