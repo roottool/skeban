@@ -2,12 +2,21 @@ import Webpack from "webpack";
 import Path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 
+import Paths from "./paths";
+
+const {
+  appSrc,
+  appBuild,
+  appNodeModules,
+  appHtml
+} = Paths;
+
 const rendererRules: Webpack.Rule[] = [
   {
     test: /\.tsx?$/,
     include: [
-      Path.resolve(__dirname, 'src'),
-      Path.resolve(__dirname, 'node_modules')
+      appSrc,
+      appNodeModules
     ],
     loader: "babel-loader",
     options: {
@@ -31,23 +40,20 @@ const rendererResolve: Webpack.Resolve = {
   ]
 }
 
-const src = Path.resolve(__dirname, "src");
-const build = Path.resolve(__dirname, "build");
-
 const config: Webpack.Configuration = {
   mode: "development",
   target: 'electron-renderer',
-  entry: Path.join(src, 'index.tsx'),
+  entry: Path.join(Paths.appSrc, 'index.tsx'),
   output: {
     filename: 'index.js',
-    path: Path.resolve(build, "renderer"),
+    path: Path.resolve(appBuild, "renderer"),
   },
   module: rendererModules,
   resolve: rendererResolve,
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html',
-      filename: Path.join(build, 'index.html')
+      template: appHtml,
+      filename: Path.join(appBuild, 'index.html')
     }),
   ],
 }

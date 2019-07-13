@@ -1,14 +1,22 @@
 import Webpack from "webpack";
 import Path from "path";
 
+import Paths from "./paths";
+
+const {
+  appSrc,
+  appBuild,
+  appNodeModules
+} = Paths;
+
 const mainRules: Webpack.Rule[] = [
   {
     test: /\.ts$/,
     include: [
-      Path.resolve(__dirname, 'src'),
+      appSrc,
     ],
     exclude: [
-      Path.resolve(__dirname, 'node_modules'),
+      appNodeModules,
     ],
     loader: "babel-loader",
     options: {
@@ -32,16 +40,13 @@ const mainResolve: Webpack.Resolve = {
   ]
 }
 
-const src = Path.resolve(__dirname, "src");
-const build = Path.resolve(__dirname, "build");
-
 const config: Webpack.Configuration = {
   mode: "development",
   target: 'electron-main',
-  entry: Path.join(src, 'main.ts'),
+  entry: Path.join(appSrc, 'main.ts'),
   output: {
     filename: 'index.js',
-    path: build
+    path: appBuild
   },
   node: {
     __dirname: false,

@@ -7,8 +7,8 @@
   "author": "roottool",
   "license": "MIT",
   "scripts": {
-    "build:main": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config webpack.config.main.ts",
-    "build:renderer": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config webpack.config.renderer.ts",
+    "build:main": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.config.main.ts",
+    "build:renderer": "cross-env TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack --config ./config/webpack.config.renderer.ts",
     "build": "yarn run build:main && yarn run build:renderer",
     "prestart": "yarn run build",
     "start": "electron ./"
