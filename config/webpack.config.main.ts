@@ -36,7 +36,7 @@ const mainModules: Webpack.Module = {
 
 const mainResolve: Webpack.Resolve = {
   extensions: [
-    ".ts"
+    ".js", ".ts"
   ]
 }
 
