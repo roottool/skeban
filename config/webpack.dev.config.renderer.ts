@@ -32,7 +32,11 @@ const rendererRules: Webpack.Rule[] = [
   },
   {
     test: /\.(woff|woff2|eot|ttf|svg)$/,
-    loader: "file-loader"
+    loader: "file-loader",
+    options: {
+      name: "[name].[ext]",
+      outputPath: "fonts/"
+    }
   }
 ];
 
@@ -49,15 +53,14 @@ const config: Webpack.Configuration = {
   target: "electron-renderer",
   entry: Path.join(Paths.appSrc, "index.tsx"),
   output: {
-    filename: "index.js",
-    path: Path.resolve(appBuild, "renderer")
+    filename: "renderer.js",
+    path: appBuild
   },
   module: rendererModules,
   resolve: rendererResolve,
   plugins: [
     new HtmlWebpackPlugin({
-      template: appHtml,
-      filename: Path.join(appBuild, "index.html")
+      template: appHtml
     })
   ]
 };
