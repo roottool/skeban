@@ -16,7 +16,6 @@ const KanbanBoard: React.FC = () => {
 
   return (
     <StyledKanbanBoard>
-      <KanbanCardList />
       {kanbanCardList.map(cardList => (
         <KanbanCardList key={cardList.filename} />
       ))}
