@@ -25,7 +25,14 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
   }, [cardTitle]);
 
   const WrappedHandleKanbanCardListDelete = useCallback(() => {
+    const targetData = localStorage.getItem(filename) || "{}";
+    const targetJsonData: CardListData = JSON.parse(targetData);
+    targetJsonData.data.forEach(data => {
+      localStorage.removeItem(data.filename);
+    });
+
     localStorage.removeItem(filename);
+
     handleKanbanCardListDelete(filename);
   }, [isDelete]);
 
