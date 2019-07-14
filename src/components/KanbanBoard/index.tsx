@@ -39,6 +39,7 @@ const StyledKanbanBoard = styled.div`
 const StyledAddbuttonArea = styled.div`
   flex: 0 0 360px;
   text-align: center;
+  margin-top: 16px;
 `;
 
 export default KanbanBoard;
