@@ -35,6 +35,8 @@ const KanbanCardList: React.FC = () => {
 
 const StyledPaper = styled(Paper)`
   width: 360px;
+  flex: 0 0 360px;
+  margin: 16px;
 `;
 
 const StyledAddButtonArea = styled.div`

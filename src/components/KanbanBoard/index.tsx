@@ -1,24 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import styled from "styled-components";
 import KanbanCardList from "../KanbanCardList";
 
 const KanbanBoard: React.FC = () => {
+  const [kanbanCardList, setKanbanCardList] = useState<{ filename: string }[]>(
+    []
+  );
+
+  const handleAddButtonClicked = () => {
+    setKanbanCardList([
+      ...kanbanCardList,
+      { filename: Math.random().toString() }
+    ]);
+  };
+
   return (
     <StyledKanbanBoard>
       <KanbanCardList />
-      <Fab color="primary" aria-label="Add">
-        <AddIcon />
-      </Fab>
+      {kanbanCardList.map(cardList => (
+        <KanbanCardList key={cardList.filename} />
+      ))}
+      <StyledAddbuttonArea>
+        <Fab color="primary" aria-label="Add" onClick={handleAddButtonClicked}>
+          <AddIcon />
+        </Fab>
+      </StyledAddbuttonArea>
     </StyledKanbanBoard>
   );
 };
 
 const StyledKanbanBoard = styled.div`
   display: flex;
-  justify-content: space-around;
   margin: 8px 0px;
+`;
+
+const StyledAddbuttonArea = styled.div`
+  flex: 0 0 360px;
+  text-align: center;
 `;
 
 export default KanbanBoard;
