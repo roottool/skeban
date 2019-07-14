@@ -5,19 +5,33 @@ import AddIcon from "@material-ui/icons/Add";
 import styled from "styled-components";
 import KanbanCardList from "../KanbanCardList";
 
+interface KanbanCardListState {
+  filename: string;
+}
+
 const KanbanBoard: React.FC = () => {
-  const [kanbanCardList, setKanbanCardList] = useState<{ filename: string }[]>(
+  const [kanbanCardList, setKanbanCardList] = useState<KanbanCardListState[]>(
     []
   );
 
+  const deleteKanbanCardList = (filename: string) => {
+    setKanbanCardList(prev => {
+      return prev.filter(target => target.filename !== filename);
+    });
+  };
+
   const handleAddButtonClicked = () => {
-    setKanbanCardList([...kanbanCardList, { filename: uuidv1() }]);
+    setKanbanCardList(prev => [...prev, { filename: uuidv1() }]);
   };
 
   return (
     <StyledKanbanBoard>
       {kanbanCardList.map(cardList => (
-        <KanbanCardList key={cardList.filename} />
+        <KanbanCardList
+          key={cardList.filename}
+          filename={cardList.filename}
+          handleKanbanCardListDelete={deleteKanbanCardList}
+        />
       ))}
       <StyledAddbuttonArea>
         <Fab color="primary" aria-label="Add" onClick={handleAddButtonClicked}>

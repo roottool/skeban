@@ -1,17 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
+import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography } from "@material-ui/core";
 
-const KanbanCardListTitleArea: React.FC = () => {
+interface Props {
+  filename: string;
+  value: string;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  handleKanbanCardListDelete: (filename: string) => void;
+}
+
+const KanbanCardListTitleArea: React.FC<Props> = props => {
+  const { filename, value, setTitle, handleKanbanCardListDelete } = props;
+
   const [isInputArea, setIsInputArea] = useState(false);
-  const [cardTitle, setCardTitle] = useState("");
+  const [cardTitle, setCardTitle] = useState(value);
+  const [isDelete, setIsDelete] = useState(false);
+
+  const WrappedSetTitle = useCallback(() => {
+    setTitle(cardTitle);
+  }, [cardTitle]);
+
+  const WrappedHandleKanbanCardListDelete = useCallback(() => {
+    handleKanbanCardListDelete(filename);
+  }, [isDelete]);
 
   const handleCardTitleChanged = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setCardTitle(event.target.value);
+    WrappedSetTitle();
   };
 
   const handleisInputAreaChange = () => {
@@ -22,6 +42,11 @@ const KanbanCardListTitleArea: React.FC = () => {
     if (event.key === "Enter") {
       handleisInputAreaChange();
     }
+  };
+
+  const handleDeleteButtonClicked = () => {
+    setIsDelete(true);
+    WrappedHandleKanbanCardListDelete();
   };
 
   return (
@@ -47,7 +72,13 @@ const KanbanCardListTitleArea: React.FC = () => {
         </StyledCardTitleDiv>
       )}
       <StyledEditIconArea>
-        <DeleteIcon fontSize="large" />
+        <IconButton
+          aria-label="Delete"
+          color="primary"
+          onClick={handleDeleteButtonClicked}
+        >
+          <DeleteIcon fontSize="large" />
+        </IconButton>
       </StyledEditIconArea>
     </StyledCardListTitleArea>
   );

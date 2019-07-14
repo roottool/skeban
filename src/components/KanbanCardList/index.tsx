@@ -7,7 +7,15 @@ import AddIcon from "@material-ui/icons/Add";
 import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
 import KanbanCard from "../KanbanCard";
 
-const KanbanCardList: React.FC = () => {
+interface Props {
+  filename: string;
+  handleKanbanCardListDelete: (filename: string) => void;
+}
+
+const KanbanCardList: React.FC<Props> = props => {
+  const { filename, handleKanbanCardListDelete } = props;
+
+  const [title, setTitle] = useState("");
   const [cardList, setCardList] = useState<{ filename: string }[]>([]);
 
   const handleAddButtonClicked = () => {
@@ -16,7 +24,12 @@ const KanbanCardList: React.FC = () => {
 
   return (
     <StyledPaper>
-      <KanbanCardListTitleArea />
+      <KanbanCardListTitleArea
+        filename={filename}
+        value={title}
+        setTitle={setTitle}
+        handleKanbanCardListDelete={handleKanbanCardListDelete}
+      />
       {cardList.map(card => (
         <KanbanCard key={card.filename} />
       ))}
