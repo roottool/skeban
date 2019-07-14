@@ -6,7 +6,7 @@ import { Typography } from "@material-ui/core";
 
 const KanbanCardListTitleArea: React.FC = () => {
   const [isInputArea, setIsInputArea] = useState(false);
-  const [cardTitle, setCardTitle] = useState("test");
+  const [cardTitle, setCardTitle] = useState("");
 
   const handleCardTitleChanged = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -42,7 +42,7 @@ const KanbanCardListTitleArea: React.FC = () => {
       ) : (
         <StyledCardTitleDiv onClick={handleisInputAreaChange}>
           <Typography variant="h6" gutterBottom>
-            {cardTitle}
+            {cardTitle || "The title is empty"}
           </Typography>
         </StyledCardTitleDiv>
       )}
