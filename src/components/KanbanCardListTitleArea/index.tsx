@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
@@ -17,23 +17,19 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
   const { filename, value, setTitle, handleKanbanCardListDelete } = props;
 
   const [isInputArea, setIsInputArea] = useState(false);
-  const [cardTitle, setCardTitle] = useState(value);
   const [isDelete, setIsDelete] = useState(false);
 
-  useEffect(() => {
+  const WrappedSetTitle = useCallback((title: string) => {
+    setTitle(title);
     const currentData = localStorage.getItem(filename) || "{}";
     const currentJsonData: CardListData = JSON.parse(currentData);
     const jsonData: CardListData = {
-      title: cardTitle,
+      title,
       data: currentJsonData.data
     };
     const saveData = JSON.stringify(jsonData);
     localStorage.setItem(filename, saveData);
-  }, [cardTitle]);
-
-  const WrappedSetTitle = useCallback(() => {
-    setTitle(cardTitle);
-  }, [cardTitle]);
+  }, []);
 
   const WrappedHandleKanbanCardListDelete = useCallback(() => {
     const targetData = localStorage.getItem(filename) || "{}";
@@ -50,8 +46,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
   const handleCardTitleChanged = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setCardTitle(event.target.value);
-    WrappedSetTitle();
+    WrappedSetTitle(event.target.value);
   };
 
   const handleisInputAreaChange = () => {
@@ -76,7 +71,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
           <StyledCardTitleTextField
             id="card-list-name"
             label="Card Title"
-            value={cardTitle}
+            value={value}
             margin="normal"
             autoFocus
             onChange={handleCardTitleChanged}
@@ -87,7 +82,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
       ) : (
         <StyledCardTitleDiv onClick={handleisInputAreaChange}>
           <Typography variant="h6" gutterBottom>
-            {cardTitle || "The title is empty"}
+            {value || "The title is empty"}
           </Typography>
         </StyledCardTitleDiv>
       )}

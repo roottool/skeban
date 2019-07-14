@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
 import CardEditor from "react-simple-code-editor";
@@ -15,6 +15,7 @@ interface Props {
 }
 
 const KanbanCard: React.FC<Props> = props => {
+  const isInitialMount = useRef(true);
   const { filename, handleKanbanCardDelete } = props;
   const initialText = localStorage.getItem(filename) || "";
 
@@ -23,7 +24,11 @@ const KanbanCard: React.FC<Props> = props => {
   const [isDelete, setIsDelete] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(filename, text);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      localStorage.setItem(filename, text);
+    }
   }, [text]);
 
   const WrappedHandleKanbanCardDelete = useCallback(() => {
