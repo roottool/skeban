@@ -17,8 +17,7 @@ const KanbanBoard: React.FC = () => {
 
 const StyledKanbanBoard = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: 8px 0px;
 `;
 
