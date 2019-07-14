@@ -4,6 +4,7 @@ import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography } from "@material-ui/core";
+import { CardListData } from "../KanbanCardList/interface";
 
 interface Props {
   filename: string;
@@ -24,13 +25,26 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
   }, [cardTitle]);
 
   const WrappedHandleKanbanCardListDelete = useCallback(() => {
+    localStorage.removeItem(filename);
     handleKanbanCardListDelete(filename);
   }, [isDelete]);
+
+  const saveTitleInLocalStorage = (title: string) => {
+    const currentData = localStorage.getItem(filename) || "{}";
+    const currentJsonData: CardListData = JSON.parse(currentData);
+    const jsonData: CardListData = {
+      title,
+      data: currentJsonData.data
+    };
+    const saveData = JSON.stringify(jsonData);
+    localStorage.setItem(filename, saveData);
+  };
 
   const handleCardTitleChanged = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setCardTitle(event.target.value);
+    saveTitleInLocalStorage(event.target.value);
     WrappedSetTitle();
   };
 

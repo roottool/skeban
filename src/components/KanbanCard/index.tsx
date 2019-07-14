@@ -16,17 +16,24 @@ interface Props {
 
 const KanbanCard: React.FC<Props> = props => {
   const { filename, handleKanbanCardDelete } = props;
+  const initialText = localStorage.getItem(filename) || "";
 
   const [isInputArea, setIsInputArea] = useState(false);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(initialText);
   const [isDelete, setIsDelete] = useState(false);
 
   const WrappedHandleKanbanCardDelete = useCallback(() => {
+    localStorage.removeItem(filename);
     handleKanbanCardDelete(filename);
   }, [isDelete]);
 
   const handleisInputAreaChange = () => {
     setIsInputArea(!isInputArea);
+  };
+
+  const handleOnValueChanged = (code: string) => {
+    setText(code);
+    localStorage.setItem(filename, code);
   };
 
   const handleDeleteButtonClicked = () => {
@@ -41,7 +48,7 @@ const KanbanCard: React.FC<Props> = props => {
           <StyledPaper>
             <StyledCodeEditor
               value={text}
-              onValueChange={code => setText(code)}
+              onValueChange={handleOnValueChanged}
               highlight={code => highlight(code, languages.markdown, "md")}
               padding={10}
               autoFocus

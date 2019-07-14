@@ -9,9 +9,16 @@ interface KanbanCardListState {
   filename: string;
 }
 
+interface KanbanCardListData {
+  data: KanbanCardListState[];
+}
+
 const KanbanBoard: React.FC = () => {
+  const initialJsonData = localStorage.getItem("BoardData") || "{}";
+  const initialBoard: KanbanCardListData = JSON.parse(initialJsonData);
+
   const [kanbanCardList, setKanbanCardList] = useState<KanbanCardListState[]>(
-    []
+    initialBoard.data || []
   );
 
   const deleteKanbanCardList = (filename: string) => {
@@ -22,6 +29,11 @@ const KanbanBoard: React.FC = () => {
 
   const handleAddButtonClicked = () => {
     setKanbanCardList(prev => [...prev, { filename: uuidv1() }]);
+    const jsonData: KanbanCardListData = {
+      data: kanbanCardList
+    };
+    const saveData = JSON.stringify(jsonData);
+    localStorage.setItem("BoardData", saveData);
   };
 
   return (

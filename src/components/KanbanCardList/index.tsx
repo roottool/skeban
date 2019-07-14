@@ -6,10 +6,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
 import KanbanCard from "../KanbanCard";
-
-interface CardListState {
-  filename: string;
-}
+import { CardListData, CardListState } from "./interface";
 
 interface Props {
   filename: string;
@@ -18,9 +15,13 @@ interface Props {
 
 const KanbanCardList: React.FC<Props> = props => {
   const { filename, handleKanbanCardListDelete } = props;
+  const initialJsonData = localStorage.getItem(filename) || "{}";
+  const initialCardList: CardListData = JSON.parse(initialJsonData);
 
-  const [title, setTitle] = useState("");
-  const [cardList, setCardList] = useState<CardListState[]>([]);
+  const [title, setTitle] = useState(initialCardList.title || "");
+  const [cardList, setCardList] = useState<CardListState[]>(
+    initialCardList.data || []
+  );
 
   const deleteKanbanCard = (targetFilename: string) => {
     setCardList(prev => {
@@ -30,6 +31,12 @@ const KanbanCardList: React.FC<Props> = props => {
 
   const handleAddButtonClicked = () => {
     setCardList(prev => [...prev, { filename: uuidv1() }]);
+    const jsonData: CardListData = {
+      title,
+      data: cardList
+    };
+    const saveData = JSON.stringify(jsonData);
+    localStorage.setItem(filename, saveData);
   };
 
   return (
