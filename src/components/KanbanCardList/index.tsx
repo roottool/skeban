@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
@@ -7,12 +7,25 @@ import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
 import KanbanCard from "../KanbanCard";
 
 const KanbanCardList: React.FC = () => {
+  const [cardList, setCardList] = useState<{ filename: string }[]>([]);
+
+  const handleAddButtonClicked = () => {
+    setCardList([...cardList, { filename: Math.random().toString() }]);
+  };
+
   return (
     <StyledPaper>
       <KanbanCardListTitleArea />
       <KanbanCard />
+      {cardList.map(card => (
+        <KanbanCard key={card.filename} />
+      ))}
       <StyledAddButtonArea>
-        <Fab color="secondary" aria-label="Add">
+        <Fab
+          color="secondary"
+          aria-label="Add"
+          onClick={handleAddButtonClicked}
+        >
           <AddIcon />
         </Fab>
       </StyledAddButtonArea>
