@@ -18,8 +18,14 @@ const KanbanCardList: React.FC<Props> = props => {
   const [title, setTitle] = useState("");
   const [cardList, setCardList] = useState<{ filename: string }[]>([]);
 
+  const deleteKanbanCard = (targetFilename: string) => {
+    setCardList(prev => {
+      return prev.filter(target => target.filename !== targetFilename);
+    });
+  };
+
   const handleAddButtonClicked = () => {
-    setCardList([...cardList, { filename: uuidv1() }]);
+    setCardList(prev => [...prev, { filename: uuidv1() }]);
   };
 
   return (
@@ -31,7 +37,11 @@ const KanbanCardList: React.FC<Props> = props => {
         handleKanbanCardListDelete={handleKanbanCardListDelete}
       />
       {cardList.map(card => (
-        <KanbanCard key={card.filename} />
+        <KanbanCard
+          key={card.filename}
+          filename={card.filename}
+          handleKanbanCardDelete={deleteKanbanCard}
+        />
       ))}
       <StyledAddButtonArea>
         <Fab
