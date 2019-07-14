@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import uuidv1 from "uuid/v1";
 import Paper from "@material-ui/core/Paper";
@@ -23,6 +23,15 @@ const KanbanCardList: React.FC<Props> = props => {
     initialCardList.data || []
   );
 
+  useEffect(() => {
+    const jsonData: CardListData = {
+      title,
+      data: cardList
+    };
+    const saveData = JSON.stringify(jsonData);
+    localStorage.setItem(filename, saveData);
+  }, [cardList]);
+
   const deleteKanbanCard = (targetFilename: string) => {
     setCardList(prev => {
       return prev.filter(target => target.filename !== targetFilename);
@@ -31,12 +40,6 @@ const KanbanCardList: React.FC<Props> = props => {
 
   const handleAddButtonClicked = () => {
     setCardList(prev => [...prev, { filename: uuidv1() }]);
-    const jsonData: CardListData = {
-      title,
-      data: cardList
-    };
-    const saveData = JSON.stringify(jsonData);
-    localStorage.setItem(filename, saveData);
   };
 
   return (
