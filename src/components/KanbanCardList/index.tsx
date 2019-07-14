@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import uuidv1 from "uuid/v1";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -10,7 +11,7 @@ const KanbanCardList: React.FC = () => {
   const [cardList, setCardList] = useState<{ filename: string }[]>([]);
 
   const handleAddButtonClicked = () => {
-    setCardList([...cardList, { filename: Math.random().toString() }]);
+    setCardList([...cardList, { filename: uuidv1() }]);
   };
 
   return (
