@@ -7,6 +7,10 @@ import AddIcon from "@material-ui/icons/Add";
 import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
 import KanbanCard from "../KanbanCard";
 
+interface CardListState {
+  filename: string;
+}
+
 interface Props {
   filename: string;
   handleKanbanCardListDelete: (filename: string) => void;
@@ -16,7 +20,7 @@ const KanbanCardList: React.FC<Props> = props => {
   const { filename, handleKanbanCardListDelete } = props;
 
   const [title, setTitle] = useState("");
-  const [cardList, setCardList] = useState<{ filename: string }[]>([]);
+  const [cardList, setCardList] = useState<CardListState[]>([]);
 
   const deleteKanbanCard = (targetFilename: string) => {
     setCardList(prev => {
