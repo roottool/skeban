@@ -92,7 +92,7 @@ const KanbanBoard: React.FC = () => {
     }
   };
 
-  const handleAddButtonClicked = async () => {
+  const handleAddButtonClicked = () => {
     setKanbanCardList(prev => [...prev, { filename: uuidv1() }]);
   };
 
