@@ -4,17 +4,19 @@ import uuidv1 from "uuid/v1";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
+import { Draggable } from "react-beautiful-dnd";
 import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
 import KanbanCard from "../KanbanCard";
 import { CardListData, CardListState } from "./interface";
 
 interface Props {
   filename: string;
+  index: number;
   handleKanbanCardListDelete: (filename: string) => void;
 }
 
 const KanbanCardList: React.FC<Props> = props => {
-  const { filename, handleKanbanCardListDelete } = props;
+  const { filename, index, handleKanbanCardListDelete } = props;
   const initialJsonData = localStorage.getItem(filename) || "{}";
   const initialCardList: CardListData = JSON.parse(initialJsonData);
 
@@ -43,30 +45,38 @@ const KanbanCardList: React.FC<Props> = props => {
   };
 
   return (
-    <StyledPaper>
-      <KanbanCardListTitleArea
-        filename={filename}
-        value={title}
-        setTitle={setTitle}
-        handleKanbanCardListDelete={handleKanbanCardListDelete}
-      />
-      {cardList.map(card => (
-        <KanbanCard
-          key={card.filename}
-          filename={card.filename}
-          handleKanbanCardDelete={deleteKanbanCard}
-        />
-      ))}
-      <StyledAddButtonArea>
-        <Fab
-          color="secondary"
-          aria-label="Add"
-          onClick={handleAddButtonClicked}
+    <Draggable draggableId={filename} index={index}>
+      {provided => (
+        <StyledPaper
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          innerRef={provided.innerRef}
         >
-          <AddIcon />
-        </Fab>
-      </StyledAddButtonArea>
-    </StyledPaper>
+          <KanbanCardListTitleArea
+            filename={filename}
+            value={title}
+            setTitle={setTitle}
+            handleKanbanCardListDelete={handleKanbanCardListDelete}
+          />
+          {cardList.map(card => (
+            <KanbanCard
+              key={card.filename}
+              filename={card.filename}
+              handleKanbanCardDelete={deleteKanbanCard}
+            />
+          ))}
+          <StyledAddButtonArea>
+            <Fab
+              color="secondary"
+              aria-label="Add"
+              onClick={handleAddButtonClicked}
+            >
+              <AddIcon />
+            </Fab>
+          </StyledAddButtonArea>
+        </StyledPaper>
+      )}
+    </Draggable>
   );
 };
 

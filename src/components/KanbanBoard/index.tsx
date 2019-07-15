@@ -3,6 +3,7 @@ import uuidv1 from "uuid/v1";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import styled from "styled-components";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import KanbanCardList from "../KanbanCardList";
 
 interface KanbanCardListState {
@@ -40,19 +41,51 @@ const KanbanBoard: React.FC = () => {
     });
   };
 
+  const handleDragEnd = (result: DropResult) => {
+    const { destination, draggableId, source } = result;
+
+    if (destination === undefined || !destination) {
+      return;
+    }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    setKanbanCardList(prev => {
+      const dropResult = prev.filter(target => target.filename !== draggableId);
+      dropResult.splice(destination.index, 0, { filename: draggableId });
+      return dropResult;
+    });
+  };
+
   const handleAddButtonClicked = async () => {
     setKanbanCardList(prev => [...prev, { filename: uuidv1() }]);
   };
 
   return (
     <StyledKanbanBoard>
-      {kanbanCardList.map(cardList => (
-        <KanbanCardList
-          key={cardList.filename}
-          filename={cardList.filename}
-          handleKanbanCardListDelete={deleteKanbanCardList}
-        />
-      ))}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="0" direction="horizontal" type="column">
+          {provided => (
+            <StyledContainer
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {kanbanCardList.map((cardList, index) => (
+                <KanbanCardList
+                  key={cardList.filename}
+                  filename={cardList.filename}
+                  index={index}
+                  handleKanbanCardListDelete={deleteKanbanCardList}
+                />
+              ))}
+              {provided.placeholder}
+            </StyledContainer>
+          )}
+        </Droppable>
+      </DragDropContext>
       <StyledAddbuttonArea>
         <Fab color="primary" aria-label="Add" onClick={handleAddButtonClicked}>
           <AddIcon />
@@ -65,6 +98,10 @@ const KanbanBoard: React.FC = () => {
 const StyledKanbanBoard = styled.div`
   display: flex;
   margin: 8px 0px;
+`;
+
+const StyledContainer = styled.div`
+  display: flex;
 `;
 
 const StyledAddbuttonArea = styled.div`
