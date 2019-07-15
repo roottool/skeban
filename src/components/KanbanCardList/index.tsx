@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import uuidv1 from "uuid/v1";
 import Paper from "@material-ui/core/Paper";
@@ -7,18 +7,29 @@ import AddIcon from "@material-ui/icons/Add";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
 import KanbanCard from "../KanbanCard";
-import { CardListData, CardListState, MovedCardData } from "./interface";
+import {
+  CardListData,
+  CardListState,
+  MovedCardData,
+  RemoveCardData
+} from "./interface";
 
 interface Props {
   filename: string;
   index: number;
   movedCardData?: MovedCardData;
+  removeCardData?: RemoveCardData;
   handleKanbanCardListDelete: (filename: string) => void;
 }
 
 const KanbanCardList: React.FC<Props> = props => {
-  const isInitialMount = useRef(true);
-  const { filename, index, movedCardData, handleKanbanCardListDelete } = props;
+  const {
+    filename,
+    index,
+    movedCardData,
+    removeCardData,
+    handleKanbanCardListDelete
+  } = props;
   const initialJsonData = localStorage.getItem(filename) || "{}";
   const initialCardList: CardListData = JSON.parse(initialJsonData);
 
@@ -37,30 +48,39 @@ const KanbanCardList: React.FC<Props> = props => {
   }, [cardList]);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      const initialData = initialCardList.data || [];
-      if (movedCardData === undefined && !movedCardData) {
-        return;
-      }
-
-      const { draggableId, draggableIndex } = movedCardData;
-
-      if (initialData === []) {
-        initialData.push({ filename: draggableId });
-        setCardList(initialData);
-      }
-
-      const dropResult = initialData.filter(
-        target => target.filename !== draggableId
-      );
-      dropResult.splice(draggableIndex, 0, {
-        filename: draggableId
-      });
-      setCardList(dropResult);
+    const initialData = initialCardList.data || [];
+    if (movedCardData === undefined && !movedCardData) {
+      return;
     }
+
+    const { draggableId, draggableIndex } = movedCardData;
+
+    if (initialData === []) {
+      initialData.push({ filename: draggableId });
+      setCardList(initialData);
+    }
+
+    const dropResult = initialData.filter(
+      target => target.filename !== draggableId
+    );
+    dropResult.splice(draggableIndex, 0, {
+      filename: draggableId
+    });
+    setCardList(dropResult);
   }, [movedCardData]);
+
+  useEffect(() => {
+    if (removeCardData === undefined && !removeCardData) {
+      return;
+    }
+
+    const { draggableId } = removeCardData;
+
+    const dropResult = cardList.filter(
+      target => target.filename !== draggableId
+    );
+    setCardList(dropResult);
+  }, [removeCardData]);
 
   const deleteKanbanCard = (targetFilename: string) => {
     setCardList(prev => {

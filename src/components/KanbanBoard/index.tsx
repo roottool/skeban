@@ -5,7 +5,7 @@ import AddIcon from "@material-ui/icons/Add";
 import styled from "styled-components";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import KanbanCardList from "../KanbanCardList";
-import { MovedCardData } from "../KanbanCardList/interface";
+import { MovedCardData, RemoveCardData } from "../KanbanCardList/interface";
 
 interface KanbanCardListState {
   filename: string;
@@ -24,6 +24,7 @@ const KanbanBoard: React.FC = () => {
     initialBoard.data || []
   );
   const [movedCard, setMovedCard] = useState<MovedCardData | undefined>();
+  const [removeCard, setRemoveCard] = useState<RemoveCardData | undefined>();
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -36,6 +37,14 @@ const KanbanBoard: React.FC = () => {
       localStorage.setItem("BoardData", saveData);
     }
   }, [kanbanCardList]);
+
+  useEffect(() => {
+    setMovedCard(undefined);
+  }, [movedCard]);
+
+  useEffect(() => {
+    setRemoveCard(undefined);
+  }, [removeCard]);
 
   const deleteKanbanCardList = (filename: string) => {
     setKanbanCardList(prev => {
@@ -73,6 +82,10 @@ const KanbanBoard: React.FC = () => {
           draggableIndex: destination.index,
           droppableId: destination.droppableId
         });
+        setRemoveCard({
+          draggableId,
+          sourceCardList: source.droppableId
+        });
         break;
       default:
         break;
@@ -91,6 +104,17 @@ const KanbanBoard: React.FC = () => {
           filename={cardList.filename}
           index={index}
           movedCardData={movedCard}
+          handleKanbanCardListDelete={deleteKanbanCardList}
+        />
+      );
+    }
+    if (removeCard && cardList.filename === removeCard.sourceCardList) {
+      return (
+        <KanbanCardList
+          key={cardList.filename}
+          filename={cardList.filename}
+          index={index}
+          removeCardData={removeCard}
           handleKanbanCardListDelete={deleteKanbanCardList}
         />
       );

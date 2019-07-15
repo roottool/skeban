@@ -16,3 +16,8 @@ export interface MovedCardData {
   draggableIndex: Unbox<Pick<DraggableLocation, "index">>;
   droppableId: Unbox<Pick<DraggableLocation, "droppableId">>;
 }
+
+export interface RemoveCardData {
+  draggableId: DraggableId;
+  sourceCardList: Unbox<Pick<DraggableLocation, "droppableId">>;
+}
