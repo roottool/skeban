@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import uuidv1 from "uuid/v1";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-import { Draggable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
 import KanbanCard from "../KanbanCard";
-import { CardListData, CardListState } from "./interface";
+import { CardListData, CardListState, MovedCardData } from "./interface";
 
 interface Props {
   filename: string;
   index: number;
+  movedCardData?: MovedCardData;
   handleKanbanCardListDelete: (filename: string) => void;
 }
 
 const KanbanCardList: React.FC<Props> = props => {
-  const { filename, index, handleKanbanCardListDelete } = props;
+  const isInitialMount = useRef(true);
+  const { filename, index, movedCardData, handleKanbanCardListDelete } = props;
   const initialJsonData = localStorage.getItem(filename) || "{}";
   const initialCardList: CardListData = JSON.parse(initialJsonData);
 
@@ -33,6 +35,32 @@ const KanbanCardList: React.FC<Props> = props => {
     const saveData = JSON.stringify(jsonData);
     localStorage.setItem(filename, saveData);
   }, [cardList]);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      const initialData = initialCardList.data || [];
+      if (movedCardData === undefined && !movedCardData) {
+        return;
+      }
+
+      const { draggableId, draggableIndex } = movedCardData;
+
+      if (initialData === []) {
+        initialData.push({ filename: draggableId });
+        setCardList(initialData);
+      }
+
+      const dropResult = initialData.filter(
+        target => target.filename !== draggableId
+      );
+      dropResult.splice(draggableIndex, 0, {
+        filename: draggableId
+      });
+      setCardList(dropResult);
+    }
+  }, [movedCardData]);
 
   const deleteKanbanCard = (targetFilename: string) => {
     setCardList(prev => {
@@ -58,13 +86,21 @@ const KanbanCardList: React.FC<Props> = props => {
             setTitle={setTitle}
             handleKanbanCardListDelete={handleKanbanCardListDelete}
           />
-          {cardList.map(card => (
-            <KanbanCard
-              key={card.filename}
-              filename={card.filename}
-              handleKanbanCardDelete={deleteKanbanCard}
-            />
-          ))}
+          <Droppable droppableId={filename} type="kanbanCard">
+            {cardProvided => (
+              <div {...cardProvided.droppableProps} ref={cardProvided.innerRef}>
+                {cardList.map((card, cardIndex) => (
+                  <KanbanCard
+                    key={card.filename}
+                    filename={card.filename}
+                    index={cardIndex}
+                    handleKanbanCardDelete={deleteKanbanCard}
+                  />
+                ))}
+                {cardProvided.placeholder}
+              </div>
+            )}
+          </Droppable>
           <StyledAddButtonArea>
             <Fab
               color="secondary"

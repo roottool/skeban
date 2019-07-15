@@ -5,6 +5,7 @@ import AddIcon from "@material-ui/icons/Add";
 import styled from "styled-components";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import KanbanCardList from "../KanbanCardList";
+import { MovedCardData } from "../KanbanCardList/interface";
 
 interface KanbanCardListState {
   filename: string;
@@ -22,6 +23,7 @@ const KanbanBoard: React.FC = () => {
   const [kanbanCardList, setKanbanCardList] = useState<KanbanCardListState[]>(
     initialBoard.data || []
   );
+  const [movedCard, setMovedCard] = useState<MovedCardData | undefined>();
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -42,45 +44,83 @@ const KanbanBoard: React.FC = () => {
   };
 
   const handleDragEnd = (result: DropResult) => {
-    const { destination, draggableId, source } = result;
+    const { destination, draggableId, source, type } = result;
 
     if (destination === undefined || !destination) {
       return;
     }
+
     if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     ) {
       return;
     }
-    setKanbanCardList(prev => {
-      const dropResult = prev.filter(target => target.filename !== draggableId);
-      dropResult.splice(destination.index, 0, { filename: draggableId });
-      return dropResult;
-    });
+
+    switch (type) {
+      case "kanbanCardList":
+        setKanbanCardList(prev => {
+          const dropResult = prev.filter(
+            target => target.filename !== draggableId
+          );
+          dropResult.splice(destination.index, 0, { filename: draggableId });
+          return dropResult;
+        });
+        break;
+      case "kanbanCard":
+        setMovedCard({
+          draggableId,
+          draggableIndex: destination.index,
+          droppableId: destination.droppableId
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   const handleAddButtonClicked = async () => {
     setKanbanCardList(prev => [...prev, { filename: uuidv1() }]);
   };
 
+  const renderCardList = (cardList: KanbanCardListState, index: number) => {
+    if (movedCard && cardList.filename === movedCard.droppableId) {
+      return (
+        <KanbanCardList
+          key={cardList.filename}
+          filename={cardList.filename}
+          index={index}
+          movedCardData={movedCard}
+          handleKanbanCardListDelete={deleteKanbanCardList}
+        />
+      );
+    }
+    return (
+      <KanbanCardList
+        key={cardList.filename}
+        filename={cardList.filename}
+        index={index}
+        handleKanbanCardListDelete={deleteKanbanCardList}
+      />
+    );
+  };
+
   return (
     <StyledKanbanBoard>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="0" direction="horizontal" type="column">
+        <Droppable
+          droppableId="all-kanbanCardList"
+          direction="horizontal"
+          type="kanbanCardList"
+        >
           {provided => (
             <StyledContainer
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {kanbanCardList.map((cardList, index) => (
-                <KanbanCardList
-                  key={cardList.filename}
-                  filename={cardList.filename}
-                  index={index}
-                  handleKanbanCardListDelete={deleteKanbanCardList}
-                />
-              ))}
+              {kanbanCardList.map((cardList, index) =>
+                renderCardList(cardList, index)
+              )}
               {provided.placeholder}
             </StyledContainer>
           )}

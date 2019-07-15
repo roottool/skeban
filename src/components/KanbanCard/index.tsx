@@ -8,15 +8,17 @@ import Markdown from "markdown-to-jsx";
 import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { Draggable } from "react-beautiful-dnd";
 
 interface Props {
   filename: string;
+  index: number;
   handleKanbanCardDelete: (filename: string) => void;
 }
 
 const KanbanCard: React.FC<Props> = props => {
   const isInitialMount = useRef(true);
-  const { filename, handleKanbanCardDelete } = props;
+  const { filename, index, handleKanbanCardDelete } = props;
   const initialText = localStorage.getItem(filename) || "";
 
   const [isInputArea, setIsInputArea] = useState(false);
@@ -50,43 +52,51 @@ const KanbanCard: React.FC<Props> = props => {
   };
 
   return (
-    <div>
-      {isInputArea ? (
-        <div>
-          <StyledPaper>
-            <StyledCodeEditor
-              value={text}
-              onValueChange={handleOnValueChanged}
-              highlight={code => highlight(code, languages.markdown, "md")}
-              padding={10}
-              autoFocus
-            />
-          </StyledPaper>
-          <StyledButtonArea>
-            <Fab
-              color="secondary"
-              aria-label="OK"
-              onClick={handleisInputAreaChange}
-            >
-              <CheckIcon />
-            </Fab>
-            <Fab
-              color="secondary"
-              aria-label="Delete"
-              onClick={handleDeleteButtonClicked}
-            >
-              <DeleteIcon />
-            </Fab>
-          </StyledButtonArea>
+    <Draggable draggableId={filename} index={index}>
+      {provided => (
+        <div
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+        >
+          {isInputArea ? (
+            <div>
+              <StyledPaper>
+                <StyledCodeEditor
+                  value={text}
+                  onValueChange={handleOnValueChanged}
+                  highlight={code => highlight(code, languages.markdown, "md")}
+                  padding={10}
+                  autoFocus
+                />
+              </StyledPaper>
+              <StyledButtonArea>
+                <Fab
+                  color="secondary"
+                  aria-label="OK"
+                  onClick={handleisInputAreaChange}
+                >
+                  <CheckIcon />
+                </Fab>
+                <Fab
+                  color="secondary"
+                  aria-label="Delete"
+                  onClick={handleDeleteButtonClicked}
+                >
+                  <DeleteIcon />
+                </Fab>
+              </StyledButtonArea>
+            </div>
+          ) : (
+            <StyledPaper>
+              <StyledCardContentDiv onClick={handleisInputAreaChange}>
+                <StyledMarkdownArea>{text}</StyledMarkdownArea>
+              </StyledCardContentDiv>
+            </StyledPaper>
+          )}
         </div>
-      ) : (
-        <StyledPaper>
-          <StyledCardContentDiv onClick={handleisInputAreaChange}>
-            <StyledMarkdownArea>{text}</StyledMarkdownArea>
-          </StyledCardContentDiv>
-        </StyledPaper>
       )}
-    </div>
+    </Draggable>
   );
 };
 
