@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow, app, shell } from "electron";
 import Path from "path";
 import Process from "process";
 import Url from "url";
@@ -29,6 +29,16 @@ const createMainWindow = () => {
   mainWindow = new BrowserWindow(chooseOptions());
 
   mainWindow.loadURL(htmlUrl);
+
+  mainWindow.webContents.on("new-window", (event, url) => {
+    event.preventDefault();
+    shell.openExternal(url);
+  });
+
+  mainWindow.webContents.on("will-navigate", (event, url) => {
+    event.preventDefault();
+    shell.openExternal(url);
+  });
 
   mainWindow.on("close", () => {
     if (mainWindow) {
