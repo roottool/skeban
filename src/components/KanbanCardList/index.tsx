@@ -60,6 +60,7 @@ const KanbanCardList: React.FC<Props> = props => {
 
 const StyledPaper = styled(Paper)`
   width: 360px;
+  height: fit-content;
   flex: 0 0 360px;
   margin: 16px;
 `;
