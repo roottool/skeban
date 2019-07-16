@@ -34,7 +34,10 @@ const KanbanCardList: React.FC<Props> = props => {
           <KanbanCardListTitleArea filename={filename} index={index} />
           <Droppable droppableId={filename} type="Card">
             {cardProvided => (
-              <div {...cardProvided.droppableProps} ref={cardProvided.innerRef}>
+              <StyledContainer
+                {...cardProvided.droppableProps}
+                ref={cardProvided.innerRef}
+              >
                 {list.map((card, cardIndex) => (
                   <KanbanCard
                     key={card.filename}
@@ -44,7 +47,7 @@ const KanbanCardList: React.FC<Props> = props => {
                   />
                 ))}
                 {cardProvided.placeholder}
-              </div>
+              </StyledContainer>
             )}
           </Droppable>
           <StyledAddButtonArea>
@@ -63,6 +66,10 @@ const StyledPaper = styled(Paper)`
   height: fit-content;
   flex: 0 0 360px;
   margin: 16px;
+`;
+
+const StyledContainer = styled.div`
+  padding-bottom: 40px;
 `;
 
 const StyledAddButtonArea = styled.div`
