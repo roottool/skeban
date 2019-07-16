@@ -17,10 +17,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
   const [isInputArea, setIsInputArea] = useState(false);
 
   const container = AppContainer.useContainer();
-  const targetIndex = container.board.findIndex(
-    target => target.filename === filename
-  );
-  const { title } = container.board[targetIndex];
+  const { title } = container.board[index];
 
   const handleisInputAreaChange = () => {
     setIsInputArea(!isInputArea);
