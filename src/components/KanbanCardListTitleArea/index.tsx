@@ -1,67 +1,43 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography } from "@material-ui/core";
-import { CardListData } from "../KanbanCardList/interface";
+import AppContainer from "../../State/AppContainer";
 
 interface Props {
   filename: string;
-  value: string;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  handleKanbanCardListDelete: (filename: string) => void;
+  index: number;
 }
 
 const KanbanCardListTitleArea: React.FC<Props> = props => {
-  const { filename, value, setTitle, handleKanbanCardListDelete } = props;
+  const { filename, index } = props;
 
   const [isInputArea, setIsInputArea] = useState(false);
-  const [isDelete, setIsDelete] = useState(false);
 
-  const WrappedSetTitle = useCallback((title: string) => {
-    setTitle(title);
-    const currentData = localStorage.getItem(filename) || "{}";
-    const currentJsonData: CardListData = JSON.parse(currentData);
-    const jsonData: CardListData = {
-      title,
-      data: currentJsonData.data
-    };
-    const saveData = JSON.stringify(jsonData);
-    localStorage.setItem(filename, saveData);
-  }, []);
-
-  const WrappedHandleKanbanCardListDelete = useCallback(() => {
-    const targetData = localStorage.getItem(filename) || "{}";
-    const targetJsonData: CardListData = JSON.parse(targetData);
-    targetJsonData.data.forEach(data => {
-      localStorage.removeItem(data.filename);
-    });
-
-    localStorage.removeItem(filename);
-
-    handleKanbanCardListDelete(filename);
-  }, [isDelete]);
-
-  const handleCardTitleChanged = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    WrappedSetTitle(event.target.value);
-  };
+  const container = AppContainer.useContainer();
+  const targetIndex = container.board.findIndex(
+    target => target.filename === filename
+  );
+  const { title } = container.board[targetIndex];
 
   const handleisInputAreaChange = () => {
     setIsInputArea(!isInputArea);
+  };
+
+  const handleCardTitleChanged = (
+    event: React.ChangeEvent<
+      HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
+    >
+  ) => {
+    container.onListTitleChanged(index, event.target.value);
   };
 
   const handleKeyPressed = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter") {
       handleisInputAreaChange();
     }
-  };
-
-  const handleDeleteButtonClicked = () => {
-    setIsDelete(true);
-    WrappedHandleKanbanCardListDelete();
   };
 
   return (
@@ -71,7 +47,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
           <StyledCardTitleTextField
             id="card-list-name"
             label="Card Title"
-            value={value}
+            value={title}
             margin="normal"
             autoFocus
             onChange={handleCardTitleChanged}
@@ -82,7 +58,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
       ) : (
         <StyledCardTitleDiv onClick={handleisInputAreaChange}>
           <Typography variant="h6" gutterBottom>
-            {value || "The title is empty"}
+            {title || "The title is empty"}
           </Typography>
         </StyledCardTitleDiv>
       )}
@@ -90,7 +66,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
         <IconButton
           aria-label="Delete"
           color="primary"
-          onClick={handleDeleteButtonClicked}
+          onClick={container.onListDeleted(filename)}
         >
           <DeleteIcon fontSize="large" />
         </IconButton>

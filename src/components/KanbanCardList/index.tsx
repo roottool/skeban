@@ -1,95 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import uuidv1 from "uuid/v1";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
 import KanbanCard from "../KanbanCard";
-import {
-  CardListData,
-  CardListState,
-  MovedCardData,
-  RemoveCardData
-} from "./interface";
+import AppContainer from "../../State/AppContainer";
 
 interface Props {
   filename: string;
   index: number;
-  movedCardData?: MovedCardData;
-  removeCardData?: RemoveCardData;
-  handleKanbanCardListDelete: (filename: string) => void;
 }
 
 const KanbanCardList: React.FC<Props> = props => {
-  const {
-    filename,
-    index,
-    movedCardData,
-    removeCardData,
-    handleKanbanCardListDelete
-  } = props;
-  const initialJsonData = localStorage.getItem(filename) || "{}";
-  const initialCardList: CardListData = JSON.parse(initialJsonData);
+  const { filename, index } = props;
 
-  const [title, setTitle] = useState(initialCardList.title || "");
-  const [cardList, setCardList] = useState<CardListState[]>(
-    initialCardList.data || []
-  );
+  const container = AppContainer.useContainer();
+  const { list } = container.board[index];
 
-  useEffect(() => {
-    const jsonData: CardListData = {
-      title,
-      data: cardList
-    };
-    const saveData = JSON.stringify(jsonData);
-    localStorage.setItem(filename, saveData);
-  }, [cardList]);
-
-  useEffect(() => {
-    const initialData = initialCardList.data || [];
-    if (movedCardData === undefined && !movedCardData) {
-      return;
-    }
-
-    const { draggableId, draggableIndex } = movedCardData;
-
-    if (initialData === []) {
-      initialData.push({ filename: draggableId });
-      setCardList(initialData);
-    }
-
-    const dropResult = initialData.filter(
-      target => target.filename !== draggableId
-    );
-    dropResult.splice(draggableIndex, 0, {
-      filename: draggableId
-    });
-    setCardList(dropResult);
-  }, [movedCardData]);
-
-  useEffect(() => {
-    if (removeCardData === undefined && !removeCardData) {
-      return;
-    }
-
-    const { draggableId } = removeCardData;
-
-    const dropResult = cardList.filter(
-      target => target.filename !== draggableId
-    );
-    setCardList(dropResult);
-  }, [removeCardData]);
-
-  const deleteKanbanCard = (targetFilename: string) => {
-    setCardList(prev => {
-      return prev.filter(target => target.filename !== targetFilename);
-    });
-  };
-
-  const handleAddButtonClicked = () => {
-    setCardList(prev => [...prev, { filename: uuidv1() }]);
+  const onAddBtnClicked = () => {
+    container.onCardAdded(index);
   };
 
   return (
@@ -100,21 +31,16 @@ const KanbanCardList: React.FC<Props> = props => {
           {...provided.dragHandleProps}
           innerRef={provided.innerRef}
         >
-          <KanbanCardListTitleArea
-            filename={filename}
-            value={title}
-            setTitle={setTitle}
-            handleKanbanCardListDelete={handleKanbanCardListDelete}
-          />
-          <Droppable droppableId={filename} type="kanbanCard">
+          <KanbanCardListTitleArea filename={filename} index={index} />
+          <Droppable droppableId={filename} type="Card">
             {cardProvided => (
               <div {...cardProvided.droppableProps} ref={cardProvided.innerRef}>
-                {cardList.map((card, cardIndex) => (
+                {list.map((card, cardIndex) => (
                   <KanbanCard
                     key={card.filename}
                     filename={card.filename}
-                    index={cardIndex}
-                    handleKanbanCardDelete={deleteKanbanCard}
+                    listIndex={index}
+                    cardIndex={cardIndex}
                   />
                 ))}
                 {cardProvided.placeholder}
@@ -122,11 +48,7 @@ const KanbanCardList: React.FC<Props> = props => {
             )}
           </Droppable>
           <StyledAddButtonArea>
-            <Fab
-              color="secondary"
-              aria-label="Add"
-              onClick={handleAddButtonClicked}
-            >
+            <Fab color="secondary" aria-label="Add" onClick={onAddBtnClicked}>
               <AddIcon />
             </Fab>
           </StyledAddButtonArea>

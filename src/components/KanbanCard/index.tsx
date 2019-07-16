@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
 import CardEditor from "react-simple-code-editor";
@@ -9,50 +9,36 @@ import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Draggable } from "react-beautiful-dnd";
+import AppContainer from "../../State/AppContainer";
 
 interface Props {
   filename: string;
-  index: number;
-  handleKanbanCardDelete: (filename: string) => void;
+  listIndex: number;
+  cardIndex: number;
 }
 
 const KanbanCard: React.FC<Props> = props => {
-  const isInitialMount = useRef(true);
-  const { filename, index, handleKanbanCardDelete } = props;
-  const initialText = localStorage.getItem(filename) || "";
+  const { filename, listIndex, cardIndex } = props;
+
+  const container = AppContainer.useContainer();
+  const { text } = container.board[listIndex].list[cardIndex];
 
   const [isInputArea, setIsInputArea] = useState(false);
-  const [text, setText] = useState(initialText);
-  const [isDelete, setIsDelete] = useState(false);
-
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      localStorage.setItem(filename, text);
-    }
-  }, [text]);
-
-  const WrappedHandleKanbanCardDelete = useCallback(() => {
-    localStorage.removeItem(filename);
-    handleKanbanCardDelete(filename);
-  }, [isDelete]);
 
   const handleisInputAreaChange = () => {
     setIsInputArea(!isInputArea);
   };
 
-  const handleOnValueChanged = (code: string) => {
-    setText(code);
+  const handleOnValueChanged = (value: string) => {
+    container.onCardTextChanged(listIndex, cardIndex, value);
   };
 
   const handleDeleteButtonClicked = () => {
-    setIsDelete(true);
-    WrappedHandleKanbanCardDelete();
+    container.onCardDeleted(listIndex, cardIndex);
   };
 
   return (
-    <Draggable draggableId={filename} index={index}>
+    <Draggable draggableId={filename} index={cardIndex}>
       {provided => (
         <div
           {...provided.draggableProps}
