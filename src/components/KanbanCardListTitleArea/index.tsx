@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
+import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography } from "@material-ui/core";
 import AppContainer from "../../State/AppContainer";
@@ -58,6 +59,17 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
             {title || "The title is empty"}
           </Typography>
         </StyledCardTitleDiv>
+      )}
+      {isInputArea && (
+        <StyledEditIconArea>
+          <IconButton
+            aria-label="Done"
+            color="primary"
+            onClick={handleisInputAreaChange}
+          >
+            <CheckIcon fontSize="large" />
+          </IconButton>
+        </StyledEditIconArea>
       )}
       <StyledEditIconArea>
         <IconButton
