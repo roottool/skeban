@@ -5,12 +5,13 @@
       "type": "node",
       "request": "launch",
       "name": "Launch skeban",
-      "program": "${workspaceFolder}\\build\\index.js",
+      "program": "${workspaceFolder}/build/index.js",
       "preLaunchTask": "npm: build:dev",
       "stopOnEntry": false,
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
+        "program": "${workspaceFolder}\\build\\index.js",
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
       "args" : ["."]
