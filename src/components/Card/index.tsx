@@ -76,7 +76,7 @@ const KanbanCard: React.FC<Props> = props => {
           ) : (
             <StyledPaper>
               <StyledCardContentDiv onClick={handleisInputAreaChange}>
-                <StyledMarkdownArea>{text}</StyledMarkdownArea>
+                <Markdown>{text}</Markdown>
               </StyledCardContentDiv>
             </StyledPaper>
           )}
@@ -108,10 +108,6 @@ const StyledCardContentDiv = styled.div`
   width: 100%;
   min-height: 72px;
   white-space: pre-line;
-`;
-
-const StyledMarkdownArea = styled(Markdown)`
-  padding: 4px 8px;
 `;
 
 export default KanbanCard;
