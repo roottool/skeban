@@ -1,14 +1,14 @@
 import React from "react";
 import { createGlobalStyle } from "styled-components";
 import AppContainer from "./State/AppContainer";
-import KanbanBoard from "./components/KanbanBoard";
+import Board from "./components/Board";
 
 const App: React.FC = () => {
   return (
     <AppContainer.Provider>
       <div>
         <GlobalStyles />
-        <KanbanBoard />
+        <Board />
       </div>
     </AppContainer.Provider>
   );

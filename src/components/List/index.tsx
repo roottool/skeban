@@ -4,8 +4,8 @@ import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import KanbanCardListTitleArea from "../KanbanCardListTitleArea";
-import KanbanCard from "../KanbanCard";
+import ListTitleArea from "../ListTitleArea";
+import Card from "../Card";
 import AppContainer from "../../State/AppContainer";
 
 interface Props {
@@ -31,7 +31,7 @@ const KanbanCardList: React.FC<Props> = props => {
           {...provided.dragHandleProps}
           innerRef={provided.innerRef}
         >
-          <KanbanCardListTitleArea filename={filename} index={index} />
+          <ListTitleArea filename={filename} index={index} />
           <Droppable droppableId={filename} type="Card">
             {cardProvided => (
               <StyledContainer
@@ -39,7 +39,7 @@ const KanbanCardList: React.FC<Props> = props => {
                 ref={cardProvided.innerRef}
               >
                 {list.map((card, cardIndex) => (
-                  <KanbanCard
+                  <Card
                     key={card.filename}
                     filename={card.filename}
                     listIndex={index}

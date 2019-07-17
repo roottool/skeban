@@ -4,7 +4,7 @@ import AddIcon from "@material-ui/icons/Add";
 import styled from "styled-components";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import AppContainer from "../../State/AppContainer";
-import KanbanCardList from "../KanbanCardList";
+import List from "../List";
 
 const KanbanBoard: React.FC = () => {
   const container = AppContainer.useContainer();
@@ -12,18 +12,14 @@ const KanbanBoard: React.FC = () => {
   return (
     <StyledKanbanBoard>
       <DragDropContext onDragEnd={container.onDragEnded}>
-        <Droppable
-          droppableId="all-kanbanCardList"
-          direction="horizontal"
-          type="List"
-        >
+        <Droppable droppableId="allCardList" direction="horizontal" type="List">
           {provided => (
             <StyledContainer
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
               {container.board.map((list, index) => (
-                <KanbanCardList
+                <List
                   key={list.filename}
                   filename={list.filename}
                   index={index}
