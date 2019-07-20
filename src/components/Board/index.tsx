@@ -67,55 +67,32 @@ const KanbanBoard: React.FC<Props> = props => {
       });
   };
 
-  const onSortListCompleted = () => {
-    DB.listTable
-      .where("boardId")
-      .equals(boardId)
-      .sortBy("index")
-      .then(data => {
-        setLists(data);
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
-
-  const swapList = (
-    listArray: ListTable[],
-    sourceIndex: number,
-    destinationIndex: number
-  ) => {
-    let index = 0;
-    const allPromise: Promise<number>[] = [];
-
-    listArray.forEach(list => {
+  const swapList = (sourceIndex: number, destinationIndex: number) => {
+    const swappedLists = lists.map(list => {
       if (list.id && list.index === sourceIndex) {
-        allPromise.push(
-          DB.listTable
-            .update(list.id, { index: destinationIndex })
-            .catch(err => {
-              throw err;
-            })
-        );
-      } else if (list.id && list.index === destinationIndex) {
-        allPromise.push(
-          DB.listTable.update(list.id, { index: sourceIndex }).catch(err => {
-            throw err;
-          })
-        );
+        DB.listTable.update(list.id, { index: destinationIndex }).catch(err => {
+          throw err;
+        });
+
+        const copy = list;
+        copy.index = destinationIndex;
+        return copy;
       }
+
+      if (list.id && list.index === destinationIndex) {
+        DB.listTable.update(list.id, { index: sourceIndex }).catch(err => {
+          throw err;
+        });
+
+        const copy = list;
+        copy.index = sourceIndex;
+        return copy;
+      }
+
+      return list;
     });
 
-    const updateListTable = () => {
-      if (index < allPromise.length) {
-        allPromise[index].then(() => {
-          index += 1;
-          updateListTable();
-        });
-      }
-    };
-    updateListTable();
-    onSortListCompleted();
+    setLists(swappedLists);
   };
 
   const onDragEnded = (dropResult: DropResult) => {
@@ -134,21 +111,7 @@ const KanbanBoard: React.FC<Props> = props => {
 
     switch (type) {
       case "List": {
-        const lowerIndex =
-          destination.index > source.index ? source.index : destination.index;
-        const upperIndex =
-          destination.index > source.index ? destination.index : source.index;
-
-        DB.listTable
-          .where("index")
-          .between(lowerIndex, upperIndex, true, true)
-          .toArray()
-          .then(listArray =>
-            swapList(listArray, source.index, destination.index)
-          )
-          .catch(err => {
-            throw err;
-          });
+        swapList(source.index, destination.index);
         break;
       }
       case "Card":
