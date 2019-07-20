@@ -28,7 +28,7 @@ const KanbanCard: React.FC<Props> = props => {
   const [isInputArea, setIsInputArea] = useState(false);
   const [text, setText] = useState("");
 
-  const setCardsWrapper = useCallback(() => {
+  const onCardTextChangedWrapper = useCallback(() => {
     DB.cardTable
       .update(cardId, { text })
       .then(() => {
@@ -63,7 +63,7 @@ const KanbanCard: React.FC<Props> = props => {
           throw err;
         });
     } else if (!isLoading) {
-      setCardsWrapper();
+      onCardTextChangedWrapper();
     }
   }, [text]);
 
