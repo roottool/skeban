@@ -89,7 +89,7 @@ const KanbanBoard: React.FC<Props> = props => {
   const onDragEnded = (dropResult: DropResult) => {
     const { destination, source, type } = dropResult;
 
-    if (destination === undefined || !destination) {
+    if (!destination) {
       return;
     }
 
