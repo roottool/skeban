@@ -33,6 +33,9 @@ const KanbanBoard: React.FC<Props> = props => {
         .catch(err => {
           throw err;
         });
+    } else {
+      const updatedTimestamp = Date.now();
+      DB.boardTable.update(boardId, { updatedTimestamp });
     }
   }, [lists]);
 
@@ -47,9 +50,6 @@ const KanbanBoard: React.FC<Props> = props => {
       .catch(err => {
         throw err;
       });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const handleAddButtonClicked = async () => {
