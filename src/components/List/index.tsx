@@ -1,49 +1,99 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import { Draggable, Droppable } from "react-beautiful-dnd";
+import DB, { CardTable, ListTable } from "../../DB";
 import ListTitleArea from "../ListTitleArea";
 import Card from "../Card";
-import AppContainer from "../../State/AppContainer";
 
 interface Props {
-  filename: string;
-  index: number;
+  boardId: number;
+  listId: number;
+  listIndex: number;
+  setLists: React.Dispatch<React.SetStateAction<ListTable[]>>;
 }
 
 const KanbanCardList: React.FC<Props> = props => {
-  const { filename, index } = props;
+  const isInitialMount = useRef(true);
 
-  const container = AppContainer.useContainer();
-  const { list } = container.board[index];
+  const { boardId, listId, listIndex, setLists } = props;
+
+  const [cards, setCards] = useState<CardTable[]>([]);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+
+      DB.cardTable
+        .where("listId")
+        .equals(listId)
+        .sortBy("index")
+        .then(data => setCards(data))
+        .catch(err => {
+          throw err;
+        });
+    } else {
+      const updatedTimestamp = Date.now();
+      DB.boardTable.update(boardId, { updatedTimestamp });
+    }
+  }, [cards]);
+
+  const onNewCardAdditionCompleted = () => {
+    DB.cardTable
+      .where("boardId")
+      .equals(boardId)
+      .toArray()
+      .then(data => {
+        setCards(data);
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
 
   const onAddBtnClicked = () => {
-    container.onCardAdded(index);
+    DB.cardTable
+      .add({
+        listId,
+        index: cards.length,
+        text: ""
+      })
+      .then(() => {
+        onNewCardAdditionCompleted();
+      })
+      .catch(err => {
+        throw err;
+      });
   };
 
   return (
-    <Draggable draggableId={filename} index={index}>
+    <Draggable draggableId={`${listId}`} index={listIndex}>
       {provided => (
         <StyledPaper
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           innerRef={provided.innerRef}
         >
-          <ListTitleArea filename={filename} index={index} />
-          <Droppable droppableId={filename} type="Card">
+          <ListTitleArea
+            boardId={boardId}
+            listId={listId}
+            setLists={setLists}
+          />
+          <Droppable droppableId={`${listId}`} type="Card">
             {cardProvided => (
               <StyledContainer
                 {...cardProvided.droppableProps}
                 ref={cardProvided.innerRef}
               >
-                {list.map((card, cardIndex) => (
+                {cards.map((card, cardIndex) => (
                   <Card
-                    key={card.filename}
-                    filename={card.filename}
-                    listIndex={index}
+                    key={card.id}
+                    boardId={boardId}
+                    listId={listId}
                     cardIndex={cardIndex}
+                    setCards={setCards}
                   />
                 ))}
                 {cardProvided.placeholder}

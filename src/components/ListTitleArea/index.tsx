@@ -1,24 +1,63 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography } from "@material-ui/core";
-import AppContainer from "../../State/AppContainer";
+import DB, { ListTable } from "../../DB";
 
 interface Props {
-  filename: string;
-  index: number;
+  boardId: number;
+  listId: number;
+  setLists: React.Dispatch<React.SetStateAction<ListTable[]>>;
 }
 
 const KanbanCardListTitleArea: React.FC<Props> = props => {
-  const { filename, index } = props;
+  const isInitialMount = useRef(true);
+
+  const { boardId, listId, setLists } = props;
 
   const [isInputArea, setIsInputArea] = useState(false);
+  const [title, setTitle] = useState("");
 
-  const container = AppContainer.useContainer();
-  const { title } = container.board[index];
+  const setListsWrapper = useCallback(() => {
+    DB.listTable
+      .update(listId, { title })
+      .then(() => {
+        DB.listTable
+          .toArray()
+          .then(data => setLists(data))
+          .catch(err => {
+            throw err;
+          });
+      })
+      .catch(err => {
+        throw err;
+      });
+  }, [title]);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      DB.listTable
+        .where("id")
+        .equals(listId)
+        .first()
+        .then(data => {
+          if (!data) {
+            throw new Error("List not found.");
+          }
+
+          setTitle(data.title);
+        })
+        .catch(err => {
+          throw err;
+        });
+    } else {
+      setListsWrapper();
+    }
+  }, [title]);
 
   const handleisInputAreaChange = () => {
     setIsInputArea(!isInputArea);
@@ -29,13 +68,60 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
       HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
     >
   ) => {
-    container.onListTitleChanged(index, event.target.value);
+    setTitle(event.target.value);
   };
 
   const handleKeyPressed = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter") {
       handleisInputAreaChange();
     }
+  };
+
+  const onDeleteListCompleted = () => {
+    DB.listTable
+      .where("boardId")
+      .equals(boardId)
+      .sortBy("index")
+      .then(data => {
+        const allPromise = [];
+
+        for (let index = 0; index < data.length; index += 1) {
+          const { id } = data[index];
+          if (!id) {
+            throw new Error("List not found.");
+          }
+          allPromise.push(
+            DB.listTable.update(id, { index }).catch(err => {
+              throw err;
+            })
+          );
+        }
+
+        Promise.all(allPromise).then(() => {
+          DB.listTable
+            .where("boardId")
+            .equals(boardId)
+            .sortBy("index")
+            .then(lists => setLists(lists))
+            .catch(err => {
+              throw err;
+            });
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+
+  const handleDeleteButtonClicked = () => {
+    DB.listTable
+      .delete(listId)
+      .then(() => {
+        onDeleteListCompleted();
+      })
+      .catch(err => {
+        throw err;
+      });
   };
 
   return (
@@ -75,7 +161,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
         <IconButton
           aria-label="Delete"
           color="primary"
-          onClick={container.onListDeleted(filename)}
+          onClick={handleDeleteButtonClicked}
         >
           <DeleteIcon fontSize="large" />
         </IconButton>

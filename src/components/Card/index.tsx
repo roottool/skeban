@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
 import CardEditor from "react-simple-code-editor";
@@ -9,80 +9,180 @@ import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Draggable } from "react-beautiful-dnd";
-import AppContainer from "../../State/AppContainer";
+import DB, { CardTable } from "../../DB";
 
 interface Props {
-  filename: string;
-  listIndex: number;
+  boardId: number;
+  listId: number;
   cardIndex: number;
+  setCards: React.Dispatch<React.SetStateAction<CardTable[]>>;
 }
 
 const KanbanCard: React.FC<Props> = props => {
-  const { filename, listIndex, cardIndex } = props;
+  const isInitialMount = useRef(true);
 
-  const container = AppContainer.useContainer();
-  const { text } = container.board[listIndex].list[cardIndex];
+  const { boardId, cardIndex, listId, setCards } = props;
 
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isInputArea, setIsInputArea] = useState(false);
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    DB.cardTable
+      .where("listId")
+      .equals(listId)
+      .first()
+      .then(data => {
+        if (!data) {
+          throw new Error("List not found.");
+        }
+
+        setText(data.text);
+      })
+      .catch(err => {
+        throw err;
+      });
+
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      const updatedTimestamp = Date.now();
+      DB.boardTable.update(boardId, { updatedTimestamp });
+    }
+  }, [text]);
+
+  const promiseCardId = () => {
+    return DB.cardTable
+      .where("listId")
+      .equals(listId)
+      .and(target => target.index === cardIndex)
+      .first(data => {
+        if (data && data.id) {
+          return data.id;
+        }
+
+        throw new Error("Card not found.");
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+
+  useCallback(async () => {
+    const cardId = await promiseCardId();
+
+    DB.cardTable
+      .update(cardId, { text })
+      .then(() => {
+        DB.cardTable
+          .toArray()
+          .then(data => setCards(data))
+          .catch(err => {
+            throw err;
+          });
+      })
+      .catch(err => {
+        throw err;
+      });
+  }, [isDeleting]);
 
   const handleisInputAreaChange = () => {
     setIsInputArea(!isInputArea);
   };
 
   const handleOnValueChanged = (value: string) => {
-    container.onCardTextChanged(listIndex, cardIndex, value);
+    setText(value);
   };
 
-  const handleDeleteButtonClicked = () => {
-    container.onCardDeleted(listIndex, cardIndex);
+  const onDeleteCardCompleted = () => {
+    DB.cardTable
+      .where("listId")
+      .equals(listId)
+      .sortBy("index")
+      .then(data => {
+        for (let index = 0; index < data.length; index += 1) {
+          const { id } = data[index];
+          if (!id) {
+            throw new Error("Card not found.");
+          }
+          DB.cardTable.update(id, { index }).catch(err => {
+            throw err;
+          });
+        }
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+
+  const handleDeleteButtonClicked = async () => {
+    setIsDeleting(true);
+    const cardId = await promiseCardId();
+    DB.cardTable
+      .delete(cardId)
+      .then(() => {
+        onDeleteCardCompleted();
+        setIsDeleting(false);
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+
+  const RenderDraggableCard = async () => {
+    const cardId = await promiseCardId();
+
+    return (
+      <Draggable draggableId={`${cardId}`} index={cardIndex}>
+        {provided => (
+          <StyledPaper
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+          >
+            <StyledCardContentDiv onClick={handleisInputAreaChange}>
+              <Markdown>{text}</Markdown>
+            </StyledCardContentDiv>
+          </StyledPaper>
+        )}
+      </Draggable>
+    );
   };
 
   return (
-    <Draggable draggableId={filename} index={cardIndex}>
-      {provided => (
-        <div
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-        >
-          {isInputArea ? (
-            <div>
-              <StyledPaper>
-                <StyledCodeEditor
-                  value={text}
-                  onValueChange={handleOnValueChanged}
-                  highlight={code => highlight(code, languages.markdown, "md")}
-                  padding={10}
-                  autoFocus
-                />
-              </StyledPaper>
-              <StyledButtonArea>
-                <Fab
-                  color="secondary"
-                  aria-label="OK"
-                  onClick={handleisInputAreaChange}
-                >
-                  <CheckIcon />
-                </Fab>
-                <Fab
-                  color="secondary"
-                  aria-label="Delete"
-                  onClick={handleDeleteButtonClicked}
-                >
-                  <DeleteIcon />
-                </Fab>
-              </StyledButtonArea>
-            </div>
-          ) : (
-            <StyledPaper>
-              <StyledCardContentDiv onClick={handleisInputAreaChange}>
-                <Markdown>{text}</Markdown>
-              </StyledCardContentDiv>
-            </StyledPaper>
-          )}
+    <>
+      {isInputArea ? (
+        <div>
+          <StyledPaper>
+            <StyledCodeEditor
+              value={text}
+              onValueChange={handleOnValueChanged}
+              highlight={code => highlight(code, languages.markdown, "md")}
+              padding={10}
+              autoFocus
+            />
+          </StyledPaper>
+          <StyledButtonArea>
+            <Fab
+              color="secondary"
+              aria-label="OK"
+              onClick={handleisInputAreaChange}
+            >
+              <CheckIcon />
+            </Fab>
+            <Fab
+              color="secondary"
+              aria-label="Delete"
+              onClick={handleDeleteButtonClicked}
+            >
+              <DeleteIcon />
+            </Fab>
+          </StyledButtonArea>
         </div>
+      ) : (
+        <RenderDraggableCard />
       )}
-    </Draggable>
+    </>
   );
 };
 
