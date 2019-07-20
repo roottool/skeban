@@ -22,6 +22,7 @@ export interface CardTable {
 }
 
 type DexieDatabase = { [P in keyof Dexie]: Dexie[P] };
+
 interface SkebanDB extends DexieDatabase {
   boardTable: Dexie.Table<BoardTable, number>;
   listTable: Dexie.Table<ListTable, number>;
