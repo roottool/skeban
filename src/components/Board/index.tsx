@@ -3,7 +3,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import styled from "styled-components";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import DB, { ListTable } from "../../DB";
 import List from "../List";
 
@@ -67,7 +67,96 @@ const KanbanBoard: React.FC<Props> = props => {
       });
   };
 
-  const onDragEnded = () => {};
+  const onSortListCompleted = () => {
+    DB.listTable
+      .where("boardId")
+      .equals(boardId)
+      .sortBy("index")
+      .then(data => {
+        setLists(data);
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+
+  const swapList = (
+    listArray: ListTable[],
+    sourceIndex: number,
+    destinationIndex: number
+  ) => {
+    let index = 0;
+    const allPromise: Promise<number>[] = [];
+
+    listArray.forEach(list => {
+      if (list.id && list.index === sourceIndex) {
+        allPromise.push(
+          DB.listTable
+            .update(list.id, { index: destinationIndex })
+            .catch(err => {
+              throw err;
+            })
+        );
+      } else if (list.id && list.index === destinationIndex) {
+        allPromise.push(
+          DB.listTable.update(list.id, { index: sourceIndex }).catch(err => {
+            throw err;
+          })
+        );
+      }
+    });
+
+    const updateListTable = () => {
+      if (index < allPromise.length) {
+        allPromise[index].then(() => {
+          index += 1;
+          updateListTable();
+        });
+      }
+    };
+    updateListTable();
+    onSortListCompleted();
+  };
+
+  const onDragEnded = (dropResult: DropResult) => {
+    const { destination, source, type } = dropResult;
+
+    if (destination === undefined || !destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    switch (type) {
+      case "List": {
+        const lowerIndex =
+          destination.index > source.index ? source.index : destination.index;
+        const upperIndex =
+          destination.index > source.index ? destination.index : source.index;
+
+        DB.listTable
+          .where("index")
+          .between(lowerIndex, upperIndex, true, true)
+          .toArray()
+          .then(listArray =>
+            swapList(listArray, source.index, destination.index)
+          )
+          .catch(err => {
+            throw err;
+          });
+        break;
+      }
+      case "Card":
+        break;
+      default:
+        break;
+    }
+  };
 
   const renderLists = () => {
     const result = lists.map((list, listIndex) => {
