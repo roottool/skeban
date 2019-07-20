@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography } from "@material-ui/core";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import DB, { ListTable } from "../../DB";
 
 interface Props {
@@ -20,6 +21,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
 
   const [isInputArea, setIsInputArea] = useState(false);
   const [title, setTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const setListsWrapper = useCallback(() => {
     DB.listTable
@@ -39,7 +41,6 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
 
   useEffect(() => {
     if (isInitialMount.current) {
-      isInitialMount.current = false;
       DB.listTable
         .where("id")
         .equals(listId)
@@ -50,6 +51,8 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
           }
 
           setTitle(data.title);
+          setIsLoading(false);
+          isInitialMount.current = false;
         })
         .catch(err => {
           throw err;
@@ -124,6 +127,20 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
       });
   };
 
+  const renderListTitle = () => {
+    if (isLoading) {
+      return <LinearProgress color="primary" />;
+    }
+
+    return (
+      <StyledCardTitleDiv onClick={handleisInputAreaChange}>
+        <Typography variant="h6" gutterBottom>
+          {title || "The title is empty"}
+        </Typography>
+      </StyledCardTitleDiv>
+    );
+  };
+
   return (
     <StyledCardListTitleArea>
       {isInputArea ? (
@@ -140,11 +157,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
           />
         </StyledCardTitleForm>
       ) : (
-        <StyledCardTitleDiv onClick={handleisInputAreaChange}>
-          <Typography variant="h6" gutterBottom>
-            {title || "The title is empty"}
-          </Typography>
-        </StyledCardTitleDiv>
+        <>{renderListTitle()}</>
       )}
       {isInputArea && (
         <StyledEditIconArea>
