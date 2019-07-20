@@ -24,7 +24,7 @@ const KanbanBoard: React.FC<Props> = props => {
       DB.listTable
         .where("boardId")
         .equals(boardId)
-        .sortBy("index")
+        .toArray()
         .then(data => {
           setLists(data);
           setIsLoading(false);
@@ -43,7 +43,7 @@ const KanbanBoard: React.FC<Props> = props => {
     DB.listTable
       .where("boardId")
       .equals(boardId)
-      .sortBy("index")
+      .toArray()
       .then(data => {
         setLists(data);
       })
@@ -68,31 +68,22 @@ const KanbanBoard: React.FC<Props> = props => {
   };
 
   const swapList = (sourceIndex: number, destinationIndex: number) => {
-    const swappedLists = lists.map(list => {
-      if (list.id && list.index === sourceIndex) {
-        DB.listTable.update(list.id, { index: destinationIndex }).catch(err => {
-          throw err;
-        });
+    setLists(prev => {
+      const swappedLists = prev.slice(0, prev.length);
 
-        const copy = list;
-        copy.index = destinationIndex;
-        return copy;
+      swappedLists.splice(sourceIndex, 1);
+      swappedLists.splice(destinationIndex, 0, prev[sourceIndex]);
+
+      const lowerIndex =
+        destinationIndex > sourceIndex ? sourceIndex : destinationIndex;
+      const upperIndex =
+        destinationIndex > sourceIndex ? destinationIndex : sourceIndex;
+      for (let index = lowerIndex; index <= upperIndex; index += 1) {
+        swappedLists[index].index = index;
       }
 
-      if (list.id && list.index === destinationIndex) {
-        DB.listTable.update(list.id, { index: sourceIndex }).catch(err => {
-          throw err;
-        });
-
-        const copy = list;
-        copy.index = sourceIndex;
-        return copy;
-      }
-
-      return list;
+      return swappedLists;
     });
-
-    setLists(swappedLists);
   };
 
   const onDragEnded = (dropResult: DropResult) => {
@@ -122,20 +113,22 @@ const KanbanBoard: React.FC<Props> = props => {
   };
 
   const renderLists = () => {
-    const result = lists.map((list, listIndex) => {
-      if (!list.id) {
-        return <></>;
-      }
-      return (
-        <List
-          key={list.id}
-          boardId={boardId}
-          listId={list.id}
-          listIndex={listIndex}
-          setLists={setLists}
-        />
-      );
-    });
+    const result = lists
+      .sort((a, b) => a.index - b.index)
+      .map((list, listIndex) => {
+        if (!list.id) {
+          return <></>;
+        }
+        return (
+          <List
+            key={list.id}
+            boardId={boardId}
+            listId={list.id}
+            listIndex={listIndex}
+            setLists={setLists}
+          />
+        );
+      });
     return result;
   };
 
