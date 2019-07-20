@@ -42,9 +42,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
   useEffect(() => {
     if (isInitialMount.current) {
       DB.listTable
-        .where("id")
-        .equals(listId)
-        .first()
+        .get(listId)
         .then(data => {
           if (!data) {
             throw new Error("List not found.");
