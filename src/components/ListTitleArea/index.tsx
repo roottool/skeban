@@ -23,7 +23,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
   const [isInputArea, setIsInputArea] = useState(false);
   const [title, setTitle] = useState("");
 
-  const setListsWrapper = useCallback(() => {
+  const onListTitleChangedWrapper = useCallback(() => {
     DB.listTable
       .update(listId, { title })
       .then(() => {
@@ -56,7 +56,7 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
           throw err;
         });
     } else {
-      setListsWrapper();
+      onListTitleChangedWrapper();
     }
   }, [title]);
 
