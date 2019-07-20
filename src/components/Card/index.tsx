@@ -24,7 +24,6 @@ const KanbanCard: React.FC<Props> = props => {
   const { cardId, cardIndex, listId, setCards } = props;
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [isInputArea, setIsInputArea] = useState(false);
   const [text, setText] = useState("");
 
@@ -42,7 +41,7 @@ const KanbanCard: React.FC<Props> = props => {
       .catch(err => {
         throw err;
       });
-  }, [isDeleting, text]);
+  }, [text]);
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -81,15 +80,30 @@ const KanbanCard: React.FC<Props> = props => {
       .equals(listId)
       .sortBy("index")
       .then(data => {
+        const allPromise = [];
+
         for (let index = 0; index < data.length; index += 1) {
           const { id } = data[index];
           if (!id) {
             throw new Error("Card not found.");
           }
-          DB.cardTable.update(id, { index }).catch(err => {
-            throw err;
-          });
+          allPromise.push(
+            DB.cardTable.update(id, { index }).catch(err => {
+              throw err;
+            })
+          );
         }
+
+        Promise.all(allPromise).then(() => {
+          DB.cardTable
+            .where("listId")
+            .equals(listId)
+            .sortBy("index")
+            .then(cards => setCards(cards))
+            .catch(err => {
+              throw err;
+            });
+        });
       })
       .catch(err => {
         throw err;
@@ -97,12 +111,10 @@ const KanbanCard: React.FC<Props> = props => {
   };
 
   const handleDeleteButtonClicked = () => {
-    setIsDeleting(true);
     DB.cardTable
       .delete(cardId)
       .then(() => {
         onDeleteCardCompleted();
-        setIsDeleting(false);
       })
       .catch(err => {
         throw err;
