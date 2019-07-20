@@ -91,7 +91,6 @@
     "react-simple-code-editor": "^0.9.13",
     "styled-components": "^4.3.2",
     "typeface-roboto": "^0.0.54",
-    "unstated-next": "^1.1.0",
     "uuid": "^3.3.2"
   }
 }
