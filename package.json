@@ -16,7 +16,23 @@
     "prestart": "yarn run build:dev",
     "start": "electron .",
     "fix": "eslint --fix \"config/**\" && eslint --fix \"src/**\"",
-    "lint": "eslint \"config/**\" && eslint \"src/**\""
+    "lint": "eslint \"config/**\" && eslint \"src/**\"",
+    "prepack": "yarn run build && rimraf dist",
+    "pack": "concurrently \"yarn run pack:mac\" \"yarn run pack:win\"",
+    "pack:mac": "electron-builder --mac --x64",
+    "pack:win": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "jp.${author}.skeban",
+    "productName": "Skeban",
+    "copyright": "Copyright © 2019 ${author}",
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
@@ -41,6 +57,7 @@
     "cross-env": "^5.2.0",
     "css-loader": "^3.0.0",
     "electron": "^5.0.6",
+    "electron-builder": "^21.0.15",
     "electron-store": "^4.0.0",
     "eslint": "^6.0.1",
     "eslint-config-airbnb": "^17.1.1",
