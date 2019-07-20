@@ -42,8 +42,8 @@ const KanbanCardList: React.FC<Props> = props => {
 
   const onNewCardAdditionCompleted = () => {
     DB.cardTable
-      .where("boardId")
-      .equals(boardId)
+      .where("listId")
+      .equals(listId)
       .toArray()
       .then(data => {
         setCards(data);
@@ -68,6 +68,26 @@ const KanbanCardList: React.FC<Props> = props => {
       });
   };
 
+  const renderCards = () => {
+    const result = cards.map((card, cardIndex) => {
+      if (!card.id) {
+        return <></>;
+      }
+
+      return (
+        <Card
+          key={card.id}
+          listId={listId}
+          cardId={card.id}
+          cardIndex={cardIndex}
+          setCards={setCards}
+        />
+      );
+    });
+
+    return result;
+  };
+
   return (
     <Draggable draggableId={`${listId}`} index={listIndex}>
       {provided => (
@@ -87,15 +107,7 @@ const KanbanCardList: React.FC<Props> = props => {
                 {...cardProvided.droppableProps}
                 ref={cardProvided.innerRef}
               >
-                {cards.map((card, cardIndex) => (
-                  <Card
-                    key={card.id}
-                    boardId={boardId}
-                    listId={listId}
-                    cardIndex={cardIndex}
-                    setCards={setCards}
-                  />
-                ))}
+                {renderCards()}
                 {cardProvided.placeholder}
               </StyledContainer>
             )}

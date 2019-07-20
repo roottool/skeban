@@ -19,9 +19,9 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
 
   const { boardId, listId, setLists } = props;
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isInputArea, setIsInputArea] = useState(false);
   const [title, setTitle] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
 
   const setListsWrapper = useCallback(() => {
     DB.listTable

@@ -12,8 +12,8 @@ import { Draggable } from "react-beautiful-dnd";
 import DB, { CardTable } from "../../DB";
 
 interface Props {
-  boardId: number;
   listId: number;
+  cardId: number;
   cardIndex: number;
   setCards: React.Dispatch<React.SetStateAction<CardTable[]>>;
 }
@@ -21,56 +21,14 @@ interface Props {
 const KanbanCard: React.FC<Props> = props => {
   const isInitialMount = useRef(true);
 
-  const { boardId, cardIndex, listId, setCards } = props;
+  const { cardId, cardIndex, listId, setCards } = props;
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isInputArea, setIsInputArea] = useState(false);
   const [text, setText] = useState("");
 
-  useEffect(() => {
-    DB.cardTable
-      .where("listId")
-      .equals(listId)
-      .first()
-      .then(data => {
-        if (!data) {
-          throw new Error("List not found.");
-        }
-
-        setText(data.text);
-      })
-      .catch(err => {
-        throw err;
-      });
-
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      const updatedTimestamp = Date.now();
-      DB.boardTable.update(boardId, { updatedTimestamp });
-    }
-  }, [text]);
-
-  const promiseCardId = () => {
-    return DB.cardTable
-      .where("listId")
-      .equals(listId)
-      .and(target => target.index === cardIndex)
-      .first(data => {
-        if (data && data.id) {
-          return data.id;
-        }
-
-        throw new Error("Card not found.");
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
-
-  useCallback(async () => {
-    const cardId = await promiseCardId();
-
+  const setCardsWrapper = useCallback(() => {
     DB.cardTable
       .update(cardId, { text })
       .then(() => {
@@ -84,7 +42,30 @@ const KanbanCard: React.FC<Props> = props => {
       .catch(err => {
         throw err;
       });
-  }, [isDeleting]);
+  }, [isDeleting, text]);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      DB.cardTable
+        .where("listId")
+        .equals(listId)
+        .first()
+        .then(data => {
+          if (!data) {
+            throw new Error("List not found.");
+          }
+
+          setText(data.text);
+          setIsLoading(false);
+          isInitialMount.current = false;
+        })
+        .catch(err => {
+          throw err;
+        });
+    } else if (!isLoading) {
+      setCardsWrapper();
+    }
+  }, [text]);
 
   const handleisInputAreaChange = () => {
     setIsInputArea(!isInputArea);
@@ -115,9 +96,8 @@ const KanbanCard: React.FC<Props> = props => {
       });
   };
 
-  const handleDeleteButtonClicked = async () => {
+  const handleDeleteButtonClicked = () => {
     setIsDeleting(true);
-    const cardId = await promiseCardId();
     DB.cardTable
       .delete(cardId)
       .then(() => {
@@ -129,9 +109,7 @@ const KanbanCard: React.FC<Props> = props => {
       });
   };
 
-  const RenderDraggableCard = async () => {
-    const cardId = await promiseCardId();
-
+  const RenderDraggableCard = () => {
     return (
       <Draggable draggableId={`${cardId}`} index={cardIndex}>
         {provided => (
