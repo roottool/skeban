@@ -5,6 +5,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import DB, { CardTable } from "../../DB";
+import State from "../../State";
 import ListTitleArea from "../ListTitleArea";
 import Card from "../Card";
 
@@ -19,6 +20,7 @@ const KanbanCardList: React.FC<Props> = props => {
 
   const { boardId, listId, listIndex } = props;
 
+  const Container = State.useContainer();
   const [cards, setCards] = useState<CardTable[]>([]);
 
   useEffect(() => {
@@ -39,50 +41,29 @@ const KanbanCardList: React.FC<Props> = props => {
     }
   }, [cards]);
 
-  const onNewCardAdditionCompleted = () => {
-    DB.cardTable
-      .where("listId")
-      .equals(listId)
-      .toArray()
-      .then(data => {
-        setCards(data);
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
-
   const onAddBtnClicked = () => {
-    DB.cardTable
-      .add({
-        listId,
-        index: cards.length,
-        text: ""
-      })
-      .then(() => {
-        onNewCardAdditionCompleted();
-      })
-      .catch(err => {
-        throw err;
-      });
+    Container.onCardAdded(boardId, listId);
   };
 
   const renderCards = () => {
-    const result = cards.map((card, cardIndex) => {
-      if (!card.id) {
-        return <></>;
-      }
+    const result = Container.allCards
+      .filter(card => card.listId === listId)
+      .sort((a, b) => a.index - b.index)
+      .map((card, cardIndex) => {
+        if (!card.id) {
+          return <></>;
+        }
 
-      return (
-        <Card
-          key={card.id}
-          listId={listId}
-          cardId={card.id}
-          cardIndex={cardIndex}
-          setCards={setCards}
-        />
-      );
-    });
+        return (
+          <Card
+            key={card.id}
+            listId={listId}
+            cardId={card.id}
+            cardIndex={cardIndex}
+            setCards={setCards}
+          />
+        );
+      });
 
     return result;
   };

@@ -15,7 +15,7 @@ const useStore = () => {
 
   const [allBoards, setAllBoards] = useState<Boards>([]);
   const [allLists, setAllLists] = useState<Lists>([]);
-  const [allCards] = useState<Cards>([]);
+  const [allCards, setAllCards] = useState<Cards>([]);
   const [currentBoardId, setCurrentBoardId] = useState<number>();
 
   useEffect(() => {
@@ -42,9 +42,9 @@ const useStore = () => {
     if (isInitialCardsMount.current) {
       isInitialCardsMount.current = false;
 
-      // DB.cardTable.toArray().then(cardsData => {
-      //   setAllCards(cardsData);
-      // });
+      DB.cardTable.toArray().then(cardsData => {
+        setAllCards(cardsData);
+      });
     }
   }, [allCards]);
 
@@ -83,11 +83,9 @@ const useStore = () => {
       });
   };
 
-  const onListTableUpdateCompleted = (boardId: number) => {
+  const onListTableUpdateCompleted = () => {
     DB.listTable
-      .where("boardId")
-      .equals(boardId)
-      .sortBy("index")
+      .toArray()
       .then(lists => {
         setAllLists(lists);
       })
@@ -104,7 +102,7 @@ const useStore = () => {
         index,
         title: ""
       })
-      .then(() => onListTableUpdateCompleted(boardId))
+      .then(() => onListTableUpdateCompleted())
       .catch(err => {
         throw err;
       });
@@ -116,7 +114,7 @@ const useStore = () => {
   const onListDeleted = (boardId: number, listId: number) => {
     DB.listTable
       .delete(listId)
-      .then(() => onListTableUpdateCompleted(boardId))
+      .then(() => onListTableUpdateCompleted())
       .catch(err => {
         throw err;
       });
@@ -135,7 +133,7 @@ const useStore = () => {
       .then(() => {
         DB.listTable
           .toArray()
-          .then(() => onListTableUpdateCompleted(boardId))
+          .then(() => onListTableUpdateCompleted())
           .catch(err => {
             throw err;
           });
@@ -148,33 +146,32 @@ const useStore = () => {
     DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
-  const onCardAdded = (boardId: number, listId: number) => {
-    console.log(boardId, listId);
+  const onCardTableUpdateCompleted = () => {
+    DB.cardTable
+      .toArray()
+      .then(cards => {
+        setAllCards(cards);
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
 
-    // const newFilename = uuidv1();
-    // setAllListDetail(prev => {
-    //   const { cards, filename, title } = prev[targetIndex];
-    //   const saveData = prev.slice(0, prev.length);
-    //   saveData.splice(targetIndex, 1, {
-    //     cards: [...cards, { filename: newFilename }],
-    //     filename,
-    //     title
-    //   });
-    //   localStorageActionWrapper("SAVE", filename, jsonStringify(saveData));
-    //   return saveData;
-    // });
-    // setAllCard(prev => {
-    //   const saveData: AllCardState = [...prev, { filename: newFilename }];
-    //   return saveData;
-    // });
-    // setAllCardDetail(prev => {
-    //   const saveData: AllCardDetailState = [
-    //     ...prev,
-    //     { filename: newFilename, text: "" }
-    //   ];
-    //   localStorageActionWrapper("SAVE", newFilename, jsonStringify(saveData));
-    //   return saveData;
-    // });
+  const onCardAdded = (boardId: number, listId: number) => {
+    const index = allCards.filter(card => card.listId === listId).length;
+    DB.cardTable
+      .add({
+        listId,
+        index,
+        text: ""
+      })
+      .then(() => onCardTableUpdateCompleted())
+      .catch(err => {
+        throw err;
+      });
+
+    const updatedTimestamp = Date.now();
+    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const onCardDeleted = (boardId: number, listId: number, cardId: number) => {
