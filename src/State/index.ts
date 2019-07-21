@@ -130,10 +130,10 @@ const useStore = () => {
   ) => {
     DB.listTable
       .update(listId, { title })
-          .then(() => onListTableUpdateCompleted())
-          .catch(err => {
-            throw err;
-          });
+      .then(() => onListTableUpdateCompleted())
+      .catch(err => {
+        throw err;
+      });
 
     const updatedTimestamp = Date.now();
     DB.boardTable.update(boardId, { updatedTimestamp });
@@ -179,21 +179,16 @@ const useStore = () => {
     DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
-  const onCardTextChanged = (
-    boardId: number,
-    listId: number,
-    cardId: number,
-    value: string
-  ) => {
-    console.log(boardId, listId, cardId, value);
+  const onCardTextChanged = (boardId: number, cardId: number, text: string) => {
+    DB.cardTable
+      .update(cardId, { text })
+      .then(() => onListTableUpdateCompleted())
+      .catch(err => {
+        throw err;
+      });
 
-    // setAllCardDetail(prev => {
-    //   const saveState = prev.slice(0, prev.length);
-    //   const saveFileData: CardDetail = { filename, text: value };
-    //   saveState.splice(index, 1, saveFileData);
-    //   localStorageActionWrapper("SAVE", filename, jsonStringify(saveFileData));
-    //   return saveState;
-    // });
+    const updatedTimestamp = Date.now();
+    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const onDragEnded = (dropResult: DropResult) => {
