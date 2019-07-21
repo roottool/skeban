@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
 import CardEditor from "react-simple-code-editor";
@@ -9,72 +9,31 @@ import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Draggable } from "react-beautiful-dnd";
-import DB, { CardTable } from "../../DB";
 import State from "../../State";
 
 interface Props {
   boardId: number;
-  listId: number;
   cardId: number;
   cardIndex: number;
-  setCards: React.Dispatch<React.SetStateAction<CardTable[]>>;
 }
 
 const KanbanCard: React.FC<Props> = props => {
-  const isInitialMount = useRef(true);
-
-  const { boardId, cardId, cardIndex, listId, setCards } = props;
+  const { boardId, cardId, cardIndex } = props;
 
   const Container = State.useContainer();
-  const [isLoading, setIsLoading] = useState(true);
   const [isInputArea, setIsInputArea] = useState(false);
-  const [text, setText] = useState("");
 
-  const onCardTextChangedWrapper = useCallback(() => {
-    DB.cardTable
-      .update(cardId, { text })
-      .then(() => {
-        DB.cardTable
-          .toArray()
-          .then(data => setCards(data))
-          .catch(err => {
-            throw err;
-          });
-      })
-      .catch(err => {
-        throw err;
-      });
-  }, [text]);
-
-  useEffect(() => {
-    if (isInitialMount.current) {
-      DB.cardTable
-        .where("listId")
-        .equals(listId)
-        .first()
-        .then(data => {
-          if (!data) {
-            throw new Error("List not found.");
-          }
-
-          setText(data.text);
-          setIsLoading(false);
-          isInitialMount.current = false;
-        })
-        .catch(err => {
-          throw err;
-        });
-    } else if (!isLoading) {
-      onCardTextChangedWrapper();
-    }
-  }, [text]);
+  const card = Container.allCards
+    .filter(cardData => cardData.id === cardId)
+    .pop();
+  const text = card ? card.text : "";
 
   const handleisInputAreaChange = () => {
     setIsInputArea(!isInputArea);
   };
 
-  const handleOnValueChanged = (value: string) => {
-    setText(value);
+  const handleValueChanged = (value: string) => {
+    Container.onCardTextChanged(boardId, cardId, value);
   };
 
   const handleDeleteButtonClicked = () => {
@@ -106,7 +65,7 @@ const KanbanCard: React.FC<Props> = props => {
           <StyledPaper>
             <StyledCodeEditor
               value={text}
-              onValueChange={handleOnValueChanged}
+              onValueChange={handleValueChanged}
               highlight={code => highlight(code, languages.markdown, "md")}
               padding={10}
               autoFocus

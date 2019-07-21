@@ -182,7 +182,7 @@ const useStore = () => {
   const onCardTextChanged = (boardId: number, cardId: number, text: string) => {
     DB.cardTable
       .update(cardId, { text })
-      .then(() => onListTableUpdateCompleted())
+      .then(() => onCardTableUpdateCompleted())
       .catch(err => {
         throw err;
       });
