@@ -4,7 +4,7 @@ import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import DB, { CardTable, ListTable } from "../../DB";
+import DB, { CardTable } from "../../DB";
 import ListTitleArea from "../ListTitleArea";
 import Card from "../Card";
 
@@ -12,13 +12,12 @@ interface Props {
   boardId: number;
   listId: number;
   listIndex: number;
-  setLists: React.Dispatch<React.SetStateAction<ListTable[]>>;
 }
 
 const KanbanCardList: React.FC<Props> = props => {
   const isInitialMount = useRef(true);
 
-  const { boardId, listId, listIndex, setLists } = props;
+  const { boardId, listId, listIndex } = props;
 
   const [cards, setCards] = useState<CardTable[]>([]);
 
@@ -96,11 +95,7 @@ const KanbanCardList: React.FC<Props> = props => {
           {...provided.dragHandleProps}
           innerRef={provided.innerRef}
         >
-          <ListTitleArea
-            boardId={boardId}
-            listId={listId}
-            setLists={setLists}
-          />
+          <ListTitleArea boardId={boardId} listId={listId} />
           <Droppable droppableId={`${listId}`} type="Card">
             {cardProvided => (
               <StyledContainer
