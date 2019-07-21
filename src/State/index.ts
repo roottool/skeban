@@ -203,7 +203,8 @@ const useStore = () => {
       destinationIndex > sourceIndex ? destinationIndex : sourceIndex;
     const range = allLists
       .filter(list => list.boardId === boardId)
-      .slice(lowerIndex, upperIndex - lowerIndex + 1);
+      .sort((a, b) => a.index - b.index)
+      .slice(lowerIndex, upperIndex + 1);
     const dragList = range.filter(list => list.id === draglistId).pop();
 
     if (dragList) {
