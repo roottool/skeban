@@ -19,51 +19,6 @@ const KanbanBoard: React.FC<Props> = props => {
     Container.onListAdded(boardId);
   };
 
-  // const swapList = (sourceIndex: number, destinationIndex: number) => {
-  //   setLists(prev => {
-  //     const swappedLists = prev.slice(0, prev.length);
-
-  //     swappedLists.splice(sourceIndex, 1);
-  //     swappedLists.splice(destinationIndex, 0, prev[sourceIndex]);
-
-  //     const lowerIndex =
-  //       destinationIndex > sourceIndex ? sourceIndex : destinationIndex;
-  //     const upperIndex =
-  //       destinationIndex > sourceIndex ? destinationIndex : sourceIndex;
-  //     for (let index = lowerIndex; index <= upperIndex; index += 1) {
-  //       swappedLists[index].index = index;
-  //     }
-
-  //     return swappedLists;
-  //   });
-  // };
-
-  // const onDragEnded = (dropResult: DropResult) => {
-  //   const { destination, source, type } = dropResult;
-
-  //   if (!destination) {
-  //     return;
-  //   }
-
-  //   if (
-  //     destination.droppableId === source.droppableId &&
-  //     destination.index === source.index
-  //   ) {
-  //     return;
-  //   }
-
-  //   switch (type) {
-  //     case "List": {
-  //       swapList(source.index, destination.index);
-  //       break;
-  //     }
-  //     case "Card":
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
   const renderLists = () => {
     const result = Container.allLists
       .filter(list => list.boardId === boardId)

@@ -191,8 +191,54 @@ const useStore = () => {
     DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
+  const swapList = (
+    boardId: number,
+    draglistId: number,
+    sourceIndex: number,
+    destinationIndex: number
+  ) => {
+    const lowerIndex =
+      destinationIndex > sourceIndex ? sourceIndex : destinationIndex;
+    const upperIndex =
+      destinationIndex > sourceIndex ? destinationIndex : sourceIndex;
+    const range = allLists.slice(lowerIndex, upperIndex - lowerIndex + 1);
+    const dragList = range.filter(list => list.id === draglistId).pop();
+
+    if (dragList) {
+      if (dragList.index === lowerIndex) {
+        range.splice(0, 1);
+        range.splice(range.length, 0, dragList);
+      } else {
+        range.splice(range.length - 1, 1);
+        range.splice(0, 0, dragList);
+      }
+
+      let indexOfRange = 0;
+      const promiseArray: Promise<number>[] = [];
+      for (let index = lowerIndex; index <= upperIndex; index += 1) {
+        range[indexOfRange].index = index;
+        const { id } = range[indexOfRange];
+        if (id) {
+          promiseArray.push(
+            DB.listTable
+              .update(id, { index: range[indexOfRange].index })
+              .catch(err => {
+                throw err;
+              })
+          );
+        }
+        indexOfRange += 1;
+      }
+
+      Promise.all(promiseArray).then(() => onListTableUpdateCompleted());
+
+      const updatedTimestamp = Date.now();
+      DB.boardTable.update(boardId, { updatedTimestamp });
+    }
+  };
+
   const onDragEnded = (dropResult: DropResult) => {
-    const { destination, /* draggableId, */ source, type } = dropResult;
+    const { destination, draggableId, source, type } = dropResult;
 
     if (destination === undefined || !destination) {
       return;
@@ -206,27 +252,16 @@ const useStore = () => {
     }
 
     switch (type) {
-      case "List":
-        // setAllBoardDetail(prev => {
-        //   const targetBoardIndex = prev.findIndex(
-        //     target => target.filename === destination.droppableId
-        //   );
-        //   const saveState = prev.slice(0, prev.length);
-        //   const { lists } = saveState[targetBoardIndex];
-        //   lists.splice(source.index, 1);
-        //   lists.splice(destination.index, 0, {
-        //     filename: draggableId
-        //   });
-        //   const updatedTimestamp = Date.now();
-        //   saveState[targetBoardIndex].updatedBoard = updatedTimestamp;
-        //   localStorageActionWrapper(
-        //     "SAVE",
-        //     saveState[targetBoardIndex].filename,
-        //     jsonStringify(saveState)
-        //   );
-        //   return saveState;
-        // });
+      case "List": {
+        try {
+          const boardId = parseInt(source.droppableId, 10);
+          const draglistId = parseInt(draggableId, 10);
+          swapList(boardId, draglistId, source.index, destination.index);
+        } catch (err) {
+          throw err;
+        }
         break;
+      }
       case "Card":
         // setAllListDetail(prev => {
         //   const sourceListIndex = prev.findIndex(

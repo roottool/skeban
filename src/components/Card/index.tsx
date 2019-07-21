@@ -40,24 +40,6 @@ const KanbanCard: React.FC<Props> = props => {
     Container.onCardDeleted(boardId, cardId);
   };
 
-  const RenderDraggableCard = () => {
-    return (
-      <Draggable draggableId={`${cardId}`} index={cardIndex}>
-        {provided => (
-          <StyledPaper
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-          >
-            <StyledCardContentDiv onClick={handleisInputAreaChange}>
-              <Markdown>{text}</Markdown>
-            </StyledCardContentDiv>
-          </StyledPaper>
-        )}
-      </Draggable>
-    );
-  };
-
   return (
     <>
       {isInputArea ? (
@@ -89,7 +71,19 @@ const KanbanCard: React.FC<Props> = props => {
           </StyledButtonArea>
         </div>
       ) : (
-        <RenderDraggableCard />
+        <Draggable draggableId={`${cardId}`} index={cardIndex}>
+          {provided => (
+            <StyledPaper
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              ref={provided.innerRef}
+            >
+              <StyledCardContentDiv onClick={handleisInputAreaChange}>
+                <Markdown>{text}</Markdown>
+              </StyledCardContentDiv>
+            </StyledPaper>
+          )}
+        </Draggable>
       )}
     </>
   );
