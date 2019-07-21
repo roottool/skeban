@@ -130,17 +130,10 @@ const useStore = () => {
   ) => {
     DB.listTable
       .update(listId, { title })
-      .then(() => {
-        DB.listTable
-          .toArray()
           .then(() => onListTableUpdateCompleted())
           .catch(err => {
             throw err;
           });
-      })
-      .catch(err => {
-        throw err;
-      });
 
     const updatedTimestamp = Date.now();
     DB.boardTable.update(boardId, { updatedTimestamp });
