@@ -2,7 +2,7 @@ import React from "react";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import styled from "styled-components";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import State from "../../State";
 import List from "../List";
 
@@ -17,6 +17,10 @@ const KanbanBoard: React.FC<Props> = props => {
 
   const handleAddButtonClicked = () => {
     Container.onListAdded(boardId);
+  };
+
+  const handleDragEnded = (result: DropResult) => {
+    Container.onDragEnded(boardId, result);
   };
 
   const renderLists = () => {
@@ -41,7 +45,7 @@ const KanbanBoard: React.FC<Props> = props => {
 
   return (
     <StyledKanbanBoard>
-      <DragDropContext onDragEnd={Container.onDragEnded}>
+      <DragDropContext onDragEnd={handleDragEnded}>
         <Droppable
           droppableId={`${boardId}`}
           direction="horizontal"

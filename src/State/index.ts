@@ -201,7 +201,9 @@ const useStore = () => {
       destinationIndex > sourceIndex ? sourceIndex : destinationIndex;
     const upperIndex =
       destinationIndex > sourceIndex ? destinationIndex : sourceIndex;
-    const range = allLists.slice(lowerIndex, upperIndex - lowerIndex + 1);
+    const range = allLists
+      .filter(list => list.boardId === boardId)
+      .slice(lowerIndex, upperIndex - lowerIndex + 1);
     const dragList = range.filter(list => list.id === draglistId).pop();
 
     if (dragList) {
@@ -254,9 +256,8 @@ const useStore = () => {
     switch (type) {
       case "List": {
         try {
-          const boardId = parseInt(source.droppableId, 10);
-          const draglistId = parseInt(draggableId, 10);
-          swapList(boardId, draglistId, source.index, destination.index);
+          const dragListId = parseInt(draggableId, 10);
+          swapList(boardId, dragListId, source.index, destination.index);
         } catch (err) {
           throw err;
         }
