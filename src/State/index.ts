@@ -174,31 +174,16 @@ const useStore = () => {
     DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
-  const onCardDeleted = (boardId: number, listId: number, cardId: number) => {
-    console.log(boardId, listId, cardId);
+  const onCardDeleted = (boardId: number, cardId: number) => {
+    DB.cardTable
+      .delete(cardId)
+      .then(() => onCardTableUpdateCompleted())
+      .catch(err => {
+        throw err;
+      });
 
-    // setAllListDetail(prev => {
-    //   const { cards, filename } = prev[targetIndex];
-    //   const saveData = prev.slice(0, prev.length);
-    //   saveData[targetIndex].cards = cards.filter(
-    //     target => target.filename !== targetFilename
-    //   );
-    //   localStorageActionWrapper("SAVE", filename, jsonStringify(saveData));
-    //   return saveData;
-    // });
-    // setAllCard(prev => {
-    //   const saveData = prev.filter(
-    //     target => target.filename !== targetFilename
-    //   );
-    //   return saveData;
-    // });
-    // setAllCardDetail(prev => {
-    //   const saveData = prev.filter(
-    //     target => target.filename !== targetFilename
-    //   );
-    //   localStorageActionWrapper("REMOVE", targetFilename);
-    //   return saveData;
-    // });
+    const updatedTimestamp = Date.now();
+    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const onCardTextChanged = (

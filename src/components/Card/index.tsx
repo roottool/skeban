@@ -10,8 +10,10 @@ import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Draggable } from "react-beautiful-dnd";
 import DB, { CardTable } from "../../DB";
+import State from "../../State";
 
 interface Props {
+  boardId: number;
   listId: number;
   cardId: number;
   cardIndex: number;
@@ -21,8 +23,9 @@ interface Props {
 const KanbanCard: React.FC<Props> = props => {
   const isInitialMount = useRef(true);
 
-  const { cardId, cardIndex, listId, setCards } = props;
+  const { boardId, cardId, cardIndex, listId, setCards } = props;
 
+  const Container = State.useContainer();
   const [isLoading, setIsLoading] = useState(true);
   const [isInputArea, setIsInputArea] = useState(false);
   const [text, setText] = useState("");
@@ -74,51 +77,8 @@ const KanbanCard: React.FC<Props> = props => {
     setText(value);
   };
 
-  const onDeleteCardCompleted = () => {
-    DB.cardTable
-      .where("listId")
-      .equals(listId)
-      .sortBy("index")
-      .then(data => {
-        const allPromise = [];
-
-        for (let index = 0; index < data.length; index += 1) {
-          const { id } = data[index];
-          if (!id) {
-            throw new Error("Card not found.");
-          }
-          allPromise.push(
-            DB.cardTable.update(id, { index }).catch(err => {
-              throw err;
-            })
-          );
-        }
-
-        Promise.all(allPromise).then(() => {
-          DB.cardTable
-            .where("listId")
-            .equals(listId)
-            .sortBy("index")
-            .then(cards => setCards(cards))
-            .catch(err => {
-              throw err;
-            });
-        });
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
-
   const handleDeleteButtonClicked = () => {
-    DB.cardTable
-      .delete(cardId)
-      .then(() => {
-        onDeleteCardCompleted();
-      })
-      .catch(err => {
-        throw err;
-      });
+    Container.onCardDeleted(boardId, cardId);
   };
 
   const RenderDraggableCard = () => {

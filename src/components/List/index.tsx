@@ -57,6 +57,7 @@ const KanbanCardList: React.FC<Props> = props => {
         return (
           <Card
             key={card.id}
+            boardId={boardId}
             listId={listId}
             cardId={card.id}
             cardIndex={cardIndex}
