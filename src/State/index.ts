@@ -291,7 +291,7 @@ const useStore = () => {
     switch (type) {
       case "List": {
         try {
-          const dragListId = parseInt(draggableId, 10);
+          const dragListId = parseInt(draggableId.replace("listId-", ""), 10);
           swapLists(boardId, dragListId, source.index, destination.index);
         } catch (err) {
           throw err;
@@ -300,7 +300,7 @@ const useStore = () => {
       }
       case "Card": {
         try {
-          const dragCardtId = parseInt(draggableId, 10);
+          const dragCardtId = parseInt(draggableId.replace("cardId-", ""), 10);
           const sourceId = parseInt(source.droppableId, 10);
           const destinationId = parseInt(destination.droppableId, 10);
           swapCards(

@@ -68,7 +68,7 @@ const List: React.FC<Props> = props => {
   };
 
   return (
-    <Draggable draggableId={`${listId}`} index={listIndex}>
+    <Draggable draggableId={`listId-${listId}`} index={listIndex}>
       {provided => (
         <StyledPaper
           {...provided.draggableProps}
