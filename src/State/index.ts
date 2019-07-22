@@ -191,7 +191,7 @@ const useStore = () => {
     DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
-  const swapList = (
+  const swapLists = (
     boardId: number,
     draglistId: number,
     sourceIndex: number,
@@ -258,7 +258,7 @@ const useStore = () => {
       case "List": {
         try {
           const dragListId = parseInt(draggableId, 10);
-          swapList(boardId, dragListId, source.index, destination.index);
+          swapLists(boardId, dragListId, source.index, destination.index);
         } catch (err) {
           throw err;
         }
