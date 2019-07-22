@@ -240,7 +240,76 @@ const useStore = () => {
     }
   };
 
-  const onDragEnded = (dropResult: DropResult) => {
+  const swapCardsInTheSameList = (
+    boardId: number,
+    dragCardtId: number,
+    sourceIndex: number,
+    destinationId: number,
+    destinationIndex: number
+  ) => {
+    const lowerIndex =
+      destinationIndex > sourceIndex ? sourceIndex : destinationIndex;
+    const upperIndex =
+      destinationIndex > sourceIndex ? destinationIndex : sourceIndex;
+    const range = allCards
+      .filter(card => card.listId === destinationId)
+      .sort((a, b) => a.index - b.index)
+      .slice(lowerIndex, upperIndex + 1);
+    const dragCard = range.filter(card => card.id === dragCardtId).pop();
+
+    if (dragCard) {
+      if (dragCard.index === lowerIndex) {
+        range.splice(0, 1);
+        range.splice(range.length, 0, dragCard);
+      } else {
+        range.splice(range.length - 1, 1);
+        range.splice(0, 0, dragCard);
+      }
+
+      let indexOfRange = 0;
+      const promiseArray: Promise<number>[] = [];
+      for (let index = lowerIndex; index <= upperIndex; index += 1) {
+        range[indexOfRange].index = index;
+        const { id } = range[indexOfRange];
+        if (id) {
+          promiseArray.push(
+            DB.cardTable
+              .update(id, { index: range[indexOfRange].index })
+              .catch(err => {
+                throw err;
+              })
+          );
+        }
+        indexOfRange += 1;
+      }
+
+      Promise.all(promiseArray).then(() => onCardTableUpdateCompleted());
+
+      const updatedTimestamp = Date.now();
+      DB.boardTable.update(boardId, { updatedTimestamp });
+    }
+  };
+
+  const swapCards = (
+    boardId: number,
+    dragCardtId: number,
+    sourceId: number,
+    sourceIndex: number,
+    destinationId: number,
+    destinationIndex: number
+  ) => {
+    if (sourceId === destinationId) {
+      swapCardsInTheSameList(
+        boardId,
+        dragCardtId,
+        sourceIndex,
+        destinationId,
+        destinationIndex
+      );
+    }
+  };
+
+  const onDragEnded = (boardId: number, dropResult: DropResult) => {
     const { destination, draggableId, source, type } = dropResult;
 
     if (destination === undefined || !destination) {
@@ -264,7 +333,22 @@ const useStore = () => {
         }
         break;
       }
-      case "Card":
+      case "Card": {
+        try {
+          const dragCardtId = parseInt(draggableId, 10);
+          const sourceId = parseInt(source.droppableId, 10);
+          const destinationId = parseInt(destination.droppableId, 10);
+          swapCards(
+            boardId,
+            dragCardtId,
+            sourceId,
+            source.index,
+            destinationId,
+            destination.index
+          );
+        } catch (err) {
+          throw err;
+        }
         // setAllListDetail(prev => {
         //   const sourceListIndex = prev.findIndex(
         //     target => target.filename === source.droppableId
@@ -282,14 +366,10 @@ const useStore = () => {
         //     0,
         //     saveFileData
         //   );
-        //   localStorageActionWrapper(
-        //     "SAVE",
-        //     draggableId,
-        //     jsonStringify(saveFileData)
-        //   );
         //   return saveState;
         // });
         break;
+      }
       default:
         break;
     }
