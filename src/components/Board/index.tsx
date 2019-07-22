@@ -10,7 +10,7 @@ interface Props {
   boardId: number;
 }
 
-const KanbanBoard: React.FC<Props> = props => {
+const Board: React.FC<Props> = props => {
   const { boardId } = props;
 
   const Container = State.useContainer();
@@ -44,7 +44,7 @@ const KanbanBoard: React.FC<Props> = props => {
   };
 
   return (
-    <StyledKanbanBoard>
+    <StyledBoard>
       <DragDropContext onDragEnd={handleDragEnded}>
         <Droppable
           droppableId={`${boardId}`}
@@ -67,11 +67,11 @@ const KanbanBoard: React.FC<Props> = props => {
           <AddIcon />
         </Fab>
       </StyledAddbuttonArea>
-    </StyledKanbanBoard>
+    </StyledBoard>
   );
 };
 
-const StyledKanbanBoard = styled.div`
+const StyledBoard = styled.div`
   display: flex;
   margin: 8px 0px;
 `;
@@ -86,4 +86,4 @@ const StyledAddbuttonArea = styled.div`
   margin-top: 16px;
 `;
 
-export default KanbanBoard;
+export default Board;

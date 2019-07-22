@@ -15,7 +15,7 @@ interface Props {
   listIndex: number;
 }
 
-const KanbanCardList: React.FC<Props> = props => {
+const List: React.FC<Props> = props => {
   const isInitialMount = useRef(true);
 
   const { boardId, listId, listIndex } = props;
@@ -114,4 +114,4 @@ const StyledAddButtonArea = styled.div`
   margin-bottom: 8px;
 `;
 
-export default KanbanCardList;
+export default List;

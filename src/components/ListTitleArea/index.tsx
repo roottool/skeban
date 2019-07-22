@@ -12,7 +12,7 @@ interface Props {
   listId: number;
 }
 
-const KanbanCardListTitleArea: React.FC<Props> = props => {
+const ListTitleArea: React.FC<Props> = props => {
   const { boardId, listId } = props;
 
   const Container = State.useContainer();
@@ -46,10 +46,10 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
   };
 
   return (
-    <StyledCardListTitleArea>
+    <StyledListTitleArea>
       {isInputArea ? (
-        <StyledCardTitleForm>
-          <StyledCardTitleTextField
+        <StyledListTitleForm>
+          <StyledListTitleTextField
             id="card-list-name"
             label="Card Title"
             value={title}
@@ -59,13 +59,13 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
             onKeyPress={handleKeyPressed}
             onBlur={handleisInputAreaChange}
           />
-        </StyledCardTitleForm>
+        </StyledListTitleForm>
       ) : (
-        <StyledCardTitleDiv onClick={handleisInputAreaChange}>
+        <StyledListTitleDiv onClick={handleisInputAreaChange}>
           <Typography variant="h6" gutterBottom>
             {title || "The title is empty"}
           </Typography>
-        </StyledCardTitleDiv>
+        </StyledListTitleDiv>
       )}
       {isInputArea && (
         <StyledEditIconArea>
@@ -87,26 +87,26 @@ const KanbanCardListTitleArea: React.FC<Props> = props => {
           <DeleteIcon fontSize="large" />
         </IconButton>
       </StyledEditIconArea>
-    </StyledCardListTitleArea>
+    </StyledListTitleArea>
   );
 };
 
-const StyledCardListTitleArea = styled.div`
+const StyledListTitleArea = styled.div`
   display: flex;
   align-items: center;
   margin-top: 8px;
 `;
 
-const StyledCardTitleForm = styled.form`
+const StyledListTitleForm = styled.form`
   flex-basis: 80%;
   margin-left: 8px;
 `;
 
-const StyledCardTitleTextField = styled(TextField)`
+const StyledListTitleTextField = styled(TextField)`
   width: 100%;
 `;
 
-const StyledCardTitleDiv = styled.div`
+const StyledListTitleDiv = styled.div`
   flex-basis: 80%;
   margin-left: 8px;
   min-height: 72px;
@@ -121,4 +121,4 @@ const StyledEditIconArea = styled.div`
   text-align: center;
 `;
 
-export default KanbanCardListTitleArea;
+export default ListTitleArea;

@@ -17,7 +17,7 @@ interface Props {
   cardIndex: number;
 }
 
-const KanbanCard: React.FC<Props> = props => {
+const Card: React.FC<Props> = props => {
   const { boardId, cardId, cardIndex } = props;
 
   const Container = State.useContainer();
@@ -113,4 +113,4 @@ const StyledCardContentDiv = styled.div`
   white-space: pre-line;
 `;
 
-export default KanbanCard;
+export default Card;
