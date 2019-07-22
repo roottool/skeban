@@ -1,20 +1,17 @@
 import { useEffect, useState, useRef } from "react";
 import { createContainer } from "unstated-next";
 import { DropResult } from "react-beautiful-dnd";
-import DB, { BoardTable, CardTable } from "../DB";
-
+import DB, { BoardTable } from "../DB";
 import useListState from "./List";
+import useCardState from "./Card";
 
 type Boards = BoardTable[];
-type Cards = CardTable[];
 
 const useStore = () => {
   const isInitialBoardsMount = useRef(true);
-  const isInitialCardsMount = useRef(true);
   const isInitialCurrentBoardIdMount = useRef(true);
 
   const [allBoards, setAllBoards] = useState<Boards>([]);
-  const [allCards, setAllCards] = useState<Cards>([]);
   const [currentBoardId, setCurrentBoardId] = useState<number>();
 
   const listContainer = useListState.useContainer();
@@ -25,6 +22,14 @@ const useStore = () => {
     onListTitleChanged,
     onListTableUpdateCompleted
   } = listContainer;
+  const cardContainer = useCardState.useContainer();
+  const {
+    allCards,
+    onCardAdded,
+    onCardDeleted,
+    onCardTextChanged,
+    onCardTableUpdateCompleted
+  } = cardContainer;
 
   useEffect(() => {
     if (isInitialBoardsMount.current) {
@@ -35,16 +40,6 @@ const useStore = () => {
       });
     }
   }, [allBoards]);
-
-  useEffect(() => {
-    if (isInitialCardsMount.current) {
-      isInitialCardsMount.current = false;
-
-      DB.cardTable.toArray().then(cardsData => {
-        setAllCards(cardsData);
-      });
-    }
-  }, [allCards]);
 
   useEffect(() => {
     if (isInitialCurrentBoardIdMount) {
@@ -79,58 +74,6 @@ const useStore = () => {
       .catch(err => {
         throw err;
       });
-  };
-
-  const onCardTableUpdateCompleted = () => {
-    DB.cardTable
-      .toArray()
-      .then(cards => {
-        setAllCards(cards);
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
-
-  const onCardAdded = (boardId: number, listId: number) => {
-    const index = allCards.filter(card => card.listId === listId).length;
-    DB.cardTable
-      .add({
-        listId,
-        index,
-        text: ""
-      })
-      .then(() => onCardTableUpdateCompleted())
-      .catch(err => {
-        throw err;
-      });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
-  };
-
-  const onCardDeleted = (boardId: number, cardId: number) => {
-    DB.cardTable
-      .delete(cardId)
-      .then(() => onCardTableUpdateCompleted())
-      .catch(err => {
-        throw err;
-      });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
-  };
-
-  const onCardTextChanged = (boardId: number, cardId: number, text: string) => {
-    DB.cardTable
-      .update(cardId, { text })
-      .then(() => onCardTableUpdateCompleted())
-      .catch(err => {
-        throw err;
-      });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const swapLists = (
