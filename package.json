@@ -1,6 +1,6 @@
 {
   "name": "skeban",
-  "version": "0.0.1",
+  "productName": "Skeban",
   "version": "0.1.0",
   "description": "Sketches your brain in kanban",
   "main": "index.js",
