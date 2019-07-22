@@ -224,8 +224,8 @@ const useStore = () => {
         if (id) {
           promiseArray.push(
             DB.listTable.update(id, { index }).catch(err => {
-                throw err;
-              })
+              throw err;
+            })
           );
         }
         indexOfRange += 1;
@@ -272,11 +272,83 @@ const useStore = () => {
         if (id) {
           promiseArray.push(
             DB.cardTable.update(id, { index }).catch(err => {
-                throw err;
-              })
+              throw err;
+            })
           );
         }
         indexOfRange += 1;
+      }
+
+      Promise.all(promiseArray).then(() => onCardTableUpdateCompleted());
+
+      const updatedTimestamp = Date.now();
+      DB.boardTable.update(boardId, { updatedTimestamp });
+    }
+  };
+
+  const swapCardsInDifferentList = (
+    boardId: number,
+    dragCardtId: number,
+    sourceId: number,
+    sourceIndex: number,
+    destinationId: number,
+    destinationIndex: number
+  ) => {
+    const sourceRange = allCards
+      .filter(card => card.listId === sourceId)
+      .slice(sourceIndex);
+    const destinationRange = allCards
+      .filter(card => card.listId === destinationId)
+      .slice(destinationIndex);
+    const dragCard = allCards.find(card => card.id === dragCardtId);
+
+    if (dragCard) {
+      sourceRange.splice(0, 1);
+      destinationRange.splice(0, 0, dragCard);
+
+      let index = sourceIndex;
+      const promiseArray: Promise<number>[] = [];
+      for (
+        let indexOfRange = 0;
+        indexOfRange < sourceRange.length;
+        indexOfRange += 1
+      ) {
+        const { id } = sourceRange[indexOfRange];
+        if (id) {
+          promiseArray.push(
+            DB.cardTable.update(id, { index }).catch(err => {
+              throw err;
+            })
+          );
+        }
+
+        index += 1;
+      }
+
+      index = destinationIndex;
+      for (
+        let indexOfRange = 0;
+        indexOfRange < destinationRange.length;
+        indexOfRange += 1
+      ) {
+        const { id } = destinationRange[indexOfRange];
+        if (id && index === destinationIndex) {
+          promiseArray.push(
+            DB.cardTable
+              .update(id, { listId: destinationId, index })
+              .catch(err => {
+                throw err;
+              })
+          );
+        } else if (id) {
+          promiseArray.push(
+            DB.cardTable.update(id, { index }).catch(err => {
+              throw err;
+            })
+          );
+        }
+
+        index += 1;
       }
 
       Promise.all(promiseArray).then(() => onCardTableUpdateCompleted());
@@ -298,6 +370,15 @@ const useStore = () => {
       swapCardsInTheSameList(
         boardId,
         dragCardtId,
+        sourceIndex,
+        destinationId,
+        destinationIndex
+      );
+    } else {
+      swapCardsInDifferentList(
+        boardId,
+        dragCardtId,
+        sourceId,
         sourceIndex,
         destinationId,
         destinationIndex
