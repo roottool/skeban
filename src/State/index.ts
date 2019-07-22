@@ -426,25 +426,6 @@ const useStore = () => {
         } catch (err) {
           throw err;
         }
-        // setAllListDetail(prev => {
-        //   const sourceListIndex = prev.findIndex(
-        //     target => target.filename === source.droppableId
-        //   );
-        //   const destinationListIndex = prev.findIndex(
-        //     target => target.filename === destination.droppableId
-        //   );
-        //   const saveState = prev.slice(0, prev.length);
-        //   const saveFileData: Cards = {
-        //     filename: draggableId
-        //   };
-        //   saveState[sourceListIndex].cards.splice(source.index, 1);
-        //   saveState[destinationListIndex].cards.splice(
-        //     destination.index,
-        //     0,
-        //     saveFileData
-        //   );
-        //   return saveState;
-        // });
         break;
       }
       default:
