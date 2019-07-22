@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import Webpack from "webpack";
 import Path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
