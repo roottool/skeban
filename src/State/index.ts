@@ -205,7 +205,7 @@ const useStore = () => {
       .filter(list => list.boardId === boardId)
       .sort((a, b) => a.index - b.index)
       .slice(lowerIndex, upperIndex + 1);
-    const dragList = range.filter(list => list.id === draglistId).pop();
+    const dragList = range.find(list => list.id === draglistId);
 
     if (dragList) {
       if (dragList.index === lowerIndex) {
@@ -253,7 +253,7 @@ const useStore = () => {
       .filter(card => card.listId === destinationId)
       .sort((a, b) => a.index - b.index)
       .slice(lowerIndex, upperIndex + 1);
-    const dragCard = range.filter(card => card.id === dragCardtId).pop();
+    const dragCard = range.find(card => card.id === dragCardtId);
 
     if (dragCard) {
       if (dragCard.index === lowerIndex) {
