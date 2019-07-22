@@ -223,9 +223,7 @@ const useStore = () => {
         const { id } = range[indexOfRange];
         if (id) {
           promiseArray.push(
-            DB.listTable
-              .update(id, { index: range[indexOfRange].index })
-              .catch(err => {
+            DB.listTable.update(id, { index }).catch(err => {
                 throw err;
               })
           );
@@ -273,9 +271,7 @@ const useStore = () => {
         const { id } = range[indexOfRange];
         if (id) {
           promiseArray.push(
-            DB.cardTable
-              .update(id, { index: range[indexOfRange].index })
-              .catch(err => {
+            DB.cardTable.update(id, { index }).catch(err => {
                 throw err;
               })
           );
