@@ -198,6 +198,7 @@ const useStore = () => {
         indexOfRange < sourceRange.length;
         indexOfRange += 1
       ) {
+        sourceRange[indexOfRange].index = index;
         const { id } = sourceRange[indexOfRange];
         if (id) {
           promiseArray.push(
@@ -216,8 +217,10 @@ const useStore = () => {
         indexOfRange < destinationRange.length;
         indexOfRange += 1
       ) {
+        destinationRange[indexOfRange].index = index;
         const { id } = destinationRange[indexOfRange];
         if (id && index === destinationIndex) {
+          destinationRange[indexOfRange].listId = destinationId;
           promiseArray.push(
             DB.cardTable
               .update(id, { listId: destinationId, index })
