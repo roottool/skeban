@@ -4,7 +4,7 @@ import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Typography } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import State from "../../State";
 
 interface Props {
