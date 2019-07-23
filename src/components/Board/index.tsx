@@ -1,31 +1,47 @@
 import React from "react";
 import styled from "styled-components";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
+import { match as Match } from "react-router-dom";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import State from "../../State";
+import BoardHeader from "../BoardHeader";
 import List from "../List";
 
-interface Props {
-  boardId: number;
-}
+type Identifiable = {
+  boardId: string;
+};
+
+type Props = {
+  match: Match<Identifiable>;
+};
 
 const Board: React.FC<Props> = props => {
-  const { boardId } = props;
+  const { match } = props;
+  const { boardId } = match.params;
+
+  const boardIdNumber = () => {
+    try {
+      return parseInt(boardId, 10);
+    } catch (err) {
+      throw err;
+    }
+  };
 
   const Container = State.useContainer();
 
   const handleAddButtonClicked = () => {
-    Container.onListAdded(boardId);
+    Container.onListAdded(boardIdNumber());
   };
 
   const handleDragEnded = (result: DropResult) => {
-    Container.onDragEnded(boardId, result);
+    Container.onDragEnded(boardIdNumber(), result);
   };
 
   const renderLists = () => {
+    const id = boardIdNumber();
     const result = Container.allLists
-      .filter(list => list.boardId === boardId)
+      .filter(list => list.boardId === id)
       .sort((a, b) => a.index - b.index)
       .map((list, listIndex) => {
         if (!list.id) {
@@ -34,7 +50,7 @@ const Board: React.FC<Props> = props => {
         return (
           <List
             key={list.id}
-            boardId={boardId}
+            boardId={id}
             listId={list.id}
             listIndex={listIndex}
           />
@@ -44,30 +60,37 @@ const Board: React.FC<Props> = props => {
   };
 
   return (
-    <StyledBoard>
-      <DragDropContext onDragEnd={handleDragEnded}>
-        <Droppable
-          droppableId={`${boardId}`}
-          direction="horizontal"
-          type="List"
-        >
-          {provided => (
-            <StyledContainer
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {renderLists()}
-              {provided.placeholder}
-            </StyledContainer>
-          )}
-        </Droppable>
-      </DragDropContext>
-      <StyledAddbuttonArea>
-        <Fab color="primary" aria-label="Add" onClick={handleAddButtonClicked}>
-          <AddIcon />
-        </Fab>
-      </StyledAddbuttonArea>
-    </StyledBoard>
+    <div>
+      <BoardHeader boardId={boardIdNumber()} />
+      <StyledBoard>
+        <DragDropContext onDragEnd={handleDragEnded}>
+          <Droppable
+            droppableId={`${boardId}`}
+            direction="horizontal"
+            type="List"
+          >
+            {provided => (
+              <StyledContainer
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {renderLists()}
+                {provided.placeholder}
+              </StyledContainer>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <StyledAddbuttonArea>
+          <Fab
+            color="primary"
+            aria-label="Add"
+            onClick={handleAddButtonClicked}
+          >
+            <AddIcon />
+          </Fab>
+        </StyledAddbuttonArea>
+      </StyledBoard>
+    </div>
   );
 };
 

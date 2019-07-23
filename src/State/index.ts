@@ -350,6 +350,7 @@ const useStore = () => {
     allLists,
     allCards,
     currentBoardId,
+    setCurrentBoardId,
     onBoardAdded,
     onBoardDeleted,
     onListAdded,

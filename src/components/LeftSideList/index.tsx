@@ -1,9 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
+import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import State from "../../State";
@@ -21,6 +23,24 @@ const LeftSideBar: React.FC<Props> = props => {
     StateContainer.onBoardAdded();
   };
 
+  const renderBoards = () => {
+    const result = StateContainer.allBoards.map(board => {
+      if (!board.id) {
+        return <></>;
+      }
+
+      const title = board.title ? board.title : "The title is empty";
+      return (
+        <Link to={`/board/${board.id}`} key={board.id}>
+          <StyledPaper>
+            <Typography variant="h6">{title}</Typography>
+          </StyledPaper>
+        </Link>
+      );
+    });
+    return result;
+  };
+
   return (
     <div
       role="presentation"
@@ -32,6 +52,7 @@ const LeftSideBar: React.FC<Props> = props => {
           <Typography variant="h4">Skeban</Typography>
         </Toolbar>
         <Divider />
+        {renderBoards()}
         <StyledAddbuttonArea>
           <Fab
             color="primary"

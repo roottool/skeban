@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import AppState from "./State";
 import ListState from "./State/List";
@@ -11,7 +12,9 @@ ReactDOM.render(
   <ListState.Provider>
     <CardState.Provider>
       <AppState.Provider>
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </AppState.Provider>
     </CardState.Provider>
   </ListState.Provider>,
