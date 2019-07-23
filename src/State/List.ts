@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createContainer } from "unstated-next";
 import DB, { ListTable } from "../DB";
+import useCardState from "./Card";
 
 type Lists = ListTable[];
 
@@ -8,6 +9,8 @@ const useListState = () => {
   const isInitialListsMount = useRef(true);
 
   const [allLists, setAllLists] = useState<Lists>([]);
+  const cardContainer = useCardState.useContainer();
+  const { allCards, onCardTableUpdateCompleted } = cardContainer;
 
   useEffect(() => {
     if (isInitialListsMount.current) {
@@ -54,6 +57,20 @@ const useListState = () => {
       .catch(err => {
         throw err;
       });
+
+    const cardPromiseArray: Promise<void>[] = [];
+    allCards
+      .filter(card => card.listId === listId)
+      .forEach(card => {
+        if (card.id) {
+          cardPromiseArray.push(
+            DB.cardTable.delete(card.id).catch(err => {
+              throw err;
+            })
+          );
+        }
+      });
+    Promise.all(cardPromiseArray).then(() => onCardTableUpdateCompleted());
 
     const updatedTimestamp = Date.now();
     DB.boardTable.update(boardId, { updatedTimestamp });
