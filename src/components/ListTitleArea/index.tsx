@@ -27,7 +27,7 @@ const ListTitleArea: React.FC<Props> = props => {
     setIsInputArea(!isInputArea);
   };
 
-  const handleCardTitleChanged = (
+  const handleListTitleChanged = (
     event: React.ChangeEvent<
       HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
     >
@@ -55,7 +55,7 @@ const ListTitleArea: React.FC<Props> = props => {
             value={title}
             margin="normal"
             autoFocus
-            onChange={handleCardTitleChanged}
+            onChange={handleListTitleChanged}
             onKeyPress={handleKeyPressed}
             onBlur={handleisInputAreaChange}
           />
