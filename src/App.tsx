@@ -5,24 +5,9 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Drawer from "@material-ui/core/Drawer";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import DB from "./DB";
+import State from "./State";
 import LeftSideBar from "./components/LeftSideList";
 import Board from "./components/Board";
-
-const initialDB = async () => {
-  await DB.boardTable.count(count => {
-    if (count === 0) {
-      const createdTimestamp = Date.now();
-      DB.boardTable.put({
-        title: "",
-        createdTimestamp,
-        updatedTimestamp: createdTimestamp
-      });
-    }
-  });
-};
-initialDB();
 
 type ElevationScrollProps = {
   children: React.ReactElement;
@@ -51,12 +36,9 @@ const App: React.FC = () => {
   };
 
   const renderBoard = () => {
-    const boardId = 4;
+    const boardId = Container.currentBoardId;
 
-    if (boardId) {
-      return <Board boardId={boardId} />;
-    }
-    return <CircularProgress color="primary" />;
+    return boardId && <Board boardId={boardId} />;
   };
 
   return (
