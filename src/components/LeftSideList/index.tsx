@@ -31,11 +31,11 @@ const LeftSideBar: React.FC<Props> = props => {
 
       const title = board.title ? board.title : "The title is empty";
       return (
-        <Link to={`/board/${board.id}`} key={board.id}>
+        <StyledLink to={`/board/${board.id}`} key={board.id}>
           <StyledPaper>
             <Typography variant="h6">{title}</Typography>
           </StyledPaper>
-        </Link>
+        </StyledLink>
       );
     });
     return result;
@@ -66,6 +66,10 @@ const LeftSideBar: React.FC<Props> = props => {
     </div>
   );
 };
+
+const StyledLink = styled(Link)`
+  text-decoration-line: none;
+`;
 
 const StyledPaper = styled(Paper)`
   min-height: 120px;
