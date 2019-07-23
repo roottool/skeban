@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
+import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -50,7 +50,7 @@ const ListTitleArea: React.FC<Props> = props => {
       {isInputArea ? (
         <StyledListTitleForm>
           <StyledListTitleTextField
-            id="card-list-name"
+            id="list-name"
             label="Card Title"
             value={title}
             margin="normal"
