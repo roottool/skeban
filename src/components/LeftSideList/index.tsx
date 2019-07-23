@@ -27,7 +27,7 @@ const LeftSideBar: React.FC<Props> = props => {
       onClick={toggleLeftSideBar}
       onKeyDown={toggleLeftSideBar}
     >
-      <StyledLeftSideBar>
+      <Container>
         <Toolbar>
           <Typography variant="h4">Skeban</Typography>
         </Toolbar>
@@ -41,13 +41,14 @@ const LeftSideBar: React.FC<Props> = props => {
             <AddIcon />
           </Fab>
         </StyledAddbuttonArea>
-      </StyledLeftSideBar>
+      </Container>
     </div>
   );
 };
 
-const StyledLeftSideBar = styled(Container)`
-  width: 30%;
+const StyledPaper = styled(Paper)`
+  min-height: 120px;
+  margin-top: 16px;
 `;
 
 const StyledAddbuttonArea = styled.div`
