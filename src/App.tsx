@@ -5,6 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Delete from "@material-ui/icons/Delete";
+import Typography from "@material-ui/core/Typography";
 import Drawer from "@material-ui/core/Drawer";
 import State from "./State";
 import LeftSideBar from "./components/LeftSideList";
@@ -44,6 +45,19 @@ const App: React.FC = () => {
     }
   };
 
+  const renderBoardTitle = () => {
+    const board = Container.allBoards.find(
+      boardData => boardData.id === Container.currentBoardId
+    );
+
+    if (board) {
+      const title = board.title ? board.title : "The title is empty";
+      return <Typography variant="h6">{title}</Typography>;
+    }
+
+    return <></>;
+  };
+
   const renderBoardDeleteButton = () => {
     const boardId = Container.currentBoardId;
 
@@ -81,6 +95,7 @@ const App: React.FC = () => {
             >
               <MenuIcon />
             </IconButton>
+            {renderBoardTitle()}
             <StyledFlexGrow />
             {renderBoardDeleteButton()}
           </Toolbar>
