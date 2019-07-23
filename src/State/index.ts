@@ -9,10 +9,8 @@ type Boards = BoardTable[];
 
 const useStore = () => {
   const isInitialBoardsMount = useRef(true);
-  const isInitialCurrentBoardIdMount = useRef(true);
 
   const [allBoards, setAllBoards] = useState<Boards>([]);
-  const [currentBoardId, setCurrentBoardId] = useState<number>();
 
   const listContainer = useListState.useContainer();
   const {
@@ -45,23 +43,6 @@ const useStore = () => {
     }
   }, [allBoards]);
 
-  useEffect(() => {
-    if (isInitialCurrentBoardIdMount) {
-      isInitialCurrentBoardIdMount.current = false;
-
-      DB.boardTable
-        .orderBy("updatedTimestamp")
-        .reverse()
-        .toArray()
-        .then(boardsData => {
-          const board = boardsData.pop();
-          if (board && board.id) {
-            setCurrentBoardId(board.id);
-          }
-        });
-    }
-  }, [currentBoardId]);
-
   const onBoardTableUpdateCompleted = () => {
     DB.boardTable
       .toArray()
@@ -81,9 +62,8 @@ const useStore = () => {
         title: "",
         updatedTimestamp: createdTimestamp
       })
-      .then(id => {
+      .then(() => {
         onBoardTableUpdateCompleted();
-        setCurrentBoardId(id);
       })
       .catch(err => {
         throw err;
@@ -98,6 +78,18 @@ const useStore = () => {
       .catch(err => {
         throw err;
       });
+  };
+
+  const onBoardTitleChanged = (boardId: number, title: string) => {
+    DB.boardTable
+      .update(boardId, { title })
+      .then(() => onBoardTableUpdateCompleted())
+      .catch(err => {
+        throw err;
+      });
+
+    const updatedTimestamp = Date.now();
+    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const swapLists = (
@@ -349,10 +341,9 @@ const useStore = () => {
     allBoards,
     allLists,
     allCards,
-    currentBoardId,
-    setCurrentBoardId,
     onBoardAdded,
     onBoardDeleted,
+    onBoardTitleChanged,
     onListAdded,
     onListDeleted,
     onListTitleChanged,

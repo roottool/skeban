@@ -8,6 +8,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Delete from "@material-ui/icons/Delete";
 import Typography from "@material-ui/core/Typography";
 import Drawer from "@material-ui/core/Drawer";
+import TextField from "@material-ui/core/TextField";
 import State from "../../State";
 import LeftSideBar from "../LeftSideList";
 
@@ -23,6 +24,7 @@ const BoardHeader: React.FC<Props> = props => {
   const { boardId } = props;
 
   const [isLeftSideBarOpen, setIsLeftSideBarOpen] = useState(false);
+  const [isInputArea, setIsInputArea] = useState(false);
 
   const Container = State.useContainer();
 
@@ -45,6 +47,24 @@ const BoardHeader: React.FC<Props> = props => {
     });
   };
 
+  const handleisInputAreaChange = () => {
+    setIsInputArea(!isInputArea);
+  };
+
+  const handleBoardTitleChanged = (
+    event: React.ChangeEvent<
+      HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
+    >
+  ) => {
+    Container.onBoardTitleChanged(boardId, event.target.value);
+  };
+
+  const handleKeyPressed = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter") {
+      handleisInputAreaChange();
+    }
+  };
+
   const handleDeleteButtonClicked = () => {
     Container.onBoardDeleted(boardId);
   };
@@ -55,8 +75,31 @@ const BoardHeader: React.FC<Props> = props => {
     );
 
     if (board) {
-      const title = board.title ? board.title : "The title is empty";
-      return <Typography variant="h6">{title}</Typography>;
+      return (
+        <>
+          {isInputArea ? (
+            <StyledBoardTitleForm>
+              <StyledBoardTitleTextField
+                id="board-name"
+                label="Board Title"
+                value={board.title ? board.title : ""}
+                margin="normal"
+                autoFocus
+                fullWidth
+                onChange={handleBoardTitleChanged}
+                onKeyPress={handleKeyPressed}
+                onBlur={handleisInputAreaChange}
+              />
+            </StyledBoardTitleForm>
+          ) : (
+            <StyledBoardTitleDiv onClick={handleisInputAreaChange}>
+              <Typography variant="h6" gutterBottom>
+                {board.title ? board.title : "The title is empty"}
+              </Typography>
+            </StyledBoardTitleDiv>
+          )}
+        </>
+      );
     }
 
     return <></>;
@@ -77,7 +120,6 @@ const BoardHeader: React.FC<Props> = props => {
               <MenuIcon />
             </IconButton>
             {renderBoardTitle()}
-            <StyledFlexGrow />
             <StyledLink to="/">
               <IconButton
                 aria-label="Delete the board"
@@ -98,8 +140,18 @@ const BoardHeader: React.FC<Props> = props => {
   );
 };
 
-const StyledFlexGrow = styled.div`
+const StyledBoardTitleForm = styled.form`
   flex-grow: 1;
+`;
+
+const StyledBoardTitleTextField = styled(TextField)`
+  background-color: white;
+`;
+
+const StyledBoardTitleDiv = styled.div`
+  flex-grow: 1;
+  word-break: break-word;
+  cursor: pointer;
 `;
 
 const StyledLink = styled(Link)`
