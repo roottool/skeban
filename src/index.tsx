@@ -9,14 +9,14 @@ import CardState from "./State/Card";
 import "typeface-roboto";
 
 ReactDOM.render(
-  <ListState.Provider>
-    <CardState.Provider>
+  <CardState.Provider>
+    <ListState.Provider>
       <AppState.Provider>
         <BrowserRouter>
           <App />
         </BrowserRouter>
       </AppState.Provider>
-    </CardState.Provider>
-  </ListState.Provider>,
+    </ListState.Provider>
+  </CardState.Provider>,
   document.getElementById("root")
 );

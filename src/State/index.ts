@@ -71,13 +71,40 @@ const useStore = () => {
   };
 
   const onBoardDeleted = (boardId: number) => {
-    // TODO : Deletes all lists and cards contained in the board.
     DB.boardTable
       .delete(boardId)
       .then(() => onBoardTableUpdateCompleted())
       .catch(err => {
         throw err;
       });
+
+    const listPromiseArray: Promise<void>[] = [];
+    const cardPromiseArray: Promise<void>[] = [];
+    allLists
+      .filter(list => list.boardId === boardId)
+      .forEach(list => {
+        if (list.id) {
+          listPromiseArray.push(
+            DB.listTable.delete(list.id).catch(err => {
+              throw err;
+            })
+          );
+
+          allCards
+            .filter(card => card.listId === list.id)
+            .forEach(card => {
+              if (card.id) {
+                cardPromiseArray.push(
+                  DB.cardTable.delete(card.id).catch(err => {
+                    throw err;
+                  })
+                );
+              }
+            });
+        }
+      });
+    Promise.all(listPromiseArray).then(() => onListTableUpdateCompleted());
+    Promise.all(cardPromiseArray).then(() => onCardTableUpdateCompleted());
   };
 
   const onBoardTitleChanged = (boardId: number, title: string) => {
