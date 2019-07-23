@@ -35,20 +35,43 @@ const useStore = () => {
     if (isInitialBoardsMount.current) {
       isInitialBoardsMount.current = false;
 
-      DB.boardTable.toArray().then(boardsData => {
-        setAllBoards(boardsData);
-      });
+      DB.boardTable
+        .orderBy("updatedTimestamp")
+        .reverse()
+        .toArray()
+        .then(boardsData => {
+          setAllBoards(boardsData);
+        });
     }
   }, [allBoards]);
 
   useEffect(() => {
     if (isInitialCurrentBoardIdMount) {
       isInitialCurrentBoardIdMount.current = false;
-      if (allBoards[0] && allBoards[0].id) {
-        setCurrentBoardId(allBoards[0].id);
-      }
+
+      DB.boardTable
+        .orderBy("updatedTimestamp")
+        .reverse()
+        .toArray()
+        .then(boardsData => {
+          const board = boardsData.pop();
+          if (board && board.id) {
+            setCurrentBoardId(board.id);
+          }
+        });
     }
   }, [currentBoardId]);
+
+  const onBoardTableUpdateCompleted = () => {
+    DB.boardTable
+      .toArray()
+      .then(boards => {
+        setAllBoards(boards);
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
 
   const onBoardAdded = () => {
     const createdTimestamp = Date.now();
@@ -58,19 +81,20 @@ const useStore = () => {
         title: "",
         updatedTimestamp: createdTimestamp
       })
-      .then(() => {
-        setAllBoards(prev => {
-          const saveData: Boards = [
-            ...prev,
-            {
-              createdTimestamp,
-              title: "",
-              updatedTimestamp: createdTimestamp
-            }
-          ];
-          return saveData;
-        });
+      .then(id => {
+        onBoardTableUpdateCompleted();
+        setCurrentBoardId(id);
       })
+      .catch(err => {
+        throw err;
+      });
+  };
+
+  const onBoardDeleted = (boardId: number) => {
+    // TODO : Deletes all lists and cards contained in the board.
+    DB.boardTable
+      .delete(boardId)
+      .then(() => onBoardTableUpdateCompleted())
       .catch(err => {
         throw err;
       });
@@ -327,6 +351,7 @@ const useStore = () => {
     allCards,
     currentBoardId,
     onBoardAdded,
+    onBoardDeleted,
     onListAdded,
     onListDeleted,
     onListTitleChanged,

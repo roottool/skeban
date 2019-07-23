@@ -1,9 +1,10 @@
 import React, { Fragment, useState } from "react";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import Delete from "@material-ui/icons/Delete";
 import Drawer from "@material-ui/core/Drawer";
 import State from "./State";
 import LeftSideBar from "./components/LeftSideList";
@@ -15,6 +16,8 @@ type ElevationScrollProps = {
 
 const App: React.FC = () => {
   const [isLeftSideBarOpen, setIsLeftSideBarOpen] = useState(false);
+
+  const Container = State.useContainer();
 
   const toggleLeftSideBar = (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -33,6 +36,28 @@ const App: React.FC = () => {
     return React.cloneElement(children, {
       elevation: 4
     });
+  };
+
+  const handleDeleteButtonClicked = () => {
+    if (Container.currentBoardId) {
+      Container.onBoardDeleted(Container.currentBoardId);
+    }
+  };
+
+  const renderBoardDeleteButton = () => {
+    const boardId = Container.currentBoardId;
+
+    return (
+      boardId && (
+        <IconButton
+          aria-label="Delete the board"
+          onClick={handleDeleteButtonClicked}
+          color="inherit"
+        >
+          <Delete />
+        </IconButton>
+      )
+    );
   };
 
   const renderBoard = () => {
@@ -56,6 +81,8 @@ const App: React.FC = () => {
             >
               <MenuIcon />
             </IconButton>
+            <StyledFlexGrow />
+            {renderBoardDeleteButton()}
           </Toolbar>
         </AppBar>
       </ElevationScroll>
@@ -86,6 +113,10 @@ const GlobalStyles = createGlobalStyle`
   h1, h2, h3, h4, h5, h6, p {
     margin: 4px 0px;
   }
+`;
+
+const StyledFlexGrow = styled.div`
+  flex-grow: 1;
 `;
 
 export default App;
