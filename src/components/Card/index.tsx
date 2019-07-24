@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
-import CardEditor from "react-simple-code-editor";
-import { highlight, languages } from "prismjs";
-import "prismjs/components/prism-markdown";
+import ReactMde from "react-mde";
+import Showdown from "showdown";
 import Markdown from "markdown-to-jsx";
 import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Draggable } from "react-beautiful-dnd";
 import State from "../../State";
+import "react-mde/lib/styles/css/react-mde-editor.css";
+import "react-mde/lib/styles/css/react-mde-toolbar.css";
+import "react-mde/lib/styles/css/react-mde.css";
+import "react-mde/lib/styles/css/variables.css";
 
 interface Props {
   boardId: number;
@@ -17,23 +20,37 @@ interface Props {
   cardIndex: number;
 }
 
+type SelectedTab = "write" | "preview" | undefined;
+
+const converter = new Showdown.Converter({
+  tables: true,
+  simplifiedAutoLink: true,
+  strikethrough: true,
+  tasklists: true
+});
+
 const Card: React.FC<Props> = props => {
   const { boardId, cardId, cardIndex } = props;
 
   const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<SelectedTab>("write");
 
   const card = Container.allCards
     .filter(cardData => cardData.id === cardId)
     .pop();
-  const text = card ? card.text : "";
+  const cardText = card ? card.text : "";
+  const [text, setValue] = useState(cardText);
 
   const handleisInputAreaChange = () => {
+    if (isInputArea) {
+      Container.onCardTextChanged(boardId, cardId, text);
+    }
     setIsInputArea(!isInputArea);
   };
 
   const handleValueChanged = (value: string) => {
-    Container.onCardTextChanged(boardId, cardId, value);
+    setValue(value);
   };
 
   const handleDeleteButtonClicked = () => {
@@ -45,12 +62,14 @@ const Card: React.FC<Props> = props => {
       {isInputArea ? (
         <div>
           <StyledPaper>
-            <StyledCodeEditor
+            <StyledReactMde
               value={text}
-              onValueChange={handleValueChanged}
-              highlight={code => highlight(code, languages.markdown, "md")}
-              padding={10}
-              autoFocus
+              onChange={handleValueChanged}
+              selectedTab={selectedTab}
+              onTabChange={setSelectedTab}
+              generateMarkdownPreview={markdown =>
+                Promise.resolve(converter.makeHtml(markdown))
+              }
             />
           </StyledPaper>
           <StyledButtonArea>
@@ -71,7 +90,7 @@ const Card: React.FC<Props> = props => {
           </StyledButtonArea>
         </div>
       ) : (
-        <Draggable draggableId={`cardId-${cardId}`} index={cardIndex}>
+        <Draggable draggableId={`${cardId}`} index={cardIndex}>
           {provided => (
             <StyledPaper
               {...provided.draggableProps}
@@ -95,9 +114,7 @@ const StyledPaper = styled(Paper)`
   cursor: pointer;
 `;
 
-const StyledCodeEditor = styled(CardEditor)`
-  font-family: '"Fira code", "Fira Mono", monospace';
-  font-size: 12;
+const StyledReactMde = styled(ReactMde)`
   min-height: 72px;
 `;
 
