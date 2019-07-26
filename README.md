@@ -2,6 +2,8 @@
 
 Sketches your brain in kanban
 
+Skeban is an open source Electron based kanban app. It is written in TypeScript and uses React.
+
 ## Development
 
 ```bash
@@ -16,3 +18,9 @@ yarn start
 ```
 
 Or you can use the debug of Visual Stuido Code if you use Visual Studio Code.
+
+## Packaging
+
+```bash
+yarn run pack
+```
