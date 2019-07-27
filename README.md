@@ -21,6 +21,21 @@ Or you can use the debug of Visual Stuido Code if you use Visual Studio Code.
 
 ## Packaging
 
+### Windows & Mac
+
 ```bash
 yarn run pack
+```
+### Windows only
+
+```bash
+yarn run build
+yarn run pack:win
+```
+
+### Mac only
+
+```bash
+yarn run build
+yarn run pack:mac
 ```
