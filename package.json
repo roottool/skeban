@@ -14,7 +14,7 @@
     "build:prod:renderer": "webpack --config ./config/webpack.prod.config.renderer.ts",
     "build": "rimraf build && concurrently \"yarn run build:prod:main\" \"yarn run build:prod:renderer\"",
     "build:dev": "rimraf build && concurrently \"yarn run build:dev:main\" \"yarn run build:dev:renderer\"",
-    "prestart": "yarn run build:dev",
+    "build:watch": "rimraf build && concurrently \"yarn run build:dev:main\" \"webpack --config ./config/webpack.dev.config.renderer.ts --watch\"",
     "start": "electron .",
     "fix": "eslint --fix \"config/**\" && eslint --fix \"src/**\"",
     "lint": "eslint \"config/**\" && eslint \"src/**\"",

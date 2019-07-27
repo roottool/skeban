@@ -14,10 +14,20 @@ yarn install
 ### Debug
 
 ```bash
+yarn build:watch
 yarn start
 ```
 
 Or you can use the debug of Visual Stuido Code if you use Visual Studio Code.
+
+1. Execute the bellow command
+
+    ```bash
+    yarn build:watch
+    ```
+
+2. Select `Skeban All` in the debug of Visual Stuido Code
+3. Execute the debug
 
 ## Packaging
 
@@ -26,6 +36,7 @@ Or you can use the debug of Visual Stuido Code if you use Visual Studio Code.
 ```bash
 yarn run pack
 ```
+
 ### Windows only
 
 ```bash

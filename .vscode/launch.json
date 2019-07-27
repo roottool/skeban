@@ -4,17 +4,35 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch skeban",
+      "name": "Skeban Main",
       "program": "${workspaceFolder}/build/index.js",
-      "preLaunchTask": "npm: build:dev",
-      "stopOnEntry": false,
-      "cwd": "${workspaceRoot}",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "protocol": "inspector",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "runtimeArgs": [
+        "--remote-debugging-port=9223",
+        "--hot",
+      ],
       "windows": {
         "program": "${workspaceFolder}\\build\\index.js",
-        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
-      },
-      "args" : ["."]
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      }
+    },
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Skeban Renderer",
+      "port": 9223,
+      "webRoot": "${workspaceFolder}",
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${webRoot}/node_modules/*",
+        "webpack:///*": "${webRoot}/*"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Skeban All",
+      "configurations": ["Skeban Main", "Skeban Renderer"]
     }
   ]
 }
