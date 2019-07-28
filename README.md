@@ -1,5 +1,9 @@
 # Skeban
 
+<p align="center">
+  <img src="public/icons/icon.png" alt="Skeban logo" />
+</p>
+
 **Ske**tches your brain in kan**ban**
 
 Skeban is an open source Electron based kanban app. It is written in TypeScript and uses React.
