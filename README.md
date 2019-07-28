@@ -1,4 +1,4 @@
-<p style="text-align: center">
+<p align="center">
   <img src="public/icons/icon.png" alt="Skeban logo" width="256" height="256"/>
 </p>
 
