@@ -1,10 +1,11 @@
 import Webpack from "webpack";
 import Path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import CopyWebpackPlugin from "copy-webpack-plugin";
 
 import Paths from "./paths";
 
-const { appSrc, appBuild, appNodeModules, appHtml } = Paths;
+const { appSrc, appBuild, appNodeModules, appPublic, appHtml } = Paths;
 
 const rendererRules: Webpack.Rule[] = [
   {
@@ -32,6 +33,7 @@ const rendererRules: Webpack.Rule[] = [
   {
     test: /\.(woff|woff2|eot|ttf|svg)$/,
     loader: "file-loader",
+    include: [appNodeModules],
     options: {
       name: "[name].[ext]",
       outputPath: "fonts/"
@@ -60,7 +62,10 @@ const config: Webpack.Configuration = {
   plugins: [
     new HtmlWebpackPlugin({
       template: appHtml
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: Path.join(appPublic, "icons"), to: "icons" }
+    ])
   ]
 };
 

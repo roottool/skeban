@@ -1,4 +1,4 @@
-import { BrowserWindow, app, shell } from "electron";
+import { BrowserWindow, app, nativeImage, shell } from "electron";
 import Path from "path";
 import Process from "process";
 import Url from "url";
@@ -18,12 +18,16 @@ const createMainWindow = () => {
   const options: Object = {};
   Object.assign(options, config.get(windowBounds));
 
+  const image = nativeImage.createFromPath(
+    Path.join(__dirname, "icons/app.png")
+  );
   const chooseOptions = () =>
     options !== {}
       ? options
       : {
           width: 800,
-          height: 600
+          height: 600,
+          icon: image
         };
 
   mainWindow = new BrowserWindow(chooseOptions());

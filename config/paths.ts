@@ -11,5 +11,6 @@ export default {
   appBuild: resolveApp("build"),
   appNodeModules: resolveApp("node_modules"),
   appConfig: resolveApp("config"),
+  appPublic: resolveApp("public"),
   appHtml: resolveApp("public/index.html")
 };

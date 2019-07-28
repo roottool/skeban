@@ -1,7 +1,7 @@
 {
   "name": "skeban",
   "productName": "Skeban",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Sketches your brain in kanban",
   "main": "./build/index.js",
   "repository": "https://github.com/roottool/skeban.git",
@@ -32,10 +32,12 @@
     ],
     "mac": {
       "category": "public.app-category.developer-tools",
-      "target": "dmg"
+      "target": "dmg",
+      "icon": "build/icons/icon.png"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "build/icons/icon.ico"
     }
   },
   "devDependencies": {
@@ -45,6 +47,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.4.4",
+    "@types/copy-webpack-plugin": "^5.0.0",
     "@types/draft-js": "^0.10.34",
     "@types/html-webpack-plugin": "^3.2.0",
     "@types/markdown-to-jsx": "^6.9.0",
@@ -61,6 +64,7 @@
     "@typescript-eslint/parser": "^1.12.0",
     "babel-loader": "^8.0.6",
     "concurrently": "^4.1.1",
+    "copy-webpack-plugin": "^5.0.4",
     "cross-env": "^5.2.0",
     "css-loader": "^3.0.0",
     "electron": "^5.0.6",
