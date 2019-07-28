@@ -1,8 +1,8 @@
-# Skeban
-
-<p align="center">
-  <img src="public/icons/icon.png" alt="Skeban logo" />
+<p style="text-align: center">
+  <img src="public/icons/icon.png" alt="Skeban logo" width="256" height="256"/>
 </p>
+
+# Skeban
 
 **Ske**tches your brain in kan**ban**
 
