@@ -21,11 +21,7 @@ const Board: React.FC<Props> = props => {
   const { boardId } = match.params;
 
   const boardIdNumber = () => {
-    try {
-      return parseInt(boardId, 10);
-    } catch (err) {
-      throw err;
-    }
+    return parseInt(boardId, 10);
   };
 
   const Container = State.useContainer();

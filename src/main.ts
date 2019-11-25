@@ -21,14 +21,27 @@ const createMainWindow = () => {
   const image = nativeImage.createFromPath(
     Path.join(__dirname, "icons/app.png")
   );
-  const chooseOptions = () =>
-    options !== {}
-      ? options
-      : {
-          width: 800,
-          height: 600,
-          icon: image
-        };
+  const chooseOptions = () => {
+    const result =
+      options !== {}
+        ? options
+        : {
+            width: 800,
+            height: 600,
+            icon: image,
+            webPreferences: {
+              nodeIntegration: true
+            }
+          };
+
+    Object.assign(result, {
+      webPreferences: {
+        nodeIntegration: true
+      }
+    });
+
+    return result;
+  };
 
   mainWindow = new BrowserWindow(chooseOptions());
 

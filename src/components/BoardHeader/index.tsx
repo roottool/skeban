@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
@@ -38,13 +38,6 @@ const BoardHeader: React.FC<Props> = props => {
     }
 
     setIsLeftSideBarOpen(!isLeftSideBarOpen);
-  };
-
-  const ElevationScroll = (elevationScrollProps: ElevationScrollProps) => {
-    const { children } = elevationScrollProps;
-    return React.cloneElement(children, {
-      elevation: 4
-    });
   };
 
   const handleisInputAreaChange = () => {
@@ -106,37 +99,35 @@ const BoardHeader: React.FC<Props> = props => {
   };
 
   return (
-    <Fragment>
-      <ElevationScroll {...Fragment}>
-        <AppBar>
-          <Toolbar>
+    <div>
+      <AppBar>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="Menu"
+            onClick={toggleLeftSideBar}
+            onKeyDown={toggleLeftSideBar}
+          >
+            <MenuIcon />
+          </IconButton>
+          {renderBoardTitle()}
+          <StyledLink to="/">
             <IconButton
-              edge="start"
+              aria-label="Delete the board"
+              onClick={handleDeleteButtonClicked}
               color="inherit"
-              aria-label="Menu"
-              onClick={toggleLeftSideBar}
-              onKeyDown={toggleLeftSideBar}
             >
-              <MenuIcon />
+              <Delete />
             </IconButton>
-            {renderBoardTitle()}
-            <StyledLink to="/">
-              <IconButton
-                aria-label="Delete the board"
-                onClick={handleDeleteButtonClicked}
-                color="inherit"
-              >
-                <Delete />
-              </IconButton>
-            </StyledLink>
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
+          </StyledLink>
+        </Toolbar>
+      </AppBar>
       <Drawer open={isLeftSideBarOpen} onClose={toggleLeftSideBar}>
         <LeftSideBar toggleLeftSideBar={toggleLeftSideBar} />
       </Drawer>
       <Toolbar />
-    </Fragment>
+    </div>
   );
 };
 

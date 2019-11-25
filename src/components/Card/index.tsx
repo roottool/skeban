@@ -77,9 +77,9 @@ const Card: React.FC<Props> = props => {
               onChange={handleValueChanged}
               selectedTab={selectedTab}
               onTabChange={setSelectedTab}
-              generateMarkdownPreview={markdown =>
-                Promise.resolve(converter.makeHtml(markdown))
-              }
+              generateMarkdownPreview={markdown => {
+                return Promise.resolve(converter.makeHtml(markdown));
+              }}
             />
           </StyledPaper>
           <StyledButtonArea>
