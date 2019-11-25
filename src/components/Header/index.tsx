@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -26,27 +26,36 @@ const Header: React.FC = () => {
     setIsLeftSideBarOpen(!isLeftSideBarOpen);
   };
 
+  const ElevationScroll = (props: ElevationScrollProps) => {
+    const { children } = props;
+    return React.cloneElement(children, {
+      elevation: 4
+    });
+  };
+
   return (
-    <div>
-      <AppBar>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="Menu"
-            onClick={toggleLeftSideBar}
-            onKeyDown={toggleLeftSideBar}
-          >
-            <MenuIcon />
-          </IconButton>
-          <StyledFlexGrow />
-        </Toolbar>
-      </AppBar>
+    <>
+      <ElevationScroll {...Fragment}>
+        <AppBar>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="Menu"
+              onClick={toggleLeftSideBar}
+              onKeyDown={toggleLeftSideBar}
+            >
+              <MenuIcon />
+            </IconButton>
+            <StyledFlexGrow />
+          </Toolbar>
+        </AppBar>
+      </ElevationScroll>
       <Drawer open={isLeftSideBarOpen} onClose={toggleLeftSideBar}>
         <LeftSideBar toggleLeftSideBar={toggleLeftSideBar} />
       </Drawer>
       <Toolbar />
-    </div>
+    </>
   );
 };
 
