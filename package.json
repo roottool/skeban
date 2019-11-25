@@ -43,6 +43,7 @@
   "devDependencies": {
     "@babel/core": "^7.5.4",
     "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.7.4",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
@@ -56,6 +57,7 @@
     "@types/react-beautiful-dnd": "^11.0.2",
     "@types/react-dom": "^16.8.4",
     "@types/react-router-dom": "^4.3.4",
+    "@types/rehype-react": "^3.1.0",
     "@types/showdown": "^1.9.3",
     "@types/styled-components": "^4.1.18",
     "@types/uuid": "^3.4.5",
@@ -94,15 +96,20 @@
     "@material-ui/core": "^4.2.0",
     "@material-ui/icons": "^4.2.1",
     "dexie": "^2.0.4",
-    "markdown-to-jsx": "^6.10.2",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^11.0.4",
     "react-dom": "^16.8.6",
     "react-mde": "^7.6.2",
     "react-router-dom": "^5.0.1",
+    "rehype-highlight": "^3.1.0",
+    "rehype-react": "^4.0.1",
+    "remark-parse": "^7.0.2",
+    "remark-rehype": "^5.0.0",
+    "remark-stringify": "^7.0.4",
     "showdown": "^1.9.0",
     "styled-components": "^4.3.2",
     "typeface-roboto": "^0.0.54",
+    "unified": "^8.4.2",
     "unstated-next": "^1.1.0"
   }
 }
