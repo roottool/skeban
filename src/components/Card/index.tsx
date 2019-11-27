@@ -4,11 +4,6 @@ import styled from "styled-components";
 import ReactMde from "react-mde";
 import Showdown from "showdown";
 import Markdown from "markdown-to-jsx";
-// import unified from "unified";
-// import parseMarkdown from "remark-parse";
-// import remark2html from "remark-stringify";
-// import highlight from "rehype-highlight";
-// import rehype2react from "rehype-react";
 import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -33,12 +28,6 @@ const converter = new Showdown.Converter({
   strikethrough: true,
   tasklists: true
 });
-
-// const processor = unified()
-//   .use(parseMarkdown)
-//   .use(remark2html)
-//   .use(highlight)
-//   .use(rehype2react);
 
 const Card: React.FC<Props> = props => {
   const { boardId, cardId, cardIndex } = props;
@@ -110,6 +99,7 @@ const Card: React.FC<Props> = props => {
             >
               <StyledCardContentDiv onClick={handleisInputAreaChange}>
                 <Markdown>{text}</Markdown>
+                {/* <Markdown>{text}</Markdown> */}
               </StyledCardContentDiv>
             </StyledPaper>
           )}

@@ -57,7 +57,6 @@
     "@types/react-beautiful-dnd": "^11.0.2",
     "@types/react-dom": "^16.8.4",
     "@types/react-router-dom": "^5.1.2",
-    "@types/rehype-react": "^3.1.0",
     "@types/showdown": "^1.9.3",
     "@types/styled-components": "^4.1.18",
     "@types/uuid": "^3.4.5",
@@ -102,15 +101,9 @@
     "react-dom": "^16.8.6",
     "react-mde": "^7.6.2",
     "react-router-dom": "^5.0.1",
-    "rehype-highlight": "^3.1.0",
-    "rehype-react": "^4.0.1",
-    "remark-parse": "^7.0.2",
-    "remark-rehype": "^5.0.0",
-    "remark-stringify": "^7.0.4",
     "showdown": "^1.9.0",
     "styled-components": "^4.3.2",
     "typeface-roboto": "^0.0.75",
-    "unified": "^8.4.2",
     "unstated-next": "^1.1.0"
   }
 }
