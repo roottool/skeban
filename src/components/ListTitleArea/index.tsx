@@ -81,7 +81,7 @@ const ListTitleArea: React.FC<Props> = props => {
       <StyledEditIconArea>
         <IconButton
           aria-label="Delete"
-          color="primary"
+          color="secondary"
           onClick={handleDeleteButtonClicked}
         >
           <DeleteIcon fontSize="large" />

@@ -88,7 +88,7 @@ const List: React.FC<Props> = props => {
             )}
           </Droppable>
           <StyledAddButtonArea>
-            <Fab color="secondary" aria-label="Add" onClick={onAddBtnClicked}>
+            <Fab color="primary" aria-label="Add" onClick={onAddBtnClicked}>
               <AddIcon />
             </Fab>
           </StyledAddButtonArea>
@@ -102,7 +102,9 @@ const StyledPaper = styled(Paper)`
   width: 360px;
   height: fit-content;
   flex: 0 0 360px;
-  margin: 16px;
+  margin-top: 48px;
+  margin-left: 16px;
+  margin-right: 16px;
 `;
 
 const StyledContainer = styled.div`

@@ -4,13 +4,11 @@ import { Link } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import Delete from "@material-ui/icons/Delete";
 import Typography from "@material-ui/core/Typography";
-import Drawer from "@material-ui/core/Drawer";
 import TextField from "@material-ui/core/TextField";
+import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import State from "../../State";
-import LeftSideBar from "../LeftSideList";
 
 type ElevationScrollProps = {
   children: React.ReactElement;
@@ -20,25 +18,23 @@ type Props = {
   boardId: number;
 };
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    appBar: {
+      backgroundColor: "#009CFF",
+      color: "white",
+      zIndex: theme.zIndex.drawer + 1
+    }
+  })
+);
+
 const BoardHeader: React.FC<Props> = props => {
   const { boardId } = props;
+  const classes = useStyles();
 
-  const [isLeftSideBarOpen, setIsLeftSideBarOpen] = useState(false);
   const [isInputArea, setIsInputArea] = useState(false);
 
   const Container = State.useContainer();
-
-  const toggleLeftSideBar = (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (
-      event.type === "keydown" &&
-      ((event as React.KeyboardEvent).key === "Tab" ||
-        (event as React.KeyboardEvent).key === "Shift")
-    ) {
-      return;
-    }
-
-    setIsLeftSideBarOpen(!isLeftSideBarOpen);
-  };
 
   const ElevationScroll = (elevationScrollProps: ElevationScrollProps) => {
     const { children } = elevationScrollProps;
@@ -108,23 +104,14 @@ const BoardHeader: React.FC<Props> = props => {
   return (
     <>
       <ElevationScroll {...Fragment}>
-        <AppBar>
+        <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="Menu"
-              onClick={toggleLeftSideBar}
-              onKeyDown={toggleLeftSideBar}
-            >
-              <MenuIcon />
-            </IconButton>
             {renderBoardTitle()}
             <StyledLink to="/">
               <IconButton
                 aria-label="Delete the board"
                 onClick={handleDeleteButtonClicked}
-                color="inherit"
+                color="secondary"
               >
                 <Delete />
               </IconButton>
@@ -132,10 +119,6 @@ const BoardHeader: React.FC<Props> = props => {
           </Toolbar>
         </AppBar>
       </ElevationScroll>
-      <Drawer open={isLeftSideBarOpen} onClose={toggleLeftSideBar}>
-        <LeftSideBar toggleLeftSideBar={toggleLeftSideBar} />
-      </Drawer>
-      <Toolbar />
     </>
   );
 };

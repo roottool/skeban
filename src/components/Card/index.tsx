@@ -99,7 +99,6 @@ const Card: React.FC<Props> = props => {
             >
               <StyledCardContentDiv onClick={handleisInputAreaChange}>
                 <Markdown>{text}</Markdown>
-                {/* <Markdown>{text}</Markdown> */}
               </StyledCardContentDiv>
             </StyledPaper>
           )}

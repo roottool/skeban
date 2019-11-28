@@ -3,10 +3,12 @@ import styled from "styled-components";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import { match as Match } from "react-router-dom";
 import Fab from "@material-ui/core/Fab";
+import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import State from "../../State";
 import BoardHeader from "../BoardHeader";
 import List from "../List";
+import LeftSideList from "../LeftSideList";
 
 type Identifiable = {
   boardId: string;
@@ -16,9 +18,22 @@ type Props = {
   match: Match<Identifiable>;
 };
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    main: {
+      display: "flex",
+      flexGrow: 1,
+      margin: "8px 0px",
+      padding: theme.spacing(3)
+    },
+    toolbar: theme.mixins.toolbar
+  })
+);
+
 const Board: React.FC<Props> = props => {
   const { match } = props;
   const { boardId } = match.params;
+  const classes = useStyles();
 
   const boardIdNumber = () => {
     return parseInt(boardId, 10);
@@ -56,9 +71,11 @@ const Board: React.FC<Props> = props => {
   };
 
   return (
-    <div>
+    <StyledRoot>
       <BoardHeader boardId={boardIdNumber()} />
-      <StyledBoard>
+      <LeftSideList />
+      <main className={classes.main}>
+        <div className={classes.toolbar} />
         <DragDropContext onDragEnd={handleDragEnded}>
           <Droppable
             droppableId={`${boardId}`}
@@ -85,14 +102,13 @@ const Board: React.FC<Props> = props => {
             <AddIcon />
           </Fab>
         </StyledAddbuttonArea>
-      </StyledBoard>
-    </div>
+      </main>
+    </StyledRoot>
   );
 };
 
-const StyledBoard = styled.div`
+const StyledRoot = styled.div`
   display: flex;
-  margin: 8px 0px;
 `;
 
 const StyledContainer = styled.div`
@@ -101,8 +117,7 @@ const StyledContainer = styled.div`
 
 const StyledAddbuttonArea = styled.div`
   flex: 0 0 360px;
-  text-align: center;
-  margin-top: 16px;
+  margin-top: 48px;
 `;
 
 export default Board;
