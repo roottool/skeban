@@ -339,8 +339,14 @@ const useStore = () => {
       }
       case "Card": {
         const dragCardtId = parseInt(draggableId.replace("cardId-", ""), 10);
-        const sourceId = parseInt(source.droppableId, 10);
-        const destinationId = parseInt(destination.droppableId, 10);
+        const sourceId = parseInt(
+          source.droppableId.replace("listId-", ""),
+          10
+        );
+        const destinationId = parseInt(
+          destination.droppableId.replace("listId-", ""),
+          10
+        );
         swapCards(
           boardId,
           dragCardtId,

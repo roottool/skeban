@@ -76,7 +76,7 @@ const List: React.FC<Props> = props => {
           innerRef={provided.innerRef}
         >
           <ListTitleArea boardId={boardId} listId={listId} />
-          <Droppable droppableId={`${listId}`} type="Card">
+          <Droppable droppableId={`listId-${listId}`} type="Card">
             {cardProvided => (
               <StyledContainer
                 {...cardProvided.droppableProps}

@@ -90,7 +90,7 @@ const Card: React.FC<Props> = props => {
           </StyledButtonArea>
         </div>
       ) : (
-        <Draggable draggableId={`${cardId}`} index={cardIndex}>
+        <Draggable draggableId={`cardId-${cardId}`} index={cardIndex}>
           {provided => (
             <StyledPaper
               {...provided.draggableProps}
