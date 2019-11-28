@@ -74,7 +74,7 @@ const Card: React.FC<Props> = props => {
           </StyledPaper>
           <StyledButtonArea>
             <Fab
-              color="secondary"
+              color="primary"
               aria-label="OK"
               onClick={handleisInputAreaChange}
             >
