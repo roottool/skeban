@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-import { Draggable, Droppable } from "react-beautiful-dnd";
+import DeleteIcon from "@material-ui/icons/Delete";
 import DB, { CardTable } from "../../DB";
 import State from "../../State";
 import ListTitleArea from "../ListTitleArea";
@@ -41,8 +42,12 @@ const List: React.FC<Props> = props => {
     }
   }, [cards]);
 
-  const onAddBtnClicked = () => {
+  const onAddButtonClicked = () => {
     Container.onCardAdded(boardId, listId);
+  };
+
+  const onDeleteButtonClicked = () => {
+    Container.onListDeleted(boardId, listId);
   };
 
   const renderCards = () => {
@@ -87,11 +92,28 @@ const List: React.FC<Props> = props => {
               </StyledContainer>
             )}
           </Droppable>
-          <StyledAddButtonArea>
-            <Fab color="primary" aria-label="Add" onClick={onAddBtnClicked}>
+          <StyledButtonArea>
+            <Fab
+              variant="extended"
+              size="medium"
+              color="primary"
+              aria-label="Add new card"
+              onClick={onAddButtonClicked}
+            >
               <AddIcon />
+              ADD NEW CARD
             </Fab>
-          </StyledAddButtonArea>
+            <Fab
+              variant="extended"
+              size="medium"
+              color="secondary"
+              aria-label="Delete this list"
+              onClick={onDeleteButtonClicked}
+            >
+              <DeleteIcon />
+              DELETE THIS LIST
+            </Fab>
+          </StyledButtonArea>
         </StyledPaper>
       )}
     </Draggable>
@@ -99,9 +121,9 @@ const List: React.FC<Props> = props => {
 };
 
 const StyledPaper = styled(Paper)`
-  width: 360px;
+  width: 400px;
   height: fit-content;
-  flex: 0 0 360px;
+  flex: 0 0 400px;
   margin-top: 48px;
   margin-left: 16px;
   margin-right: 16px;
@@ -111,9 +133,10 @@ const StyledContainer = styled.div`
   padding-bottom: 40px;
 `;
 
-const StyledAddButtonArea = styled.div`
-  text-align: center;
-  margin-bottom: 8px;
+const StyledButtonArea = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 16px;
 `;
 
 export default List;

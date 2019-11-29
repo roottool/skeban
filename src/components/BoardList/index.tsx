@@ -51,11 +51,14 @@ const BoardList: React.FC = () => {
         {renderBoards()}
         <StyledAddbuttonArea>
           <Fab
+            variant="extended"
+            size="medium"
             color="primary"
-            aria-label="Add"
+            aria-label="Add new board"
             onClick={handleAddButtonClicked}
           >
             <AddIcon />
+            ADD NEW BOARD
           </Fab>
         </StyledAddbuttonArea>
       </Container>

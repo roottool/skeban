@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
+import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
-import DeleteIcon from "@material-ui/icons/Delete";
 import Typography from "@material-ui/core/Typography";
 import State from "../../State";
 
@@ -41,10 +40,6 @@ const ListTitleArea: React.FC<Props> = props => {
     }
   };
 
-  const handleDeleteButtonClicked = () => {
-    Container.onListDeleted(boardId, listId);
-  };
-
   return (
     <StyledListTitleArea>
       {isInputArea ? (
@@ -62,31 +57,25 @@ const ListTitleArea: React.FC<Props> = props => {
         </StyledListTitleForm>
       ) : (
         <StyledListTitleDiv onClick={handleisInputAreaChange}>
-          <Typography variant="h6" gutterBottom>
+          <StyledListTitleTypography variant="h6" gutterBottom>
             {title || "The title is empty"}
-          </Typography>
+          </StyledListTitleTypography>
         </StyledListTitleDiv>
       )}
       {isInputArea && (
         <StyledEditIconArea>
-          <IconButton
-            aria-label="Done"
+          <Fab
+            variant="extended"
+            size="medium"
             color="primary"
+            aria-label="DONE"
             onClick={handleisInputAreaChange}
           >
-            <CheckIcon fontSize="large" />
-          </IconButton>
+            <CheckIcon />
+            DONE
+          </Fab>
         </StyledEditIconArea>
       )}
-      <StyledEditIconArea>
-        <IconButton
-          aria-label="Delete"
-          color="secondary"
-          onClick={handleDeleteButtonClicked}
-        >
-          <DeleteIcon fontSize="large" />
-        </IconButton>
-      </StyledEditIconArea>
     </StyledListTitleArea>
   );
 };
@@ -116,9 +105,16 @@ const StyledListTitleDiv = styled.div`
   cursor: pointer;
 `;
 
+const StyledListTitleTypography = styled(Typography)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 const StyledEditIconArea = styled.div`
   flex-basis: 20%;
   text-align: center;
+  margin: 0 16px;
 `;
 
 export default ListTitleArea;

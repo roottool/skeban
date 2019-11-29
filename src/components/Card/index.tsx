@@ -72,18 +72,24 @@ const Card: React.FC<Props> = props => {
           </StyledPaper>
           <StyledButtonArea>
             <Fab
+              variant="extended"
+              size="medium"
               color="primary"
-              aria-label="OK"
+              aria-label="DONE"
               onClick={handleisInputAreaChange}
             >
               <CheckIcon />
+              DONE
             </Fab>
             <Fab
+              variant="extended"
+              size="medium"
               color="secondary"
-              aria-label="Delete"
+              aria-label="Delete this card"
               onClick={handleDeleteButtonClicked}
             >
               <DeleteIcon />
+              DELETE THIS CARD
             </Fab>
           </StyledButtonArea>
         </div>
@@ -119,7 +125,8 @@ const StyledReactMde = styled(ReactMde)`
 const StyledButtonArea = styled.div`
   display: flex;
   justify-content: space-around;
-  margin: 8px 0px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 `;
 
 const StyledCardContentDiv = styled.div`
