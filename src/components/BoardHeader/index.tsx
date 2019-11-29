@@ -117,6 +117,7 @@ const BoardHeader: React.FC<Props> = props => {
 
 const StyledBoardTitleForm = styled.form`
   flex: 0 1 auto;
+  width: 75vw;
 `;
 
 const StyledBoardTitleTextField = styled(TextField)`
@@ -125,7 +126,7 @@ const StyledBoardTitleTextField = styled(TextField)`
 
 const StyledBoardTitleDiv = styled.div`
   cursor: pointer;
-  max-width: 50vw;
+  max-width: 75vw;
 `;
 
 const StyledBoardTitleTypography = styled(Typography)`

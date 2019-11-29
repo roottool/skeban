@@ -17,12 +17,12 @@ const ListTitleArea: React.FC<Props> = props => {
   const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
 
-  const list = Container.allLists
-    .filter(listData => listData.id === listId)
-    .pop();
-  const title = list ? list.title : "";
+  const list = Container.allLists.find(listData => listData.id === listId);
+  const ListTitle = list?.title || "";
+  const [title, setTitle] = useState(ListTitle);
 
   const handleisInputAreaChange = () => {
+    Container.onListTitleChanged(boardId, listId, title);
     setIsInputArea(!isInputArea);
   };
 
@@ -31,7 +31,7 @@ const ListTitleArea: React.FC<Props> = props => {
       HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
     >
   ) => {
-    Container.onListTitleChanged(boardId, listId, event.target.value);
+    setTitle(event.target.value);
   };
 
   const handleKeyPressed = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -96,13 +96,12 @@ const StyledListTitleTextField = styled(TextField)`
 `;
 
 const StyledListTitleDiv = styled.div`
-  flex-basis: 80%;
-  margin-left: 8px;
-  min-height: 72px;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  word-break: break-word;
-  cursor: pointer;
+  width: 100%;
+  padding: 0 8px;
+  min-height: 72px;
 `;
 
 const StyledListTitleTypography = styled(Typography)`
