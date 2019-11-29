@@ -95,11 +95,14 @@ const Board: React.FC<Props> = props => {
         </DragDropContext>
         <StyledAddbuttonArea>
           <Fab
+            variant="extended"
+            size="medium"
             color="primary"
-            aria-label="Add"
+            aria-label="Add new list"
             onClick={handleAddButtonClicked}
           >
             <AddIcon />
+            ADD NEW LIST
           </Fab>
         </StyledAddbuttonArea>
       </main>

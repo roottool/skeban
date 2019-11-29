@@ -1,18 +1,14 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
+import Fab from "@material-ui/core/Fab";
 import Delete from "@material-ui/icons/Delete";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import State from "../../State";
-
-type ElevationScrollProps = {
-  children: React.ReactElement;
-};
 
 type Props = {
   boardId: number;
@@ -32,18 +28,16 @@ const BoardHeader: React.FC<Props> = props => {
   const { boardId } = props;
   const classes = useStyles();
 
-  const [isInputArea, setIsInputArea] = useState(false);
-
   const Container = State.useContainer();
 
-  const ElevationScroll = (elevationScrollProps: ElevationScrollProps) => {
-    const { children } = elevationScrollProps;
-    return React.cloneElement(children, {
-      elevation: 4
-    });
-  };
+  const [isInputArea, setIsInputArea] = useState(false);
 
-  const handleisInputAreaChange = () => {
+  const board = Container.allBoards.find(boardData => boardData.id === boardId);
+  const boardTitle = board?.title || "";
+  const [title, setTitle] = useState(boardTitle);
+
+  const handleIsInputAreaChange = () => {
+    Container.onBoardTitleChanged(boardId, title);
     setIsInputArea(!isInputArea);
   };
 
@@ -52,12 +46,12 @@ const BoardHeader: React.FC<Props> = props => {
       HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
     >
   ) => {
-    Container.onBoardTitleChanged(boardId, event.target.value);
+    setTitle(event.target.value);
   };
 
   const handleKeyPressed = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter") {
-      handleisInputAreaChange();
+      handleIsInputAreaChange();
     }
   };
 
@@ -66,65 +60,63 @@ const BoardHeader: React.FC<Props> = props => {
   };
 
   const renderBoardTitle = () => {
-    const board = Container.allBoards.find(
-      boardData => boardData.id === boardId
-    );
-
-    if (board) {
-      return (
-        <>
-          {isInputArea ? (
-            <StyledBoardTitleForm>
-              <StyledBoardTitleTextField
-                id="board-name"
-                label="Board Title"
-                value={board.title ? board.title : ""}
-                margin="normal"
-                autoFocus
-                fullWidth
-                onChange={handleBoardTitleChanged}
-                onKeyPress={handleKeyPressed}
-                onBlur={handleisInputAreaChange}
-              />
-            </StyledBoardTitleForm>
-          ) : (
-            <StyledBoardTitleDiv onClick={handleisInputAreaChange}>
-              <Typography variant="h6" gutterBottom>
-                {board.title ? board.title : "The title is empty"}
-              </Typography>
-            </StyledBoardTitleDiv>
-          )}
-        </>
-      );
+    if (!board) {
+      return <></>;
     }
 
-    return <></>;
+    return (
+      <>
+        {isInputArea ? (
+          <StyledBoardTitleForm>
+            <StyledBoardTitleTextField
+              id="board-name"
+              label="Board Title"
+              value={title}
+              margin="normal"
+              autoFocus
+              fullWidth
+              onChange={handleBoardTitleChanged}
+              onKeyPress={handleKeyPressed}
+              onBlur={handleIsInputAreaChange}
+            />
+          </StyledBoardTitleForm>
+        ) : (
+          <StyledBoardTitleDiv onClick={handleIsInputAreaChange}>
+            <StyledBoardTitleTypography variant="h6" gutterBottom>
+              {board.title ? board.title : "The title is empty"}
+            </StyledBoardTitleTypography>
+          </StyledBoardTitleDiv>
+        )}
+      </>
+    );
   };
 
   return (
     <>
-      <ElevationScroll {...Fragment}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            {renderBoardTitle()}
-            <StyledLink to="/">
-              <IconButton
-                aria-label="Delete the board"
-                onClick={handleDeleteButtonClicked}
-                color="secondary"
-              >
-                <Delete />
-              </IconButton>
-            </StyledLink>
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
+      <AppBar className={classes.appBar}>
+        <Toolbar>
+          {renderBoardTitle()}
+          <StyledFlexGrow />
+          <StyledLink to="/">
+            <Fab
+              variant="extended"
+              size="medium"
+              color="secondary"
+              aria-label="Delete this board"
+              onClick={handleDeleteButtonClicked}
+            >
+              <Delete />
+              DELETE THIS BOARD
+            </Fab>
+          </StyledLink>
+        </Toolbar>
+      </AppBar>
     </>
   );
 };
 
 const StyledBoardTitleForm = styled.form`
-  flex-grow: 1;
+  flex: 0 1 auto;
 `;
 
 const StyledBoardTitleTextField = styled(TextField)`
@@ -132,13 +124,23 @@ const StyledBoardTitleTextField = styled(TextField)`
 `;
 
 const StyledBoardTitleDiv = styled.div`
-  flex-grow: 1;
-  word-break: break-word;
   cursor: pointer;
+  max-width: 50vw;
+`;
+
+const StyledBoardTitleTypography = styled(Typography)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const StyledFlexGrow = styled.div`
+  flex-grow: 1;
 `;
 
 const StyledLink = styled(Link)`
   color: inherit;
+  text-decoration-line: none;
 `;
 
 export default BoardHeader;
