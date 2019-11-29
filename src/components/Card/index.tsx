@@ -36,10 +36,8 @@ const Card: React.FC<Props> = props => {
   const [isInputArea, setIsInputArea] = useState(false);
   const [selectedTab, setSelectedTab] = useState<SelectedTab>("write");
 
-  const card = Container.allCards
-    .filter(cardData => cardData.id === cardId)
-    .pop();
-  const cardText = card ? card.text : "";
+  const card = Container.allCards.find(cardData => cardData.id === cardId);
+  const cardText = card?.text || "";
   const [text, setValue] = useState(cardText);
 
   const handleisInputAreaChange = () => {
