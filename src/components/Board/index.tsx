@@ -135,7 +135,7 @@ const StyledContainer = styled.div`
 
 const StyledAddbuttonArea = styled.div`
   flex: 0 0 360px;
-  margin-top: 16px;
+  margin: 16px;
 `;
 
 export default Board;

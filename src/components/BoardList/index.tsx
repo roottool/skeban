@@ -59,7 +59,6 @@ const BoardList: React.FC = () => {
     <main className={classes.main}>
       <StyledPaper>
         <div className={classes.toolbar} />
-        {renderBoards()}
         <StyledAddbuttonArea>
           <Fab
             variant="extended"
@@ -72,6 +71,7 @@ const BoardList: React.FC = () => {
             ADD NEW BOARD
           </Fab>
         </StyledAddbuttonArea>
+        {renderBoards()}
       </StyledPaper>
     </main>
   );
