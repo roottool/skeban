@@ -131,6 +131,7 @@ const StyledButtonArea = styled.div`
 
 const StyledCardContentDiv = styled.div`
   width: 100%;
+  padding: 0 8px;
   min-height: 72px;
   white-space: pre-line;
 `;
