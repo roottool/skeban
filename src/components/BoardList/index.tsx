@@ -1,6 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
+import moment from "moment";
+import styled from "styled-components";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -34,13 +35,17 @@ const BoardList: React.FC = () => {
         return <></>;
       }
 
-      const title = board.title ? board.title : "The title is empty";
+      const title = board.title || "The title is empty";
+      const showUpdatedAt = moment(board.updatedTimestamp).fromNow();
       return (
         <StyledLink to={`/board/${board.id}`} key={board.id}>
           <StyledCard>
             <CardContent>
               <StyledBoardTitleTypography variant="h4">
                 {title}
+              </StyledBoardTitleTypography>
+              <StyledBoardTitleTypography variant="subtitle1">
+                {showUpdatedAt}
               </StyledBoardTitleTypography>
             </CardContent>
           </StyledCard>
