@@ -82,7 +82,7 @@ const BoardHeader: React.FC<Props> = props => {
           </StyledBoardTitleForm>
         ) : (
           <StyledBoardTitleDiv onClick={handleIsInputAreaChange}>
-            <StyledBoardTitleTypography variant="h6" gutterBottom>
+            <StyledBoardTitleTypography variant="h4">
               {board.title ? board.title : "The title is empty"}
             </StyledBoardTitleTypography>
           </StyledBoardTitleDiv>

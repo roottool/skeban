@@ -1,13 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import Container from "@material-ui/core/Container";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import State from "../../State";
+import { leftSideListAreaWidth } from "../../GlobalStyles";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,9 +37,13 @@ const BoardList: React.FC = () => {
       const title = board.title ? board.title : "The title is empty";
       return (
         <StyledLink to={`/board/${board.id}`} key={board.id}>
-          <StyledPaper>
-            <Typography variant="h6">{title}</Typography>
-          </StyledPaper>
+          <StyledCard>
+            <CardContent>
+              <StyledBoardTitleTypography variant="h4">
+                {title}
+              </StyledBoardTitleTypography>
+            </CardContent>
+          </StyledCard>
         </StyledLink>
       );
     });
@@ -46,8 +52,8 @@ const BoardList: React.FC = () => {
 
   return (
     <main className={classes.main}>
-      <div className={classes.toolbar} />
-      <Container>
+      <StyledPaper>
+        <div className={classes.toolbar} />
         {renderBoards()}
         <StyledAddbuttonArea>
           <Fab
@@ -61,7 +67,7 @@ const BoardList: React.FC = () => {
             ADD NEW BOARD
           </Fab>
         </StyledAddbuttonArea>
-      </Container>
+      </StyledPaper>
     </main>
   );
 };
@@ -71,8 +77,25 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledPaper = styled(Paper)`
+  top: 0;
+  width: calc(100% - ${leftSideListAreaWidth}px);
+  height: 100%;
+  outline: 0;
+  position: fixed;
+  overflow: auto;
+`;
+
+const StyledCard = styled(Card)`
   min-height: 120px;
   margin-top: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
+`;
+
+const StyledBoardTitleTypography = styled(Typography)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const StyledAddbuttonArea = styled.div`

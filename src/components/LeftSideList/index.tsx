@@ -9,16 +9,16 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import HomeIcon from "@material-ui/icons/Home";
+import { leftSideListAreaWidth } from "../../GlobalStyles";
 
-const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
-      width: drawerWidth,
+      width: leftSideListAreaWidth,
       flexShrink: 0
     },
     drawerPaper: {
-      width: drawerWidth
+      width: leftSideListAreaWidth
     },
     toolbar: theme.mixins.toolbar
   })

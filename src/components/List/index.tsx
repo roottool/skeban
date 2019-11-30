@@ -124,9 +124,7 @@ const StyledPaper = styled(Paper)`
   width: 400px;
   height: fit-content;
   flex: 0 0 400px;
-  margin-top: 48px;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin: 16px;
 `;
 
 const StyledContainer = styled.div`
