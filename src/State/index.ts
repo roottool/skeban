@@ -8,7 +8,8 @@ import useCardState from "./Card";
 type Boards = BoardTable[];
 
 const useStore = () => {
-  const isInitialBoardsMount = useRef(true);
+  const isInitialBoardMount = useRef(true);
+  const isInitialBoardContentMount = useRef(true);
 
   const [allBoards, setAllBoards] = useState<Boards>([]);
 
@@ -29,22 +30,10 @@ const useStore = () => {
     onCardTableUpdateCompleted
   } = cardContainer;
 
-  useEffect(() => {
-    if (isInitialBoardsMount.current) {
-      isInitialBoardsMount.current = false;
-
-      DB.boardTable
-        .orderBy("updatedTimestamp")
-        .reverse()
-        .toArray()
-        .then(boardsData => {
-          setAllBoards(boardsData);
-        });
-    }
-  }, [allBoards]);
-
-  const onBoardTableUpdateCompleted = () => {
+  const fetchAllBoards = () => {
     DB.boardTable
+      .orderBy("updatedTimestamp")
+      .reverse()
       .toArray()
       .then(boards => {
         setAllBoards(boards);
@@ -53,6 +42,22 @@ const useStore = () => {
         throw err;
       });
   };
+
+  useEffect(() => {
+    if (isInitialBoardMount.current) {
+      isInitialBoardMount.current = false;
+
+      fetchAllBoards();
+    }
+  }, [allBoards]);
+
+  useEffect(() => {
+    if (isInitialBoardContentMount.current) {
+      isInitialBoardContentMount.current = false;
+    }
+
+    fetchAllBoards();
+  }, [allLists, allCards]);
 
   const onBoardAdded = () => {
     const createdTimestamp = Date.now();
@@ -63,7 +68,7 @@ const useStore = () => {
         updatedTimestamp: createdTimestamp
       })
       .then(() => {
-        onBoardTableUpdateCompleted();
+        fetchAllBoards();
       })
       .catch(err => {
         throw err;
@@ -71,13 +76,6 @@ const useStore = () => {
   };
 
   const onBoardDeleted = (boardId: number) => {
-    DB.boardTable
-      .delete(boardId)
-      .then(() => onBoardTableUpdateCompleted())
-      .catch(err => {
-        throw err;
-      });
-
     const listPromiseArray: Promise<void>[] = [];
     const cardPromiseArray: Promise<void>[] = [];
     allLists
@@ -103,14 +101,40 @@ const useStore = () => {
             });
         }
       });
-    Promise.all(listPromiseArray).then(() => onListTableUpdateCompleted());
-    Promise.all(cardPromiseArray).then(() => onCardTableUpdateCompleted());
+
+    const boardPromiseArray: Promise<void>[] = [];
+    boardPromiseArray.push(
+      Promise.all(listPromiseArray)
+        .then(() => onListTableUpdateCompleted(boardId, true))
+        .catch(err => {
+          throw err;
+        })
+    );
+    boardPromiseArray.push(
+      Promise.all(cardPromiseArray)
+        .then(() => onCardTableUpdateCompleted(boardId, true))
+        .catch(err => {
+          throw err;
+        })
+    );
+    Promise.all(boardPromiseArray)
+      .then(() => {
+        DB.boardTable
+          .delete(boardId)
+          .then(() => fetchAllBoards())
+          .catch(err => {
+            throw err;
+          });
+      })
+      .catch(err => {
+        throw err;
+      });
   };
 
   const onBoardTitleChanged = (boardId: number, title: string) => {
     DB.boardTable
       .update(boardId, { title })
-      .then(() => onBoardTableUpdateCompleted())
+      .then(() => fetchAllBoards())
       .catch(err => {
         throw err;
       });
@@ -159,10 +183,7 @@ const useStore = () => {
         indexOfRange += 1;
       }
 
-      Promise.all(promiseArray).then(() => onListTableUpdateCompleted());
-
-      const updatedTimestamp = Date.now();
-      DB.boardTable.update(boardId, { updatedTimestamp });
+      Promise.all(promiseArray).then(() => onListTableUpdateCompleted(boardId));
     }
   };
 
@@ -207,10 +228,7 @@ const useStore = () => {
         indexOfRange += 1;
       }
 
-      Promise.all(promiseArray).then(() => onCardTableUpdateCompleted());
-
-      const updatedTimestamp = Date.now();
-      DB.boardTable.update(boardId, { updatedTimestamp });
+      Promise.all(promiseArray).then(() => onCardTableUpdateCompleted(boardId));
     }
   };
 
@@ -282,10 +300,7 @@ const useStore = () => {
         index += 1;
       }
 
-      Promise.all(promiseArray).then(() => onCardTableUpdateCompleted());
-
-      const updatedTimestamp = Date.now();
-      DB.boardTable.update(boardId, { updatedTimestamp });
+      Promise.all(promiseArray).then(() => onCardTableUpdateCompleted(boardId));
     }
   };
 

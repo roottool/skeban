@@ -19,11 +19,19 @@ const useCardState = () => {
     }
   }, [allCards]);
 
-  const onCardTableUpdateCompleted = () => {
+  const onCardTableUpdateCompleted = (
+    boardId: number,
+    skipUpdatedTimestamp = false
+  ) => {
     DB.cardTable
       .toArray()
       .then(cards => {
         setAllCards(cards);
+
+        if (!skipUpdatedTimestamp) {
+          const updatedTimestamp = Date.now();
+          DB.boardTable.update(boardId, { updatedTimestamp });
+        }
       })
       .catch(err => {
         throw err;
@@ -38,37 +46,28 @@ const useCardState = () => {
         index,
         text: ""
       })
-      .then(() => onCardTableUpdateCompleted())
+      .then(() => onCardTableUpdateCompleted(boardId))
       .catch(err => {
         throw err;
       });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const onCardDeleted = (boardId: number, cardId: number) => {
     DB.cardTable
       .delete(cardId)
-      .then(() => onCardTableUpdateCompleted())
+      .then(() => onCardTableUpdateCompleted(boardId))
       .catch(err => {
         throw err;
       });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const onCardTextChanged = (boardId: number, cardId: number, text: string) => {
     DB.cardTable
       .update(cardId, { text })
-      .then(() => onCardTableUpdateCompleted())
+      .then(() => onCardTableUpdateCompleted(boardId))
       .catch(err => {
         throw err;
       });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   return {

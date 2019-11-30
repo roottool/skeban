@@ -22,11 +22,19 @@ const useListState = () => {
     }
   }, [allLists]);
 
-  const onListTableUpdateCompleted = () => {
+  const onListTableUpdateCompleted = (
+    boardId: number,
+    skipUpdatedTimestamp = false
+  ) => {
     DB.listTable
       .toArray()
       .then(lists => {
         setAllLists(lists);
+
+        if (!skipUpdatedTimestamp) {
+          const updatedTimestamp = Date.now();
+          DB.boardTable.update(boardId, { updatedTimestamp });
+        }
       })
       .catch(err => {
         throw err;
@@ -41,23 +49,13 @@ const useListState = () => {
         index,
         title: ""
       })
-      .then(() => onListTableUpdateCompleted())
+      .then(() => onListTableUpdateCompleted(boardId))
       .catch(err => {
         throw err;
       });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   const onListDeleted = (boardId: number, listId: number) => {
-    DB.listTable
-      .delete(listId)
-      .then(() => onListTableUpdateCompleted())
-      .catch(err => {
-        throw err;
-      });
-
     const cardPromiseArray: Promise<void>[] = [];
     allCards
       .filter(card => card.listId === listId)
@@ -70,10 +68,21 @@ const useListState = () => {
           );
         }
       });
-    Promise.all(cardPromiseArray).then(() => onCardTableUpdateCompleted());
 
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
+    Promise.all(cardPromiseArray)
+      .then(() => {
+        onCardTableUpdateCompleted(boardId, true);
+
+        DB.listTable
+          .delete(listId)
+          .then(() => onListTableUpdateCompleted(boardId))
+          .catch(err => {
+            throw err;
+          });
+      })
+      .catch(err => {
+        throw err;
+      });
   };
 
   const onListTitleChanged = (
@@ -83,13 +92,10 @@ const useListState = () => {
   ) => {
     DB.listTable
       .update(listId, { title })
-      .then(() => onListTableUpdateCompleted())
+      .then(() => onListTableUpdateCompleted(boardId))
       .catch(err => {
         throw err;
       });
-
-    const updatedTimestamp = Date.now();
-    DB.boardTable.update(boardId, { updatedTimestamp });
   };
 
   return {
