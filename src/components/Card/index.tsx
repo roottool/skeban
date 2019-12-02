@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Paper from "@material-ui/core/Paper";
+import MaterialCard from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 import styled from "styled-components";
 import ReactMde from "react-mde";
 import Showdown from "showdown";
@@ -58,8 +59,8 @@ const Card: React.FC<Props> = props => {
   return (
     <>
       {isInputArea ? (
-        <div>
-          <StyledPaper>
+        <>
+          <StyledMaterialCard>
             <StyledReactMde
               value={text}
               onChange={handleValueChanged}
@@ -69,7 +70,7 @@ const Card: React.FC<Props> = props => {
                 return Promise.resolve(converter.makeHtml(markdown));
               }}
             />
-          </StyledPaper>
+          </StyledMaterialCard>
           <StyledButtonArea>
             <Fab
               variant="extended"
@@ -92,19 +93,21 @@ const Card: React.FC<Props> = props => {
               DELETE THIS CARD
             </Fab>
           </StyledButtonArea>
-        </div>
+        </>
       ) : (
         <Draggable draggableId={`cardId-${cardId}`} index={cardIndex}>
           {provided => (
-            <StyledPaper
+            <StyledMaterialCard
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}
             >
-              <StyledCardContentDiv onClick={handleisInputAreaChange}>
-                <Markdown>{text}</Markdown>
-              </StyledCardContentDiv>
-            </StyledPaper>
+              <CardContent>
+                <StyledCardContentDiv onClick={handleisInputAreaChange}>
+                  <Markdown>{text}</Markdown>
+                </StyledCardContentDiv>
+              </CardContent>
+            </StyledMaterialCard>
           )}
         </Draggable>
       )}
@@ -112,10 +115,9 @@ const Card: React.FC<Props> = props => {
   );
 };
 
-const StyledPaper = styled(Paper)`
+const StyledMaterialCard = styled(MaterialCard)`
   padding: 0px;
-  margin: 8px;
-  cursor: pointer;
+  margin: 8px 16px;
 `;
 
 const StyledReactMde = styled(ReactMde)`

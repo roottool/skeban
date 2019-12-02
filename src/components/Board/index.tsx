@@ -10,6 +10,7 @@ import State from "../../State";
 import BoardHeader from "../BoardHeader";
 import List from "../List";
 import LeftSideList from "../LeftSideList";
+import { leftSideListAreaWidth } from "../../GlobalStyles";
 
 type Identifiable = {
   boardId: string;
@@ -118,7 +119,7 @@ const StyledRoot = styled.div`
 
 const StyledPaper = styled(Paper)`
   top: 0;
-  width: 100vw;
+  width: calc(100% - ${leftSideListAreaWidth}px);
   height: 100%;
   outline: 0;
   position: fixed;

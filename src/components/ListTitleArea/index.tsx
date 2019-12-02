@@ -100,7 +100,7 @@ const StyledListTitleDiv = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0 8px;
+  padding: 0 16px;
   min-height: 72px;
 `;
 

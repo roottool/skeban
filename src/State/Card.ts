@@ -39,11 +39,20 @@ const useCardState = () => {
   };
 
   const onCardAdded = (boardId: number, listId: number) => {
-    const index = allCards.filter(card => card.listId === listId).length;
+    allCards
+      .filter(card => card.listId === listId)
+      .forEach(card => {
+        if (!card.id) {
+          return;
+        }
+        DB.cardTable.update(card.id, {
+          index: card.index + 1
+        });
+      });
     DB.cardTable
       .add({
         listId,
-        index,
+        index: 0,
         text: ""
       })
       .then(() => onCardTableUpdateCompleted(boardId))

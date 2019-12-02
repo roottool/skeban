@@ -80,18 +80,6 @@ const List: React.FC<Props> = props => {
           {...provided.dragHandleProps}
           innerRef={provided.innerRef}
         >
-          <ListTitleArea boardId={boardId} listId={listId} />
-          <Droppable droppableId={`listId-${listId}`} type="Card">
-            {cardProvided => (
-              <StyledContainer
-                {...cardProvided.droppableProps}
-                ref={cardProvided.innerRef}
-              >
-                {renderCards()}
-                {cardProvided.placeholder}
-              </StyledContainer>
-            )}
-          </Droppable>
           <StyledButtonArea>
             <Fab
               variant="extended"
@@ -114,6 +102,18 @@ const List: React.FC<Props> = props => {
               DELETE THIS LIST
             </Fab>
           </StyledButtonArea>
+          <ListTitleArea boardId={boardId} listId={listId} />
+          <Droppable droppableId={`listId-${listId}`} type="Card">
+            {cardProvided => (
+              <StyledContainer
+                {...cardProvided.droppableProps}
+                ref={cardProvided.innerRef}
+              >
+                {renderCards()}
+                {cardProvided.placeholder}
+              </StyledContainer>
+            )}
+          </Droppable>
         </StyledPaper>
       )}
     </Draggable>
