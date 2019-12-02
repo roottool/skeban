@@ -11,7 +11,7 @@ Skeban is an open source Electron based kanban app. It is written in TypeScript 
 ## Screenshot
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/11808736/69901340-981fe900-13c3-11ea-8b3d-86a2f7438cdd.png" alt="Skeban" />
+  <img src="https://user-images.githubusercontent.com/11808736/69982485-f2fa4180-1577-11ea-86ad-ab6d1a880024.png" alt="Skeban" />
 </p>
 
 ## Development
