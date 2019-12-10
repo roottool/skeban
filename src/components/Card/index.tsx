@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { Controlled as CodeMirror } from "react-codemirror2";
@@ -23,6 +23,7 @@ interface Props {
   boardId: number;
   cardId: number;
   cardIndex: number;
+  onClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const processor = unified()
@@ -40,6 +41,11 @@ const Card: React.FC<Props> = props => {
   const card = Container.allCards.find(cardData => cardData.id === cardId);
   const cardText = card?.text || "";
   const [text, setValue] = useState(cardText);
+
+  useEffect(() => {
+    const { onClicked } = props;
+    onClicked(isInputArea);
+  }, [isInputArea]);
 
   const handleisInputAreaChange = () => {
     if (isInputArea) {

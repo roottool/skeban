@@ -23,6 +23,7 @@ const List: React.FC<Props> = props => {
 
   const Container = State.useContainer();
   const [cards, setCards] = useState<CardTable[]>([]);
+  const [isDragDisabled, setIsDragDisabled] = useState(false);
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -65,6 +66,7 @@ const List: React.FC<Props> = props => {
             boardId={boardId}
             cardId={card.id}
             cardIndex={cardIndex}
+            onClicked={setIsDragDisabled}
           />
         );
       });
@@ -73,7 +75,11 @@ const List: React.FC<Props> = props => {
   };
 
   return (
-    <Draggable draggableId={`listId-${listId}`} index={listIndex}>
+    <Draggable
+      draggableId={`listId-${listId}`}
+      index={listIndex}
+      isDragDisabled={isDragDisabled}
+    >
       {provided => (
         <StyledPaper
           {...provided.draggableProps}
