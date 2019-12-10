@@ -2,6 +2,7 @@ import Webpack from "webpack";
 import Path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
+import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 
 import Paths from "./paths";
 
@@ -65,7 +66,8 @@ const config: Webpack.Configuration = {
     }),
     new CopyWebpackPlugin([
       { from: Path.join(appPublic, "icons"), to: "icons" }
-    ])
+    ]),
+    new MonacoWebpackPlugin()
   ]
 };
 

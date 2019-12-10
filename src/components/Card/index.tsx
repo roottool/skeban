@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import MonacoEditor from "react-monaco-editor";
 import unified from "unified";
 import parse2Markdown from "remark-parse";
 import remark2rehype from "remark-rehype";
@@ -10,13 +10,10 @@ import rehype2react from "rehype-react";
 import MaterialCard from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Fab from "@material-ui/core/Fab";
+import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import State from "../../State";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/markdown/markdown";
-import "codemirror/mode/javascript/javascript";
 import "highlight.js/styles/default.css";
 
 interface Props {
@@ -32,8 +29,18 @@ const processor = unified()
   .use(highlight)
   .use(rehype2react, { createElement: React.createElement });
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      zIndex: theme.zIndex.drawer + 1
+    },
+    toolbar: theme.mixins.toolbar
+  })
+);
+
 const Card: React.FC<Props> = props => {
   const { boardId, cardId, cardIndex } = props;
+  const classes = useStyles();
 
   const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
@@ -47,7 +54,7 @@ const Card: React.FC<Props> = props => {
     onClicked(isInputArea);
   }, [isInputArea]);
 
-  const handleisInputAreaChange = () => {
+  const handleIsInputAreaChange = () => {
     if (isInputArea) {
       Container.onCardTextChanged(boardId, cardId, text);
     }
@@ -66,42 +73,43 @@ const Card: React.FC<Props> = props => {
     <>
       {isInputArea ? (
         <>
-          <StyledCard>
-            <CodeMirror
+          <StyledRoot className={classes.root}>
+            <StyledFakeHeader className={classes.toolbar} />
+            <MonacoEditor
+              height="80%"
               value={text}
+              language="markdown"
               options={{
-                autoFocus: true,
-                mode: "markdown",
-                theme: "default",
-                lineNumbers: true
+                automaticLayout: true
               }}
-              onBeforeChange={(value: string) => {
-                handleValueChanged(value);
+              onChange={value => handleValueChanged(value)}
+              editorDidMount={editor => {
+                editor.focus();
               }}
             />
-          </StyledCard>
-          <StyledButtonArea>
-            <Fab
-              variant="extended"
-              size="medium"
-              color="primary"
-              aria-label="DONE"
-              onClick={handleisInputAreaChange}
-            >
-              <CheckIcon />
-              DONE
-            </Fab>
-            <Fab
-              variant="extended"
-              size="medium"
-              color="secondary"
-              aria-label="Delete this card"
-              onClick={handleDeleteButtonClicked}
-            >
-              <DeleteIcon />
-              DELETE THIS CARD
-            </Fab>
-          </StyledButtonArea>
+            <StyledButtonArea>
+              <Fab
+                variant="extended"
+                size="medium"
+                color="primary"
+                aria-label="DONE"
+                onClick={handleIsInputAreaChange}
+              >
+                <CheckIcon />
+                DONE
+              </Fab>
+              <Fab
+                variant="extended"
+                size="medium"
+                color="secondary"
+                aria-label="Delete this card"
+                onClick={handleDeleteButtonClicked}
+              >
+                <DeleteIcon />
+                DELETE THIS CARD
+              </Fab>
+            </StyledButtonArea>
+          </StyledRoot>
         </>
       ) : (
         <Draggable draggableId={`cardId-${cardId}`} index={cardIndex}>
@@ -112,7 +120,7 @@ const Card: React.FC<Props> = props => {
               ref={provided.innerRef}
             >
               <CardContent>
-                <StyledCardContentDiv onClick={handleisInputAreaChange}>
+                <StyledCardContentDiv onClick={handleIsInputAreaChange}>
                   {processor.processSync(text).contents}
                 </StyledCardContentDiv>
               </CardContent>
@@ -123,6 +131,18 @@ const Card: React.FC<Props> = props => {
     </>
   );
 };
+
+const StyledRoot = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+const StyledFakeHeader = styled.div`
+  margin-bottom: 16px;
+`;
 
 const StyledCard = styled(MaterialCard)`
   padding: 0px;
