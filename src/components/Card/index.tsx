@@ -1,19 +1,23 @@
 import React, { useState } from "react";
+import styled from "styled-components";
+import { Draggable } from "react-beautiful-dnd";
+import { Controlled as CodeMirror } from "react-codemirror2";
+import unified from "unified";
+import parse2Markdown from "remark-parse";
+import remark2rehype from "remark-rehype";
+import highlight from "rehype-highlight";
+import rehype2react from "rehype-react";
 import MaterialCard from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import styled from "styled-components";
-import ReactMde from "react-mde";
-import Showdown from "showdown";
-import Markdown from "markdown-to-jsx";
 import Fab from "@material-ui/core/Fab";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Draggable } from "react-beautiful-dnd";
 import State from "../../State";
-import "react-mde/lib/styles/css/react-mde-editor.css";
-import "react-mde/lib/styles/css/react-mde-toolbar.css";
-import "react-mde/lib/styles/css/react-mde.css";
-import "react-mde/lib/styles/css/variables.css";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material.css";
+import "codemirror/mode/markdown/markdown";
+import "codemirror/mode/javascript/javascript";
+import "highlight.js/styles/default.css";
 
 interface Props {
   boardId: number;
@@ -21,21 +25,17 @@ interface Props {
   cardIndex: number;
 }
 
-type SelectedTab = "write" | "preview" | undefined;
-
-const converter = new Showdown.Converter({
-  tables: true,
-  simplifiedAutoLink: true,
-  strikethrough: true,
-  tasklists: true
-});
+const processor = unified()
+  .use(parse2Markdown)
+  .use(remark2rehype)
+  .use(highlight)
+  .use(rehype2react, { createElement: React.createElement });
 
 const Card: React.FC<Props> = props => {
   const { boardId, cardId, cardIndex } = props;
 
   const Container = State.useContainer();
   const [isInputArea, setIsInputArea] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<SelectedTab>("write");
 
   const card = Container.allCards.find(cardData => cardData.id === cardId);
   const cardText = card?.text || "";
@@ -60,17 +60,20 @@ const Card: React.FC<Props> = props => {
     <>
       {isInputArea ? (
         <>
-          <StyledMaterialCard>
-            <StyledReactMde
+          <StyledCard>
+            <CodeMirror
               value={text}
-              onChange={handleValueChanged}
-              selectedTab={selectedTab}
-              onTabChange={setSelectedTab}
-              generateMarkdownPreview={markdown => {
-                return Promise.resolve(converter.makeHtml(markdown));
+              options={{
+                autoFocus: true,
+                mode: "markdown",
+                theme: "default",
+                lineNumbers: true
+              }}
+              onBeforeChange={(value: string) => {
+                handleValueChanged(value);
               }}
             />
-          </StyledMaterialCard>
+          </StyledCard>
           <StyledButtonArea>
             <Fab
               variant="extended"
@@ -97,17 +100,17 @@ const Card: React.FC<Props> = props => {
       ) : (
         <Draggable draggableId={`cardId-${cardId}`} index={cardIndex}>
           {provided => (
-            <StyledMaterialCard
+            <StyledCard
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}
             >
               <CardContent>
                 <StyledCardContentDiv onClick={handleisInputAreaChange}>
-                  <Markdown>{text}</Markdown>
+                  {processor.processSync(text).contents}
                 </StyledCardContentDiv>
               </CardContent>
-            </StyledMaterialCard>
+            </StyledCard>
           )}
         </Draggable>
       )}
@@ -115,13 +118,9 @@ const Card: React.FC<Props> = props => {
   );
 };
 
-const StyledMaterialCard = styled(MaterialCard)`
+const StyledCard = styled(MaterialCard)`
   padding: 0px;
   margin: 8px 16px;
-`;
-
-const StyledReactMde = styled(ReactMde)`
-  min-height: 72px;
 `;
 
 const StyledButtonArea = styled.div`
@@ -133,7 +132,6 @@ const StyledButtonArea = styled.div`
 
 const StyledCardContentDiv = styled.div`
   width: 100%;
-  padding: 0 8px;
   min-height: 72px;
   white-space: pre-line;
 `;
