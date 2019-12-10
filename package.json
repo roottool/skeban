@@ -1,7 +1,7 @@
 {
   "name": "skeban",
   "productName": "Skeban",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Sketches your brain in kanban",
   "main": "./build/index.js",
   "repository": "https://github.com/roottool/skeban.git",
