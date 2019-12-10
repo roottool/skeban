@@ -27,6 +27,12 @@ const rendererRules: Webpack.Rule[] = [
     ]
   },
   {
+    test: /\.(jsx|tsx)?$/,
+    include: appSrc,
+    loader: "stylelint-custom-processor-loader",
+    exclude: /node_modules/
+  },
+  {
     test: /\.css$/i,
     include: [appNodeModules],
     use: ["style-loader", "css-loader"]
