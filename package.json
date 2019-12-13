@@ -28,6 +28,8 @@
     "appId": "jp.roottool.skeban",
     "productName": "Skeban",
     "copyright": "Copyright © 2019 roottool",
+    "asar": true,
+    "npmRebuild": false,
     "files": [
       "build/**/*"
     ],
@@ -39,7 +41,13 @@
     "win": {
       "target": "nsis",
       "icon": "build/icons/icon.ico"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "releaseType": "release"
+      }
+    ]
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
