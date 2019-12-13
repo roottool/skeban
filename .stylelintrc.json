@@ -3,9 +3,17 @@
   "extends": [
     "stylelint-config-recommended",
     "stylelint-config-styled-components",
+    "stylelint-config-recess-order",
     "stylelint-prettier/recommended"
   ],
+  "syntax": "css-in-js",
   "rules": {
+    "prettier/prettier": [
+      true,
+      {
+        "tabWidth": 2
+      }
+    ],
     "unicode-bom": "never"
   }
 }

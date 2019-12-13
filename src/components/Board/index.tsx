@@ -104,12 +104,12 @@ const StyledRoot = styled.div`
 `
 
 const StyledPaper = styled(Paper)`
+  position: fixed;
   top: 0;
   width: calc(100% - ${leftSideListAreaWidth}px);
   height: 100%;
-  outline: 0;
-  position: fixed;
   overflow: auto;
+  outline: 0;
 `
 
 const StyledDragDropRoot = styled.div`

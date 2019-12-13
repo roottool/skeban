@@ -80,19 +80,19 @@ const StyledLink = styled(Link)`
 `
 
 const StyledPaper = styled(Paper)`
+  position: fixed;
   top: 0;
   width: calc(100% - ${leftSideListAreaWidth}px);
   height: 100%;
-  outline: 0;
-  position: fixed;
   overflow: auto;
+  outline: 0;
 `
 
 const StyledCard = styled(Card)`
   min-height: 120px;
   margin-top: 16px;
-  margin-left: 16px;
   margin-right: 16px;
+  margin-left: 16px;
 `
 
 const StyledBoardTitleTypography = styled(Typography)`
@@ -102,8 +102,8 @@ const StyledBoardTitleTypography = styled(Typography)`
 `
 
 const StyledAddbuttonArea = styled.div`
-  text-align: center;
   margin-top: 16px;
+  text-align: center;
 `
 
 export default BoardList

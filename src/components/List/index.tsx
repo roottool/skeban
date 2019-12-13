@@ -120,9 +120,9 @@ const List: React.FC<Props> = props => {
 }
 
 const StyledPaper = styled(Paper)`
+  flex: 0 0 400px;
   width: 400px;
   height: fit-content;
-  flex: 0 0 400px;
   margin: 16px;
 `
 

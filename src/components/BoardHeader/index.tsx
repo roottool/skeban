@@ -123,8 +123,8 @@ const StyledBoardTitleTextField = styled(TextField)`
 `
 
 const StyledBoardTitleDiv = styled.div`
-  cursor: pointer;
   max-width: 75vw;
+  cursor: pointer;
 `
 
 const StyledBoardTitleTypography = styled(Typography)`

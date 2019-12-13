@@ -94,12 +94,12 @@ const StyledListTitleTextField = styled(TextField)`
 `
 
 const StyledListTitleDiv = styled.div`
-  cursor: pointer;
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0 16px;
   min-height: 72px;
+  padding: 0 16px;
+  cursor: pointer;
 `
 
 const StyledListTitleTypography = styled(Typography)`
@@ -110,8 +110,8 @@ const StyledListTitleTypography = styled(Typography)`
 
 const StyledEditIconArea = styled.div`
   flex-basis: 20%;
-  text-align: center;
   margin: 0 16px;
+  text-align: center;
 `
 
 export default ListTitleArea
