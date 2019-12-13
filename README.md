@@ -38,25 +38,3 @@ Or you can use the debug of Visual Stuido Code if you use Visual Studio Code.
 
 2. Select `Skeban All` in the debug of Visual Stuido Code
 3. Execute the debug
-
-## Packaging
-
-### Windows & Mac
-
-```bash
-yarn run pack
-```
-
-### Windows only
-
-```bash
-yarn run build
-yarn run pack:win
-```
-
-### Mac only
-
-```bash
-yarn run build
-yarn run pack:mac
-```
