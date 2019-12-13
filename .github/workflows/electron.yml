@@ -26,6 +26,9 @@ jobs:
       - name: yarn install
         run: |
           yarn install
+      - name: Build
+        run: |
+          yarn run build
       - name: Publish
         run: |
           yarn run dist
