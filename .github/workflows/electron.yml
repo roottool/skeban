@@ -33,13 +33,13 @@ jobs:
         run: |
           yarn run dist
       - name: Cleanup artifacts
-        if: matrix.os != 'windows-latest'
+        if: ${{ matrix.os }} != 'windows-latest'
         run: |
-          npx rimraf "dist/!(*.exe|*.deb|*.AppImage|*.dmg)"
+          npx rimraf "dist/!(*.exe | *.deb | *.AppImage | *.dmg)"
       - name: Cleanup artifacts Win
-        if: matrix.os == 'windows-latest'
+        if: ${{ matrix.os }} == 'windows-latest'
         run: |
-          npx rimraf "dist/!(*.exe,*.deb,*.AppImage,*.dmg)"
+          npx rimraf "dist/!(*.exe, *.deb, *.AppImage, *.dmg)"
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
