@@ -20,7 +20,6 @@
     "lint:script": "eslint \"config/**\" && eslint \"src/**\"",
     "lint:style": "stylelint \"src/**\"",
     "lint": "yarn run lint:script && yarn run lint:style",
-    "prepack": "yarn run build && rimraf dist",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
