@@ -105,7 +105,7 @@
     "stylelint-custom-processor-loader": "^0.6.0",
     "stylelint-prettier": "^1.1.1",
     "stylelint-processor-styled-components": "^1.9.0",
-    "ts-node": "^8.3.0",
+    "ts-node": "^8.5.4",
     "tsconfig-paths": "^3.8.0",
     "typescript": "^3.5.3",
     "typescript-styled-plugin": "^0.15.0",
