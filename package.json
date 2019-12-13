@@ -21,9 +21,8 @@
     "lint:style": "stylelint \"src/**\"",
     "lint": "yarn run lint:script && yarn run lint:style",
     "prepack": "yarn run build && rimraf dist",
-    "pack": "concurrently \"yarn run pack:mac\" \"yarn run pack:win\"",
-    "pack:mac": "electron-builder --mac --x64",
-    "pack:win": "electron-builder --win --x64"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "build": {
     "appId": "jp.roottool.skeban",
