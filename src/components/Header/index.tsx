@@ -1,21 +1,21 @@
-import React from "react";
-import styled from "styled-components";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
+import React from 'react'
+import styled from 'styled-components'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
-      backgroundColor: "#009CFF",
-      color: "white",
+      backgroundColor: '#009CFF',
+      color: 'white',
       zIndex: theme.zIndex.drawer + 1
     }
   })
-);
+)
 
 const Header: React.FC = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <>
@@ -25,11 +25,11 @@ const Header: React.FC = () => {
         </Toolbar>
       </AppBar>
     </>
-  );
-};
+  )
+}
 
 const StyledFlexGrow = styled.div`
   flex-grow: 1;
-`;
+`
 
-export default Header;
+export default Header

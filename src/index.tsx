@@ -1,12 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { HashRouter } from "react-router-dom";
-import App from "./App";
-import AppState from "./State";
-import ListState from "./State/List";
-import CardState from "./State/Card";
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { HashRouter } from 'react-router-dom'
+import App from './App'
+import AppState from './State'
+import ListState from './State/List'
+import CardState from './State/Card'
 // eslint-disable-next-line import/extensions
-import "typeface-roboto";
+import 'typeface-roboto'
 
 ReactDOM.render(
   <CardState.Provider>
@@ -18,5 +18,5 @@ ReactDOM.render(
       </AppState.Provider>
     </ListState.Provider>
   </CardState.Provider>,
-  document.getElementById("root")
-);
+  document.getElementById('root')
+)

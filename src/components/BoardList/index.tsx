@@ -1,16 +1,16 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import moment from "moment";
-import styled from "styled-components";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Fab from "@material-ui/core/Fab";
-import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-import State from "../../State";
-import { leftSideListAreaWidth } from "../../GlobalStyles";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import moment from 'moment'
+import styled from 'styled-components'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
+import Fab from '@material-ui/core/Fab'
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
+import AddIcon from '@material-ui/icons/Add'
+import State from '../../State'
+import { leftSideListAreaWidth } from '../../GlobalStyles'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,41 +19,39 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     toolbar: theme.mixins.toolbar
   })
-);
+)
 
 const BoardList: React.FC = () => {
-  const StateContainer = State.useContainer();
-  const classes = useStyles();
+  const StateContainer = State.useContainer()
+  const classes = useStyles()
 
   const handleAddButtonClicked = () => {
-    StateContainer.onBoardAdded();
-  };
+    StateContainer.onBoardAdded()
+  }
 
   const renderBoards = () => {
     const result = StateContainer.allBoards.map(board => {
       if (!board.id) {
-        return <></>;
+        return <></>
       }
 
-      const title = board.title || "The title is empty";
-      const showUpdatedAt = moment(board.updatedTimestamp).fromNow();
+      const title = board.title || 'The title is empty'
+      const showUpdatedAt = moment(board.updatedTimestamp).fromNow()
       return (
         <StyledLink to={`/board/${board.id}`} key={board.id}>
           <StyledCard>
             <CardContent>
-              <StyledBoardTitleTypography variant="h4">
-                {title}
-              </StyledBoardTitleTypography>
+              <StyledBoardTitleTypography variant="h4">{title}</StyledBoardTitleTypography>
               <StyledBoardTitleTypography variant="subtitle1">
                 {showUpdatedAt}
               </StyledBoardTitleTypography>
             </CardContent>
           </StyledCard>
         </StyledLink>
-      );
-    });
-    return result;
-  };
+      )
+    })
+    return result
+  }
 
   return (
     <main className={classes.main}>
@@ -74,12 +72,12 @@ const BoardList: React.FC = () => {
         {renderBoards()}
       </StyledPaper>
     </main>
-  );
-};
+  )
+}
 
 const StyledLink = styled(Link)`
   text-decoration-line: none;
-`;
+`
 
 const StyledPaper = styled(Paper)`
   top: 0;
@@ -88,24 +86,24 @@ const StyledPaper = styled(Paper)`
   outline: 0;
   position: fixed;
   overflow: auto;
-`;
+`
 
 const StyledCard = styled(Card)`
   min-height: 120px;
   margin-top: 16px;
   margin-left: 16px;
   margin-right: 16px;
-`;
+`
 
 const StyledBoardTitleTypography = styled(Typography)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`;
+`
 
 const StyledAddbuttonArea = styled.div`
   text-align: center;
   margin-top: 16px;
-`;
+`
 
-export default BoardList;
+export default BoardList

@@ -1,12 +1,12 @@
-import Webpack from "webpack";
-import Path from "path";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import CopyWebpackPlugin from "copy-webpack-plugin";
-import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
+import Webpack from 'webpack'
+import Path from 'path'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin'
 
-import Paths from "./paths";
+import Paths from './paths'
 
-const { appSrc, appBuild, appNodeModules, appPublic, appHtml } = Paths;
+const { appSrc, appBuild, appNodeModules, appPublic, appHtml } = Paths
 
 const rendererRules: Webpack.Rule[] = [
   {
@@ -14,15 +14,13 @@ const rendererRules: Webpack.Rule[] = [
     include: [appSrc, appNodeModules],
     use: [
       {
-        loader: "babel-loader",
+        loader: 'babel-loader',
         options: {
-          presets: [
-            ["@babel/preset-env", { targets: "maintained node versions" }]
-          ]
+          presets: [['@babel/preset-env', { targets: 'maintained node versions' }]]
         }
       },
       {
-        loader: "eslint-loader"
+        loader: 'eslint-loader'
       }
     ]
   },
@@ -30,37 +28,37 @@ const rendererRules: Webpack.Rule[] = [
     test: /\.(jsx|tsx)?$/,
     include: appSrc,
     exclude: /node_modules/,
-    loader: "stylelint-custom-processor-loader"
+    loader: 'stylelint-custom-processor-loader'
   },
   {
     test: /\.css$/i,
     include: [appNodeModules],
-    use: ["style-loader", "css-loader"]
+    use: ['style-loader', 'css-loader']
   },
   {
     test: /\.(woff|woff2|eot|ttf|svg)$/,
-    loader: "file-loader",
+    loader: 'file-loader',
     options: {
-      name: "[name].[ext]",
-      outputPath: "fonts/"
+      name: '[name].[ext]',
+      outputPath: 'fonts/'
     }
   }
-];
+]
 
 const rendererModules: Webpack.Module = {
   rules: rendererRules
-};
+}
 
 const rendererResolve: Webpack.Resolve = {
-  extensions: [".js", ".ts", ".tsx", ".json"]
-};
+  extensions: ['.js', '.ts', '.tsx', '.json']
+}
 
 const config: Webpack.Configuration = {
-  mode: "production",
-  target: "electron-renderer",
-  entry: Path.join(Paths.appSrc, "index.tsx"),
+  mode: 'production',
+  target: 'electron-renderer',
+  entry: Path.join(Paths.appSrc, 'index.tsx'),
   output: {
-    filename: "renderer.js",
+    filename: 'renderer.js',
     path: appBuild
   },
   module: rendererModules,
@@ -69,11 +67,9 @@ const config: Webpack.Configuration = {
     new HtmlWebpackPlugin({
       template: appHtml
     }),
-    new CopyWebpackPlugin([
-      { from: Path.join(appPublic, "icons"), to: "icons" }
-    ]),
+    new CopyWebpackPlugin([{ from: Path.join(appPublic, 'icons'), to: 'icons' }]),
     new MonacoWebpackPlugin()
   ]
-};
+}
 
-export default config;
+export default config

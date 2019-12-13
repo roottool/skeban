@@ -1,9 +1,9 @@
-import Webpack from "webpack";
-import Path from "path";
+import Webpack from 'webpack'
+import Path from 'path'
 
-import Paths from "./paths";
+import Paths from './paths'
 
-const { appSrc, appBuild, appNodeModules } = Paths;
+const { appSrc, appBuild, appNodeModules } = Paths
 
 const mainRules: Webpack.Rule[] = [
   {
@@ -12,34 +12,32 @@ const mainRules: Webpack.Rule[] = [
     exclude: [appNodeModules],
     use: [
       {
-        loader: "babel-loader",
+        loader: 'babel-loader',
         options: {
-          presets: [
-            ["@babel/preset-env", { targets: "maintained node versions" }]
-          ]
+          presets: [['@babel/preset-env', { targets: 'maintained node versions' }]]
         }
       },
       {
-        loader: "eslint-loader"
+        loader: 'eslint-loader'
       }
     ]
   }
-];
+]
 
 const mainModules: Webpack.Module = {
   rules: mainRules
-};
+}
 
 const mainResolve: Webpack.Resolve = {
-  extensions: [".js", ".ts"]
-};
+  extensions: ['.js', '.ts']
+}
 
 const config: Webpack.Configuration = {
-  mode: "development",
-  target: "electron-main",
-  entry: Path.join(appSrc, "main.ts"),
+  mode: 'development',
+  target: 'electron-main',
+  entry: Path.join(appSrc, 'main.ts'),
   output: {
-    filename: "index.js",
+    filename: 'index.js',
     path: appBuild
   },
   node: {
@@ -48,6 +46,6 @@ const config: Webpack.Configuration = {
   },
   module: mainModules,
   resolve: mainResolve
-};
+}
 
-export default config;
+export default config

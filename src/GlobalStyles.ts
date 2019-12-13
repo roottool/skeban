@@ -1,6 +1,6 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components'
 
-export const leftSideListAreaWidth = 240;
+export const leftSideListAreaWidth = 240
 
 export default createGlobalStyle`
 body {
@@ -20,4 +20,4 @@ code {
 h1, h2, h3, h4, h5, h6, p {
   margin: 4px 0px;
 }
-`;
+`

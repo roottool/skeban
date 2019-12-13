@@ -1,15 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import Container from "@material-ui/core/Container";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import HomeIcon from "@material-ui/icons/Home";
-import { leftSideListAreaWidth } from "../../GlobalStyles";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import Container from '@material-ui/core/Container'
+import Drawer from '@material-ui/core/Drawer'
+import List from '@material-ui/core/List'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import HomeIcon from '@material-ui/icons/Home'
+import { leftSideListAreaWidth } from '../../GlobalStyles'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     toolbar: theme.mixins.toolbar
   })
-);
+)
 
 const LeftSideList: React.FC = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Drawer
@@ -49,12 +49,12 @@ const LeftSideList: React.FC = () => {
         </List>
       </Container>
     </Drawer>
-  );
-};
+  )
+}
 
 const StyledLink = styled(Link)`
   color: rgba(0, 0, 0, 0.54);
   text-decoration-line: none;
-`;
+`
 
-export default LeftSideList;
+export default LeftSideList
