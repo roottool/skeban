@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { remote } from 'electron'
 import styled from 'styled-components'
+import { grey } from '@material-ui/core/colors'
 import Container from '@material-ui/core/Container'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
@@ -11,18 +13,20 @@ import ListItemText from '@material-ui/core/ListItemText'
 import HomeIcon from '@material-ui/icons/Home'
 import { leftSideListAreaWidth } from '../../GlobalStyles'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const { shouldUseDarkColors } = remote.nativeTheme
+  return createStyles({
     drawer: {
       width: leftSideListAreaWidth,
       flexShrink: 0
     },
     drawerPaper: {
-      width: leftSideListAreaWidth
+      width: leftSideListAreaWidth,
+      backgroundColor: shouldUseDarkColors ? grey[800] : '#fff'
     },
     toolbar: theme.mixins.toolbar
   })
-)
+})
 
 const LeftSideList: React.FC = () => {
   const classes = useStyles()
@@ -53,7 +57,7 @@ const LeftSideList: React.FC = () => {
 }
 
 const StyledLink = styled(Link)`
-  color: rgba(0, 0, 0, 0.54);
+  color: inherit;
   text-decoration-line: none;
 `
 

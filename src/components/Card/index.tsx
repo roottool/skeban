@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
+import { remote } from 'electron'
 import MonacoEditor from 'react-monaco-editor'
 import unified from 'unified'
 import parse2Markdown from 'remark-parse'
@@ -9,6 +10,7 @@ import highlight from 'rehype-highlight'
 import rehype2react from 'rehype-react'
 import MaterialCard from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import { grey } from '@material-ui/core/colors'
 import Fab from '@material-ui/core/Fab'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import CheckIcon from '@material-ui/icons/Check'
@@ -29,14 +31,18 @@ const processor = unified()
   .use(highlight)
   .use(rehype2react, { createElement: React.createElement })
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const { shouldUseDarkColors } = remote.nativeTheme
+  return createStyles({
     root: {
       zIndex: theme.zIndex.drawer + 1
     },
+    card: {
+      backgroundColor: shouldUseDarkColors ? grey[700] : '#fff'
+    },
     toolbar: theme.mixins.toolbar
   })
-)
+})
 
 const Card: React.FC<Props> = props => {
   const { boardId, cardId, cardIndex } = props
@@ -48,6 +54,9 @@ const Card: React.FC<Props> = props => {
   const card = Container.allCards.find(cardData => cardData.id === cardId)
   const cardText = card?.text || ''
   const [text, setValue] = useState(cardText)
+
+  const { shouldUseDarkColors } = remote.nativeTheme
+  const editorColor = shouldUseDarkColors ? 'vs-dark' : 'vs'
 
   useEffect(() => {
     const { onClicked } = props
@@ -77,6 +86,7 @@ const Card: React.FC<Props> = props => {
             <StyledFakeHeader className={classes.toolbar} />
             <MonacoEditor
               height="80%"
+              theme={editorColor}
               value={text}
               language="markdown"
               options={{
@@ -118,6 +128,7 @@ const Card: React.FC<Props> = props => {
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}
+              className={classes.card}
             >
               <CardContent>
                 <StyledCardContentDiv onClick={handleIsInputAreaChange}>
