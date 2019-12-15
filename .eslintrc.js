@@ -22,7 +22,8 @@ module.exports = {
       ".tsx"
     ],
     "import/core-modules": [
-      "app"
+      "app",
+      "electron"
     ],
     "import/resolver": {
       "node": {
