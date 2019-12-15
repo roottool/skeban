@@ -147,7 +147,7 @@ const StyledContainer = styled.div`
 const StyledButtonArea = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-bottom: 16px;
+  margin-top: 16px;
 `
 
 export default List
