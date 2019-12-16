@@ -2,10 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd'
 import { match as Match } from 'react-router-dom'
+import { grey } from '@material-ui/core/colors'
 import Fab from '@material-ui/core/Fab'
 import Paper from '@material-ui/core/Paper'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/Add'
+import { remote } from 'electron'
 import State from '../../State'
 import BoardHeader from '../BoardHeader'
 import List from '../List'
@@ -20,14 +22,18 @@ type Props = {
   match: Match<Identifiable>
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const { shouldUseDarkColors } = remote.nativeTheme
+  return createStyles({
     main: {
       flexGrow: 1
     },
+    paper: {
+      backgroundColor: shouldUseDarkColors ? grey[900] : '#fff'
+    },
     toolbar: theme.mixins.toolbar
   })
-)
+})
 
 const Board: React.FC<Props> = props => {
   const { match } = props
@@ -67,7 +73,7 @@ const Board: React.FC<Props> = props => {
       <BoardHeader boardId={boardIdNumber()} />
       <LeftSideList />
       <main className={classes.main}>
-        <StyledPaper>
+        <StyledPaper className={classes.paper}>
           <div className={classes.toolbar} />
           <StyledDragDropRoot>
             <DragDropContext onDragEnd={handleDragEnded}>
@@ -122,7 +128,7 @@ const StyledContainer = styled.div`
 
 const StyledAddbuttonArea = styled.div`
   flex: 0 0 360px;
-  margin: 16px;
+  margin-top: 32px;
 `
 
 export default Board

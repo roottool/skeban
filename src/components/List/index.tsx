@@ -1,8 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
+import { remote } from 'electron'
+import { grey } from '@material-ui/core/colors'
 import Paper from '@material-ui/core/Paper'
 import Fab from '@material-ui/core/Fab'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/Add'
 import DeleteIcon from '@material-ui/icons/Delete'
 import DB, { CardTable } from '../../DB'
@@ -16,8 +19,18 @@ interface Props {
   listIndex: number
 }
 
+const useStyles = makeStyles(() => {
+  const { shouldUseDarkColors } = remote.nativeTheme
+  return createStyles({
+    paper: {
+      backgroundColor: shouldUseDarkColors ? grey[800] : '#fff'
+    }
+  })
+})
+
 const List: React.FC<Props> = props => {
   const isInitialMount = useRef(true)
+  const classes = useStyles()
 
   const { boardId, listId, listIndex } = props
 
@@ -81,6 +94,7 @@ const List: React.FC<Props> = props => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           innerRef={provided.innerRef}
+          className={classes.paper}
         >
           <StyledButtonArea>
             <Fab
@@ -133,7 +147,7 @@ const StyledContainer = styled.div`
 const StyledButtonArea = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-bottom: 16px;
+  margin-top: 16px;
 `
 
 export default List

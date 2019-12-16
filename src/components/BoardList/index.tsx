@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { remote } from 'electron'
 import moment from 'moment'
 import styled from 'styled-components'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import { grey } from '@material-ui/core/colors'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Fab from '@material-ui/core/Fab'
@@ -12,14 +14,21 @@ import AddIcon from '@material-ui/icons/Add'
 import State from '../../State'
 import { leftSideListAreaWidth } from '../../GlobalStyles'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const { shouldUseDarkColors } = remote.nativeTheme
+  return createStyles({
     main: {
       flexGrow: 1
     },
+    card: {
+      backgroundColor: shouldUseDarkColors ? grey[800] : '#fff'
+    },
+    paper: {
+      backgroundColor: shouldUseDarkColors ? grey[900] : '#fff'
+    },
     toolbar: theme.mixins.toolbar
   })
-)
+})
 
 const BoardList: React.FC = () => {
   const StateContainer = State.useContainer()
@@ -39,7 +48,7 @@ const BoardList: React.FC = () => {
       const showUpdatedAt = moment(board.updatedTimestamp).fromNow()
       return (
         <StyledLink to={`/board/${board.id}`} key={board.id}>
-          <StyledCard>
+          <StyledCard className={classes.card}>
             <CardContent>
               <StyledBoardTitleTypography variant="h4">{title}</StyledBoardTitleTypography>
               <StyledBoardTitleTypography variant="subtitle1">
@@ -55,7 +64,7 @@ const BoardList: React.FC = () => {
 
   return (
     <main className={classes.main}>
-      <StyledPaper>
+      <StyledPaper className={classes.paper}>
         <div className={classes.toolbar} />
         <StyledAddbuttonArea>
           <Fab

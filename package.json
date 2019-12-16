@@ -1,7 +1,7 @@
 {
   "name": "skeban",
   "productName": "Skeban",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Sketches your brain in kanban",
   "main": "./build/index.js",
   "repository": "https://github.com/roottool/skeban.git",
@@ -78,7 +78,7 @@
     "copy-webpack-plugin": "^5.0.4",
     "cross-env": "^6.0.3",
     "css-loader": "^3.0.0",
-    "electron": "^7.1.2",
+    "electron": "^7.1.5",
     "electron-builder": "^21.1.1",
     "electron-store": "^5.1.0",
     "eslint": "^6.0.1",
