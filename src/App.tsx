@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { remote } from 'electron'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
@@ -8,23 +8,18 @@ import GlobalStyles from './GlobalStyles'
 
 const App: React.FC = () => {
   const { shouldUseDarkColors } = remote.nativeTheme
-  const [isDarkMode, toggleDarkMode] = useState(shouldUseDarkColors)
+  const [, toggleDarkMode] = useState(shouldUseDarkColors)
   const theme = createMuiTheme({
     palette: {
       type: shouldUseDarkColors ? 'dark' : 'light'
     }
   })
 
-  const isInitialAppMount = useRef(true)
   useEffect(() => {
-    if (isInitialAppMount.current) {
-      isInitialAppMount.current = false
-
-      remote.nativeTheme.addListener('updated', () => {
-        toggleDarkMode(remote.nativeTheme.shouldUseDarkColors)
-      })
-    }
-  }, [isDarkMode])
+    remote.nativeTheme.addListener('updated', () => {
+      toggleDarkMode(remote.nativeTheme.shouldUseDarkColors)
+    })
+  }, [])
 
   return (
     <MuiThemeProvider theme={theme}>
