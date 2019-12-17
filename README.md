@@ -17,7 +17,7 @@ Skeban is an open source Electron based kanban app. It is written in TypeScript 
 ## Development
 
 ```bash
-git clone https://github.com/roottool/Skeban.git
+git clone https://github.com/"your-github-account"/Skeban.git
 yarn install
 ```
 
