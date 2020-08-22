@@ -1,8 +1,10 @@
-<p align="center">
-  <img src="public/icons/icon.png" alt="Skeban logo" width="256" height="256"/>
-</p>
-
 # Skeban
+
+[![Github license](https://img.shields.io/github/license/roottool/Skeban)](https://github.com/roottool/Skeban/)
+
+<p align="center">
+  <img src="https://github.com/roottool/Skeban/raw/master/public/icons/icon.png" alt="Skeban logo" width="256" height="256"/>
+</p>
 
 **Ske**tches your brain in kan**ban**
 
