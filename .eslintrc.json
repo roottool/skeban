@@ -1,4 +1,4 @@
-module.exports = {
+{
   "env": {
     "browser": true
   },
@@ -53,7 +53,8 @@ module.exports = {
       }
     ],
     "import/extensions": [
-      "error", "always",
+      "error",
+      "always",
       {
         "js": "never",
         "jsx": "never",
@@ -62,13 +63,14 @@ module.exports = {
       }
     ],
     "import/no-extraneous-dependencies": [
-      "error", {
-        devDependencies: [
+      "error",
+      {
+        "devDependencies": [
           "config/**/*.ts",
           "src/main.ts",
           "src/**/*.stories.tsx"
         ],
-        peerDependencies: false
+        "peerDependencies": false
       }
     ],
     "no-unused-vars": "off",
