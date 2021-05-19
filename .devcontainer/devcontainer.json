@@ -1,0 +1,59 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.177.0/containers/typescript-node
+{
+  "name": "Skeban",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "16-buster",
+      "USERNAME": "vscode",
+      "USER_UID": "2000",
+    }
+  },
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
+    "source=zsh_history-for-skeban,target=/home/vscode/commandhistory,type=volume",
+    "source=node_modules-for-skeban,target=${containerWorkspaceFolder}/node_modules,type=volume",
+    "source=vscode-extension-for-skeban,target=/home/vscode/.vscode-server/extensions,type=volume",
+  ],
+  "runArgs": [
+    "--name=skeban",
+  ],
+  // * Set *default* container specific settings.json values on container create.
+  "settings": {
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.codeActionsOnSave": [
+      "source.fixAll.eslint",
+      "source.fixAll.stylelint",
+    ],
+    // * For Linter and Formatter
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications",
+    "editor.tabSize": 2,
+    "eslint.packageManager": "yarn",
+    "[markdown]": {
+      "files.trimTrailingWhitespace": false,
+      "editor.wordWrap": "on",
+      "editor.quickSuggestions": false
+    },
+  },
+  // * Add the IDs of extensions you want installed when the container is created.
+  "extensions": [
+    // * EditorConfig
+    "editorconfig.editorconfig",
+    // * Docker
+    "ms-azuretools.vscode-docker",
+    // * JavaScript, TypeScript
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+  ],
+  // * Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // * Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "",
+  // * Uncomment to connect as a non-root user.
+  // * See https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "vscode",
+}
